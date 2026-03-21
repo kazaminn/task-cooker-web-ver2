@@ -5,7 +5,7 @@ import {
   type ToggleButtonProps,
   composeRenderProps,
 } from 'react-aria-components';
-import { tv } from 'tailwind-variants';
+import { tv } from '@/libs/tv';
 import { focusRing } from '@/libs/variants';
 
 const styles = tv({

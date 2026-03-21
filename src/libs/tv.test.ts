@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { composeProps } from '@/lib/tv';
+import { composeProps } from '@/libs/tv';
 
 describe('tv', () => {
   it('merges two string class names', () => {

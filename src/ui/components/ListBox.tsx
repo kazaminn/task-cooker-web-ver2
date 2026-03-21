@@ -13,8 +13,8 @@ import {
   type SectionProps,
   composeRenderProps,
 } from 'react-aria-components';
-import { tv } from 'tailwind-variants';
-import { composeProps, focusRing } from '@/libs/variants';
+import { composeProps, tv } from '@/libs/tv';
+import { focusRing } from '@/libs/variants';
 
 type ListBoxProps<T> = Omit<AriaListBoxProps<T>, 'layout' | 'orientation'>;
 
@@ -117,7 +117,7 @@ export function DropdownItem(props: ListBoxItemProps) {
 
 export interface DropdownSectionProps<T> extends SectionProps<T> {
   title?: string;
-  items?: any;
+  items?: Iterable<T>;
 }
 
 export function DropdownSection<T extends object>(
@@ -129,7 +129,6 @@ export function DropdownSection<T extends object>(
         {props.title}
       </Header>
       {props.items && (
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         <Collection items={props.items}>{props.children}</Collection>
       )}
     </ListBoxSection>

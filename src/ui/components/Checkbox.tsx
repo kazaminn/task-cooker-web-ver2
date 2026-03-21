@@ -1,12 +1,12 @@
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faMinus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Checkbox as AriaCheckbox,
   type CheckboxProps,
   composeRenderProps,
 } from 'react-aria-components';
-import { tv } from 'tailwind-variants';
+import { tv } from '@/libs/tv';
 import { focusRing } from '@/libs/variants';
 
 const checkboxStyles = tv({
@@ -74,9 +74,17 @@ export function Checkbox(props: CheckboxProps) {
               })}
             >
               {isIndeterminate ? (
-                <FontAwesomeIcon icon={faMinus} aria-hidden className={iconStyles} />
+                <FontAwesomeIcon
+                  icon={faMinus}
+                  aria-hidden
+                  className={iconStyles}
+                />
               ) : isSelected ? (
-                <FontAwesomeIcon icon={faCheck} aria-hidden className={iconStyles} />
+                <FontAwesomeIcon
+                  icon={faCheck}
+                  aria-hidden
+                  className={iconStyles}
+                />
               ) : null}
             </div>
             {children}

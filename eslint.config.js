@@ -1,13 +1,13 @@
 import path from 'node:path';
 import { includeIgnoreFile } from '@eslint/compat';
 import js from '@eslint/js';
-import { defineConfig } from 'eslint/config';
 import prettierConfig from 'eslint-config-prettier';
 import a11yPlugin from 'eslint-plugin-jsx-a11y';
 import reactPlugin from 'eslint-plugin-react';
 import hooksPlugin from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import storybook from 'eslint-plugin-storybook';
+import { defineConfig } from 'eslint/config';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
@@ -23,6 +23,7 @@ export default defineConfig(
       '**/*.config.*',
       'eslint.config.js',
       '.storybook/**',
+      'scripts/**',
     ],
   },
   includeIgnoreFile(gitignorePath),
@@ -54,7 +55,7 @@ export default defineConfig(
       },
       parserOptions: {
         projectService: {
-          allowDefaultProject: ['*.config.{ts,js}', '*.d.ts'],
+          allowDefaultProject: ['*.config.{ts,js}', '*.d.ts', 'test/*.d.ts'],
         },
         tsconfigRootDir: import.meta.dirname,
       },

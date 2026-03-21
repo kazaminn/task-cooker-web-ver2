@@ -5,7 +5,7 @@ import {
   type LinkProps as AriaLinkProps,
   composeRenderProps,
 } from 'react-aria-components';
-import { tv } from 'tailwind-variants';
+import { tv } from '@/libs/tv';
 import { focusRing } from '@/libs/variants';
 
 interface LinkProps extends AriaLinkProps {

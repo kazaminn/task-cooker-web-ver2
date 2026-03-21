@@ -13,12 +13,7 @@ export const TASK_STATUS_META: Record<
   serve: { ja: '提供済み', emoji: '🍽️' },
 };
 
-export const TASK_PRIORITIES = [
-  'urgent',
-  'high',
-  'medium',
-  'low',
-] as const;
+export const TASK_PRIORITIES = ['urgent', 'high', 'medium', 'low'] as const;
 
 // 優先順位は色なし。UIでは方向アイコン（↑→↓）+ aria-label で表現
 export const PRIORITY_META: Record<TaskPriority, { ja: string }> = {

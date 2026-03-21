@@ -5,7 +5,7 @@ import {
   type ModalOverlayProps,
   Modal as RACModal,
 } from 'react-aria-components';
-import { tv } from 'tailwind-variants';
+import { tv } from '@/libs/tv';
 
 const overlayStyles = tv({
   base: 'absolute top-0 left-0 isolate z-20 h-(--page-height) w-full bg-backdrop text-center backdrop-blur-lg',

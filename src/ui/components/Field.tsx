@@ -14,7 +14,8 @@ import {
   composeRenderProps,
 } from 'react-aria-components';
 import { twMerge } from 'tailwind-merge';
-import { composeProps, fieldGroupStyles } from '@/libs/variants';
+import { composeProps } from '@/libs/tv';
+import { fieldGroupStyles } from '@/libs/variants';
 
 export function Label(props: LabelProps) {
   return (

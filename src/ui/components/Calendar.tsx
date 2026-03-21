@@ -18,8 +18,8 @@ import {
   Text,
   useLocale,
 } from 'react-aria-components';
-import { tv } from 'tailwind-variants';
-import { composeProps, focusRing } from '@/libs/variants';
+import { composeProps, tv } from '@/libs/tv';
+import { focusRing } from '@/libs/variants';
 import { Button } from './Button';
 
 const cellStyles = tv({

@@ -5,8 +5,8 @@ import {
   type TextFieldProps as AriaTextFieldProps,
   type ValidationResult,
 } from 'react-aria-components';
-import { tv } from 'tailwind-variants';
-import { composeProps, fieldBorderStyles, focusRing } from '@/libs/variants';
+import { composeProps, tv } from '@/libs/tv';
+import { fieldBorderStyles, focusRing } from '@/libs/variants';
 import { Description, FieldError, Input, Label } from './Field';
 
 const inputStyles = tv({

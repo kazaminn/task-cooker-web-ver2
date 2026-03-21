@@ -11,7 +11,7 @@ function toDate(value: Timestamp | Date): Date {
 
 export const projectConverter: FirestoreDataConverter<Project> = {
   toFirestore(project: Project) {
-    const { id, ...data } = project as Project & { id?: string };
+    const { id: _id, ...data } = project as Project & { id?: string };
     return data;
   },
   fromFirestore(snapshot: QueryDocumentSnapshot): Project {
@@ -33,7 +33,7 @@ export const projectConverter: FirestoreDataConverter<Project> = {
 
 export const taskConverter: FirestoreDataConverter<Task> = {
   toFirestore(task: Task) {
-    const { id, ...data } = task as Task & { id?: string };
+    const { id: _id, ...data } = task as Task & { id?: string };
     return data;
   },
   fromFirestore(snapshot: QueryDocumentSnapshot): Task {
@@ -59,7 +59,7 @@ export const taskConverter: FirestoreDataConverter<Task> = {
 
 export const teamConverter: FirestoreDataConverter<Team> = {
   toFirestore(team: Team) {
-    const { id, ...data } = team as Team & { id?: string };
+    const { id: _id, ...data } = team as Team & { id?: string };
     return data;
   },
   fromFirestore(snapshot: QueryDocumentSnapshot): Team {
@@ -78,7 +78,7 @@ export const teamConverter: FirestoreDataConverter<Team> = {
 
 export const mixConverter: FirestoreDataConverter<Mix> = {
   toFirestore(mix: Mix) {
-    const { id, ...data } = mix as Mix & { id?: string };
+    const { id: _id, ...data } = mix as Mix & { id?: string };
     return data;
   },
   fromFirestore(snapshot: QueryDocumentSnapshot): Mix {

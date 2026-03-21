@@ -1,7 +1,7 @@
 'use client';
 import React, { createContext, useContext } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Tag as AriaTag,
   TagGroup as AriaTagGroup,
@@ -14,9 +14,9 @@ import {
   composeRenderProps,
 } from 'react-aria-components';
 import { twMerge } from 'tailwind-merge';
-import { tv } from 'tailwind-variants';
-import { Description, Label } from './Field';
+import { tv } from '@/libs/tv';
 import { focusRing } from '@/libs/variants';
+import { Description, Label } from './Field';
 
 const colors = {
   gray: 'bg-base text-muted border-main hover:border-main dark:bg-base dark:text-muted dark:border-main dark:hover:border-main',
@@ -98,7 +98,7 @@ export function TagGroup<T extends object>({
       </ColorContext.Provider>
       {description && <Description>{description}</Description>}
       {errorMessage && (
-        <Text slot="errorMessage" className="text-sm text-danger">
+        <Text slot="errorMessage" className="text-danger text-sm">
           {errorMessage}
         </Text>
       )}

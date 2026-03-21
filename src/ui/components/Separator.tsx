@@ -4,7 +4,7 @@ import {
   Separator as RACSeparator,
   type SeparatorProps,
 } from 'react-aria-components';
-import { tv } from 'tailwind-variants';
+import { tv } from '@/libs/tv';
 
 const styles = tv({
   base: 'border-none bg-disabled dark:bg-hover forced-colors:bg-[ButtonBorder]',

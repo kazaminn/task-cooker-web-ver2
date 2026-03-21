@@ -8,7 +8,7 @@ import {
   type DateValue,
   type ValidationResult,
 } from 'react-aria-components';
-import { composeProps } from '@/libs/variants';
+import { composeProps } from '@/libs/tv';
 import { Calendar } from './Calendar';
 import { DateInput } from './DateField';
 import { Description, FieldError, FieldGroup, Label } from './Field';
