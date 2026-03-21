@@ -1,9 +1,7 @@
 import React from 'react';
 import { useUIStore } from '@/stores/uiStore';
-import {
-  ToggleButton,
-  ToggleButtonGroup,
-} from '@/ui/components/ToggleButtonGroup';
+import { ToggleButton } from '@/ui/components/ToggleButton';
+import { ToggleButtonGroup } from '@/ui/components/ToggleButtonGroup';
 
 export function ViewToggle() {
   const selectedView = useUIStore((s) => s.selectedView);

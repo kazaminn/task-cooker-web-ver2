@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useOutletContext, useParams } from 'react-router';
 import { useTasks } from '@/features/tasks/hooks/useTasks';
+import { STATUS_COLORS } from '@/libs/variants';
 import { TASK_STATUS_META, TASK_STATUSES } from '@/types/constants';
 import type { Project, TaskStatus } from '@/types/types';
-import { STATUS_COLORS } from '@/ui/colors';
 import { Button } from '@/ui/components/Button';
 import { TextField } from '@/ui/components/TextField';
 import { ProgressMeter } from '../components/ProgressMeter';

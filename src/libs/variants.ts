@@ -1,5 +1,14 @@
 import { tv } from './tv';
 
+export const STATUS_COLORS = {
+  order: 'bg-status-order text-status-order-text',
+  prep: 'bg-status-prep text-status-prep-text',
+  cook: 'bg-status-cook text-status-cook-text',
+  serve: 'bg-status-serve text-status-serve-text',
+} as const;
+
+export type TaskStatus = keyof typeof STATUS_COLORS;
+
 export const focusRing = tv({
   base: 'outline outline-offset-2 outline-focus-ring dark:outline-focus-ring forced-colors:outline-[Highlight]',
   variants: {

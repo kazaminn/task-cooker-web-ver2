@@ -1,9 +1,9 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router';
+import { STATUS_COLORS } from '@/libs/variants';
 import { TASK_STATUS_META, PRIORITY_META } from '@/types/constants';
 import type { Task, TaskPriority } from '@/types/types';
-import { STATUS_COLORS } from '@/ui/colors';
 
 const PRIORITY_ICONS: Record<TaskPriority, string> = {
   urgent: '\u23EB',

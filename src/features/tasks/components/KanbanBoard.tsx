@@ -1,7 +1,7 @@
 import React from 'react';
+import { STATUS_COLORS } from '@/libs/variants';
 import { TASK_STATUSES, TASK_STATUS_META } from '@/types/constants';
 import type { Task, TaskStatus } from '@/types/types';
-import { STATUS_COLORS } from '@/ui/colors';
 import { useTaskMutations } from '../hooks/useTasks';
 import { KanbanColumn } from './KanbanColumn';
 

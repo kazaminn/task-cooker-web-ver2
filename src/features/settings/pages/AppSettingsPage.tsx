@@ -4,10 +4,8 @@ import { signOut } from '@/api/auth';
 import { useUIStore } from '@/stores/uiStore';
 import { Button } from '@/ui/components/Button';
 import { Switch } from '@/ui/components/Switch';
-import {
-  ToggleButton,
-  ToggleButtonGroup,
-} from '@/ui/components/ToggleButtonGroup';
+import { ToggleButton } from '@/ui/components/ToggleButton';
+import { ToggleButtonGroup } from '@/ui/components/ToggleButtonGroup';
 
 export function AppSettingsPage() {
   const navigate = useNavigate();
