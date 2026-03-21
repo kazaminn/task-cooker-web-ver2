@@ -3,7 +3,7 @@ name: AI CI
 on:
   push:
     branches-ignore:
-      - master
+      - main
 
 concurrency:
   group: ai-${{ github.workflow }}-${{ github.ref }}
@@ -16,7 +16,7 @@ jobs:
     env:
       # Example (used in other projects)
       # VITE_API_BASE_URL: http://localhost:3000
-      BASE_REF: origin/master
+      BASE_REF: origin/main
 
     steps:
       - uses: actions/checkout@v4
@@ -25,6 +25,8 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
+        with:
+          version: 10.30.2
 
       - uses: actions/setup-node@v4
         with:

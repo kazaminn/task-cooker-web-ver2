@@ -1,6 +1,6 @@
-import { onAuthStateChanged, type Unsubscribe, type User } from 'firebase/auth';
+import type { Unsubscribe, User } from 'firebase/auth';
 import { create } from 'zustand';
-import { auth } from '@/api/firebase';
+import { onAuthStateChanged } from '@/api/auth';
 
 interface AuthState {
   user: User | null;
@@ -22,7 +22,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
     set({ initialized: true });
 
-    unsubscribe = onAuthStateChanged(auth, (user) => {
+    unsubscribe = onAuthStateChanged((user) => {
       set({ user, loading: false });
     });
   },
