@@ -42,6 +42,13 @@ function getInitialTheme(): Theme {
   return (localStorage.getItem('theme') as Theme) ?? 'system';
 }
 
+function resolveTheme(theme: Theme): Exclude<Theme, 'system'> {
+  if (theme !== 'system') return theme;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches
+    ? 'dark'
+    : 'light';
+}
+
 export const useUIStore = create<UIState>((set) => ({
   theme: getInitialTheme(),
   selectedView: 'list',
@@ -80,15 +87,10 @@ export const useUIStore = create<UIState>((set) => ({
 
 function applyTheme(theme: Theme) {
   const root = document.documentElement;
-  if (theme === 'system') {
-    const prefersDark = window.matchMedia(
-      '(prefers-color-scheme: dark)'
-    ).matches;
-    root.classList.toggle('dark', prefersDark);
-  } else {
-    root.classList.toggle('dark', theme === 'dark');
-  }
-  root.setAttribute('data-theme', theme);
+  const resolvedTheme = resolveTheme(theme);
+  root.setAttribute('data-theme', resolvedTheme);
+  root.setAttribute('data-theme-mode', theme);
+  root.style.colorScheme = resolvedTheme;
 }
 
 // Initialize theme on load
