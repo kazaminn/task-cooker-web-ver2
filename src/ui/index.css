@@ -107,6 +107,19 @@
   }
 }
 
+@layer base {
+  /* Focus ring for keyboard navigation */
+  *:focus-visible {
+    outline: 2px solid var(--color-primary-light, #ea580c);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  .dark *:focus-visible {
+    outline-color: var(--color-primary-dark, #ea580c);
+  }
+}
+
 @layer utilities {
   .pt-safe {
     padding-top: env(safe-area-inset-top);

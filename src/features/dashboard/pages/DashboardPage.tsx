@@ -98,7 +98,13 @@ export function DashboardPage() {
         <h2 className="mb-3 text-sm font-semibold text-slate-700 dark:text-slate-300">
           草グラフ
         </h2>
-        <ContributionGraph activities={activities ?? []} compact={false} />
+        {/* sm: 直近6ヶ月、md+: フル表示 */}
+        <div className="hidden sm:block">
+          <ContributionGraph activities={activities ?? []} />
+        </div>
+        <div className="sm:hidden">
+          <ContributionGraph activities={activities ?? []} compact />
+        </div>
       </section>
 
       {/* Recent Recipes */}

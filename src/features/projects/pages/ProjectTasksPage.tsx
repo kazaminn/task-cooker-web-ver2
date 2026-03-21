@@ -38,12 +38,20 @@ export function ProjectTasksPage() {
         <ViewToggle />
       </div>
 
+      {/* sm: カンバン非表示、リストにフォールバック */}
       {selectedView === 'kanban' ? (
-        <KanbanBoard
-          tasks={tasks ?? []}
-          projectId={projectId!}
-          teamId={project.teamId}
-        />
+        <>
+          <div className="hidden sm:block">
+            <KanbanBoard
+              tasks={tasks ?? []}
+              projectId={projectId!}
+              teamId={project.teamId}
+            />
+          </div>
+          <div className="sm:hidden">
+            <TaskListView tasks={tasks ?? []} projectId={projectId!} />
+          </div>
+        </>
       ) : (
         <TaskListView tasks={tasks ?? []} projectId={projectId!} />
       )}
