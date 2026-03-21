@@ -1,18 +1,24 @@
 import { useState } from 'react';
 import {
   faBars,
-  faUser,
+  faDesktop,
   faGear,
-  faRightFromBracket,
+  faMoon,
   faXmark,
+  faRightFromBracket,
+  faSun,
+  faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { NavLink, useNavigate } from 'react-router';
 import { signOut } from '@/api/auth';
 import { useAuth } from '@/features/auth/hooks/useAuth';
+import { useDarkTheme } from '@/hooks/useDarkTheme';
 import { Button } from '@/ui/components/Button';
 import { Menu, MenuItem, MenuTrigger } from '@/ui/components/Menu';
 import { Popover } from '@/ui/components/Popover';
+import { ToggleButton } from '@/ui/components/ToggleButton';
+import { ToggleButtonGroup } from '@/ui/components/ToggleButtonGroup';
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   `px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
@@ -28,6 +34,7 @@ const mobileNavLinkClass = ({ isActive }: { isActive: boolean }) =>
 
 export function TopNav() {
   const { user } = useAuth();
+  const { theme, setTheme } = useDarkTheme();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -67,9 +74,36 @@ export function TopNav() {
           <NavLink to="/projects" className={navLinkClass}>
             Projects
           </NavLink>
+          <NavLink to="/teams" className={navLinkClass}>
+            Teams
+          </NavLink>
         </nav>
 
         <div className="flex items-center gap-2">
+          <ToggleButtonGroup
+            aria-label="テーマ切り替え"
+            selectionMode="single"
+            selectedKeys={new Set([theme])}
+            onSelectionChange={(keys) => {
+              const key = [...keys][0] as
+                | 'light'
+                | 'dark'
+                | 'system'
+                | undefined;
+              if (key) setTheme(key);
+            }}
+            className="hidden sm:flex"
+          >
+            <ToggleButton id="light" aria-label="ライトモード">
+              <FontAwesomeIcon icon={faSun} />
+            </ToggleButton>
+            <ToggleButton id="dark" aria-label="ダークモード">
+              <FontAwesomeIcon icon={faMoon} />
+            </ToggleButton>
+            <ToggleButton id="system" aria-label="システム設定に合わせる">
+              <FontAwesomeIcon icon={faDesktop} />
+            </ToggleButton>
+          </ToggleButtonGroup>
           {user && (
             <MenuTrigger>
               <Button variant="quiet" aria-label="ユーザーメニュー">

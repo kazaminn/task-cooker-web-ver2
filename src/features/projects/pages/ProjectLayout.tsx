@@ -1,17 +1,12 @@
-import { Outlet, useParams, NavLink } from 'react-router';
+import { Outlet, useLocation, useNavigate, useParams } from 'react-router';
 import { Breadcrumbs, Breadcrumb } from '@/ui/components/Breadcrumbs';
-import { Link } from '@/ui/components/Link';
+import { Tab, TabList, Tabs } from '@/ui/components/Tabs';
 import { useProject } from '../hooks/useProjects';
-
-const tabClass = ({ isActive }: { isActive: boolean }) =>
-  `inline-block px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-    isActive
-      ? 'border-primary text-primary'
-      : 'border-transparent text-muted hover:text-body hover:border-main'
-  }`;
 
 export function ProjectLayout() {
   const { projectId } = useParams<{ projectId: string }>();
+  const location = useLocation();
+  const navigate = useNavigate();
   const { project, isLoading } = useProject(projectId);
 
   if (isLoading) {
@@ -30,26 +25,39 @@ export function ProjectLayout() {
     );
   }
 
+  const path = location.pathname;
+  const selectedTab = path.endsWith('/settings')
+    ? 'settings'
+    : path.includes('/tasks')
+      ? 'tasks'
+      : 'overview';
+
   return (
     <div className="mx-auto max-w-5xl p-6">
       <Breadcrumbs>
-        <Breadcrumb>
-          <Link href="/projects">Projects</Link>
-        </Breadcrumb>
+        <Breadcrumb href="/projects">Projects</Breadcrumb>
         <Breadcrumb>{project.name}</Breadcrumb>
       </Breadcrumbs>
 
-      <nav className="mt-4 flex gap-0 overflow-x-auto border-b border-main">
-        <NavLink to="" end className={tabClass}>
-          Overview
-        </NavLink>
-        <NavLink to="tasks" className={tabClass}>
-          Tasks
-        </NavLink>
-        <NavLink to="settings" className={tabClass}>
-          Settings
-        </NavLink>
-      </nav>
+      <Tabs
+        selectedKey={selectedTab}
+        onSelectionChange={(key) => {
+          if (key === 'overview') void navigate(`/projects/${project.id}`);
+          if (key === 'tasks') void navigate(`/projects/${project.id}/tasks`);
+          if (key === 'settings')
+            void navigate(`/projects/${project.id}/settings`);
+        }}
+        className="mt-4"
+      >
+        <TabList
+          aria-label="Project tabs"
+          className="border-b border-main pb-2"
+        >
+          <Tab id="overview">Overview</Tab>
+          <Tab id="tasks">Tasks</Tab>
+          <Tab id="settings">Settings</Tab>
+        </TabList>
+      </Tabs>
 
       <div className="mt-6">
         <Outlet context={{ project }} />

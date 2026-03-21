@@ -41,11 +41,8 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: AI checks (auto-fix + related tests)
-        run: pnpm run ai:check
-
-      - name: Ensure no uncommitted changes (format/lint fixes must be committed)
-        run: git diff --exit-code
+      - name: AI checks
+        run: pnpm run ai:verify
 
       # NOTE: Storybook tests are intentionally NOT run in CI
       # - name: Storybook Test

@@ -1,4 +1,6 @@
+import { useTasks } from '@/features/tasks/hooks/useTasks';
 import type { Project, ProjectStatus } from '@/types/types';
+import { ProgressMeter } from './ProgressMeter';
 
 const STATUS_LABELS: Record<ProjectStatus, string> = {
   planning: '企画中',
@@ -23,6 +25,11 @@ interface ProjectCardProps {
 }
 
 export function ProjectCard({ project, onPress }: ProjectCardProps) {
+  const { allTasks } = useTasks(project.id);
+  const total = allTasks?.length ?? 0;
+  const served =
+    allTasks?.filter((task) => task.status === 'serve').length ?? 0;
+
   return (
     <div className="rounded-lg border border-main bg-surface transition hover:border-primary hover:shadow-sm">
       <button
@@ -43,6 +50,9 @@ export function ProjectCard({ project, onPress }: ProjectCardProps) {
             {project.overview}
           </p>
         )}
+        <div className="mt-3">
+          <ProgressMeter total={total} served={served} />
+        </div>
       </button>
     </div>
   );
