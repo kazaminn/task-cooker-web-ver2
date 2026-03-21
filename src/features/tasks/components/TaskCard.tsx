@@ -15,30 +15,46 @@ interface TaskCardProps {
   task: Task;
   projectId: string;
   variant?: 'compact' | 'full';
+  interactive?: boolean;
 }
 
-export function TaskCard({ task, projectId, variant = 'full' }: TaskCardProps) {
+export function TaskCard({
+  task,
+  projectId,
+  variant = 'full',
+  interactive = true,
+}: TaskCardProps) {
   const navigate = useNavigate();
   const handleClick = () => {
     void navigate(`/projects/${projectId}/tasks/${task.id}`);
   };
 
   if (variant === 'compact') {
+    const content = (
+      <>
+        <p className="text-sm font-medium text-body">{task.title}</p>
+        <div className="mt-1 flex items-center gap-2 text-xs text-muted">
+          <span aria-label={PRIORITY_META[task.priority].ja}>
+            {PRIORITY_ICONS[task.priority]}
+          </span>
+          {task.dueDate && <span>{format(task.dueDate, 'M/d')}</span>}
+        </div>
+      </>
+    );
+
     return (
       <div className="rounded-lg border border-main bg-surface transition hover:shadow-sm">
-        <button
-          type="button"
-          className="w-full cursor-pointer p-3 text-left"
-          onClick={handleClick}
-        >
-          <p className="text-sm font-medium text-body">{task.title}</p>
-          <div className="mt-1 flex items-center gap-2 text-xs text-muted">
-            <span aria-label={PRIORITY_META[task.priority].ja}>
-              {PRIORITY_ICONS[task.priority]}
-            </span>
-            {task.dueDate && <span>{format(task.dueDate, 'M/d')}</span>}
-          </div>
-        </button>
+        {interactive ? (
+          <button
+            type="button"
+            className="w-full cursor-pointer p-3 text-left"
+            onClick={handleClick}
+          >
+            {content}
+          </button>
+        ) : (
+          <div className="p-3">{content}</div>
+        )}
       </div>
     );
   }

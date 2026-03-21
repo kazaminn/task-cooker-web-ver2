@@ -5,7 +5,7 @@ import { FilterBar } from '@/features/tasks/components/FilterBar';
 import { KanbanBoard } from '@/features/tasks/components/KanbanBoard';
 import { TaskListView } from '@/features/tasks/components/TaskListView';
 import { ViewToggle } from '@/features/tasks/components/ViewToggle';
-import { useTasks } from '@/features/tasks/hooks/useTasks';
+import { useTasksQuery } from '@/features/tasks/hooks/useTasks';
 import { useUIStore } from '@/stores/uiStore';
 import type { Project } from '@/types/types';
 import { Button } from '@/ui/components/Button';
@@ -14,7 +14,7 @@ import { SearchField } from '@/ui/components/SearchField';
 export function ProjectTasksPage() {
   const { project } = useOutletContext<{ project: Project }>();
   const { projectId } = useParams<{ projectId: string }>();
-  const { tasks, isLoading } = useTasks(projectId);
+  const { tasks, isLoading } = useTasksQuery(projectId);
   const selectedView = useUIStore((s) => s.selectedView);
   const setSearchQuery = useUIStore((s) => s.setSearchQuery);
   const [isDialogOpen, setDialogOpen] = useState(false);

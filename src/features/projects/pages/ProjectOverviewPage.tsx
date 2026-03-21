@@ -1,25 +1,37 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
+import { format } from 'date-fns';
 import { useOutletContext, useParams } from 'react-router';
-import { useTasks } from '@/features/tasks/hooks/useTasks';
+import { subscribeProjectActivities } from '@/api/activities';
+import { useTasksQuery } from '@/features/tasks/hooks/useTasks';
+import { queryKeys } from '@/hooks/queryKeys';
+import { useFirestoreSubscription } from '@/hooks/useFirestoreSubscription';
 import { STATUS_COLORS } from '@/libs/variants';
 import { TASK_STATUS_META, TASK_STATUSES } from '@/types/constants';
-import type { Project, TaskStatus } from '@/types/types';
+import type { Activity, Project, TaskStatus } from '@/types/types';
 import { Button } from '@/ui/components/Button';
 import { TextArea } from '@/ui/components/TextArea';
 import { ProgressMeter } from '../components/ProgressMeter';
 import { useProjectMutations } from '../hooks/useProjects';
 
-const PROJECT_STATUS_LABELS: Record<string, string> = {
-  planning: '企画中',
-  cooking: '進行中',
-  on_hold: '保留',
-  completed: '完了',
-};
-
 export function ProjectOverviewPage() {
   const { project } = useOutletContext<{ project: Project }>();
   const { projectId } = useParams<{ projectId: string }>();
-  const { allTasks } = useTasks(projectId);
+  const { allTasks } = useTasksQuery(projectId);
+  const subscribeToProjectActivities = useCallback(
+    (cb: (data: Activity[]) => void, onError?: (error: Error) => void) => {
+      if (!projectId)
+        return () => {
+          /* noop */
+        };
+      return subscribeProjectActivities(projectId, 6, cb, onError);
+    },
+    [projectId]
+  );
+  const { data: activities } = useFirestoreSubscription<Activity>(
+    queryKeys.activities.project(projectId, 6),
+    subscribeToProjectActivities,
+    { enabled: Boolean(projectId) }
+  );
   const { update } = useProjectMutations();
   const [isEditingOverview, setEditingOverview] = useState(false);
   const [overviewText, setOverviewText] = useState(project.overview);
@@ -43,11 +55,39 @@ export function ProjectOverviewPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <span className="text-primary rounded-md bg-primary/10 px-2 py-0.5 text-xs font-medium">
-          {PROJECT_STATUS_LABELS[project.status] ?? project.status}
-        </span>
-        <h1 className="text-xl font-bold text-body">{project.name}</h1>
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="rounded-2xl border border-main bg-surface p-4">
+          <p className="text-xs font-semibold tracking-[0.16em] text-muted uppercase">
+            Owner
+          </p>
+          <p className="mt-2 text-sm font-medium text-body">
+            {project.ownerId}
+          </p>
+        </div>
+        <div className="rounded-2xl border border-main bg-surface p-4">
+          <p className="text-xs font-semibold tracking-[0.16em] text-muted uppercase">
+            Members
+          </p>
+          <p className="mt-2 text-sm font-medium text-body">
+            {project.memberIds.length}
+          </p>
+        </div>
+        <div className="rounded-2xl border border-main bg-surface p-4">
+          <p className="text-xs font-semibold tracking-[0.16em] text-muted uppercase">
+            Created
+          </p>
+          <p className="mt-2 text-sm font-medium text-body">
+            {format(project.createdAt, 'yyyy/MM/dd')}
+          </p>
+        </div>
+        <div className="rounded-2xl border border-main bg-surface p-4">
+          <p className="text-xs font-semibold tracking-[0.16em] text-muted uppercase">
+            Updated
+          </p>
+          <p className="mt-2 text-sm font-medium text-body">
+            {format(project.updatedAt, 'yyyy/MM/dd HH:mm')}
+          </p>
+        </div>
       </div>
 
       <div className="rounded-lg border border-main bg-surface p-4">
@@ -108,6 +148,35 @@ export function ProjectOverviewPage() {
             {project.overview || 'まだ概要がありません'}
           </p>
         )}
+      </div>
+
+      <div className="rounded-lg border border-main bg-surface p-4">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-sm font-semibold text-body">Recent Activity</h2>
+          <span className="text-xs text-muted">直近 6 件</span>
+        </div>
+        <div className="space-y-2">
+          {activities?.length ? (
+            activities.map((activity) => (
+              <div
+                key={activity.id}
+                className="rounded-xl border border-main bg-base/70 px-3 py-2"
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-xs font-medium text-body">
+                    {activity.userName}
+                  </span>
+                  <span className="text-xs text-muted">
+                    {format(activity.createdAt, 'M/d HH:mm')}
+                  </span>
+                </div>
+                <p className="mt-1 text-sm text-muted">{activity.text}</p>
+              </div>
+            ))
+          ) : (
+            <p className="text-sm text-muted">まだアクティビティはありません</p>
+          )}
+        </div>
       </div>
     </div>
   );

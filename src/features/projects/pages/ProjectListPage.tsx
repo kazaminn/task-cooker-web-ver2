@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router';
 import { Button } from '@/ui/components/Button';
 import { CreateProjectDialog } from '../components/CreateProjectDialog';
 import { ProjectCard } from '../components/ProjectCard';
-import { useProjects } from '../hooks/useProjects';
+import { useProjectsQuery } from '../hooks/useProjects';
 
 export function ProjectListPage() {
-  const { projects, isLoading } = useProjects();
+  const { projects, isLoading } = useProjectsQuery();
   const [isDialogOpen, setDialogOpen] = useState(false);
   const navigate = useNavigate();
 

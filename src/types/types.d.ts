@@ -95,10 +95,13 @@ export interface MixPost {
 export type ActivityType =
   | 'task_create'
   | 'task_update'
+  | 'task_serve'
+  | 'task_delete'
   | 'mix_create'
   | 'mix_post_create'
   | 'project_create'
   | 'project_update'
+  | 'project_delete'
   | 'team_create'
   | 'user_signup'
   | 'profile_update';

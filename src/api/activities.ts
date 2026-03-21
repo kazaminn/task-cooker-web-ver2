@@ -10,6 +10,7 @@ import {
   limit as firestoreLimit,
 } from 'firebase/firestore';
 import type { Activity, ActivityFormInput } from '@/types/types';
+import { getCurrentUser } from './auth';
 import { db } from './firebase';
 import { activityConverter } from './utils';
 
@@ -81,4 +82,20 @@ export async function createActivity(
     createdAt: serverTimestamp(),
   } as unknown as Activity);
   return docRef.id;
+}
+
+export async function createCurrentUserActivity(
+  projectId: string,
+  data: Omit<ActivityFormInput, 'userId' | 'userName'>
+): Promise<string | null> {
+  const user = getCurrentUser();
+  if (!user) {
+    return null;
+  }
+
+  return createActivity(projectId, {
+    ...data,
+    userId: user.uid,
+    userName: user.displayName ?? user.email ?? 'Unknown user',
+  });
 }
