@@ -164,4 +164,70 @@ describe('useFirestoreSubscription', () => {
     expect(subscribeFn).toHaveBeenCalledTimes(1);
     expect(unsubscribe).not.toHaveBeenCalled();
   });
+
+  it('shares one listener across hooks with the same key', async () => {
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false, staleTime: Infinity },
+      },
+    });
+    let callback: ((data: string[]) => void) | null = null;
+    const subscribeFn = vi.fn((cb: (data: string[]) => void) => {
+      callback = cb;
+      return vi.fn();
+    });
+
+    const first = renderHook(
+      () => useFirestoreSubscription<string>(['shared'], subscribeFn),
+      { wrapper: createWrapperWithClient(queryClient) }
+    );
+    const second = renderHook(
+      () => useFirestoreSubscription<string>(['shared'], subscribeFn),
+      { wrapper: createWrapperWithClient(queryClient) }
+    );
+
+    expect(subscribeFn).toHaveBeenCalledTimes(1);
+
+    act(() => {
+      callback?.(['shared-value']);
+    });
+
+    await waitFor(() => {
+      expect(first.result.current.data).toEqual(['shared-value']);
+      expect(second.result.current.data).toEqual(['shared-value']);
+    });
+  });
+
+  it('fans out subscription errors to later subscribers sharing the same key', async () => {
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false, staleTime: Infinity },
+      },
+    });
+    let onError: ((error: Error) => void) | undefined;
+    const subscribeFn = vi.fn(
+      (_cb: (data: string[]) => void, nextOnError?: (error: Error) => void) => {
+        onError = nextOnError;
+        return vi.fn();
+      }
+    );
+
+    const first = renderHook(
+      () => useFirestoreSubscription<string>(['shared-error'], subscribeFn),
+      { wrapper: createWrapperWithClient(queryClient) }
+    );
+    const second = renderHook(
+      () => useFirestoreSubscription<string>(['shared-error'], subscribeFn),
+      { wrapper: createWrapperWithClient(queryClient) }
+    );
+
+    act(() => {
+      onError?.(new Error('boom'));
+    });
+
+    await waitFor(() => {
+      expect(first.result.current.error?.message).toBe('boom');
+      expect(second.result.current.error?.message).toBe('boom');
+    });
+  });
 });

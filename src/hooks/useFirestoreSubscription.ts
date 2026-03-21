@@ -2,10 +2,15 @@ import { useEffect, useMemo, useState } from 'react';
 import { useQuery, useQueryClient, type QueryKey } from '@tanstack/react-query';
 
 type Unsubscribe = () => void;
+interface SubscriptionListener<T> {
+  onData: (data: T[]) => void;
+  onError: (error: Error) => void;
+}
 interface SubscriptionEntry {
   refCount: number;
   unsubscribe: Unsubscribe;
   teardownTimer: ReturnType<typeof setTimeout> | undefined;
+  listeners: Map<symbol, SubscriptionListener<unknown>>;
 }
 
 const subscriptionRegistry = new Map<string, SubscriptionEntry>();
@@ -24,6 +29,10 @@ export function useFirestoreSubscription<T>(
     () => JSON.stringify(queryKey),
     [queryKey]
   );
+  const listenerId = useMemo(
+    () => Symbol(serializedQueryKey),
+    [serializedQueryKey]
+  );
   const stableQueryKey = useMemo(
     () => JSON.parse(serializedQueryKey) as QueryKey,
     [serializedQueryKey]
@@ -38,34 +47,49 @@ export function useFirestoreSubscription<T>(
       return;
     }
 
-    const existingEntry = subscriptionRegistry.get(serializedQueryKey);
-    if (existingEntry) {
-      if (existingEntry.teardownTimer) {
-        clearTimeout(existingEntry.teardownTimer);
-        existingEntry.teardownTimer = undefined;
-      }
-      existingEntry.refCount += 1;
-    } else {
-      const unsubscribe = subscribeFn(
+    const notifyData = (nextData: T[]) => {
+      setSubscriptionError(null);
+      queryClient.setQueryData(stableQueryKey, nextData);
+    };
+    const notifyError = (error: Error) => {
+      setSubscriptionError({ key: serializedQueryKey, error });
+    };
+
+    let entry = subscriptionRegistry.get(serializedQueryKey);
+    if (!entry) {
+      entry = {
+        refCount: 0,
+        unsubscribe: () => undefined,
+        teardownTimer: undefined,
+        listeners: new Map(),
+      };
+      subscriptionRegistry.set(serializedQueryKey, entry);
+      entry.unsubscribe = subscribeFn(
         (nextData) => {
-          setSubscriptionError(null);
           queryClient.setQueryData(stableQueryKey, nextData);
+          for (const listener of entry.listeners.values()) {
+            listener.onData(nextData);
+          }
         },
         (error) => {
-          setSubscriptionError({ key: serializedQueryKey, error });
           console.error(
             `[firestore] subscription error (${serializedQueryKey}):`,
             error.message
           );
+          for (const listener of entry.listeners.values()) {
+            listener.onError(error);
+          }
         }
       );
-
-      subscriptionRegistry.set(serializedQueryKey, {
-        refCount: 1,
-        unsubscribe,
-        teardownTimer: undefined,
-      });
+    } else if (entry.teardownTimer) {
+      clearTimeout(entry.teardownTimer);
+      entry.teardownTimer = undefined;
     }
+    entry.refCount += 1;
+    entry.listeners.set(listenerId, {
+      onData: notifyData as SubscriptionListener<unknown>['onData'],
+      onError: notifyError,
+    });
 
     return () => {
       const entry = subscriptionRegistry.get(serializedQueryKey);
@@ -73,6 +97,7 @@ export function useFirestoreSubscription<T>(
         return;
       }
 
+      entry.listeners.delete(listenerId);
       entry.refCount -= 1;
       if (entry.refCount <= 0) {
         entry.teardownTimer = setTimeout(() => {
@@ -86,7 +111,14 @@ export function useFirestoreSubscription<T>(
         }, 250);
       }
     };
-  }, [enabled, queryClient, serializedQueryKey, stableQueryKey, subscribeFn]);
+  }, [
+    enabled,
+    listenerId,
+    queryClient,
+    serializedQueryKey,
+    stableQueryKey,
+    subscribeFn,
+  ]);
 
   const { data, error } = useQuery<T[] | undefined, Error>({
     queryKey: stableQueryKey,
