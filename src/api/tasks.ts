@@ -13,7 +13,9 @@ import {
   updateDoc,
   where,
 } from 'firebase/firestore';
+import { createCurrentUserActivity } from '@/api/activities';
 import { taskConverter } from '@/libs/firestore-converters';
+import { TASK_STATUS_META } from '@/types/constants';
 import type { Task, TaskFormInput } from '@/types/types';
 import { db } from './firebase';
 
@@ -68,6 +70,18 @@ export function subscribeTasksCollectionGroup(
   );
 }
 
+export function subscribeAllTasksCollectionGroup(
+  callback: (tasks: Task[]) => void,
+  onError?: (error: Error) => void
+): () => void {
+  const q = query(collectionGroup(db, 'tasks').withConverter(taskConverter));
+  return onSnapshot(
+    q,
+    (snap) => callback(snap.docs.map((d) => d.data())),
+    (err) => onError?.(err)
+  );
+}
+
 async function getNextDisplayId(projectId: string): Promise<number> {
   const counterRef = doc(db, 'projects', projectId, 'counters', 'task');
   return runTransaction(db, async (transaction) => {
@@ -103,6 +117,13 @@ export async function createTask(
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   } as unknown as Task);
+
+  await createCurrentUserActivity(projectId, {
+    type: 'task_create',
+    teamId,
+    text: `タスク #${displayId}「${data.title}」を作成しました`,
+  });
+
   return docRef.id;
 }
 
@@ -111,10 +132,34 @@ export async function updateTask(
   taskId: string,
   data: Partial<TaskFormInput & { position: number }>
 ): Promise<void> {
-  const ref = doc(db, 'projects', projectId, 'tasks', taskId);
-  await updateDoc(ref, {
+  const readRef = doc(db, 'projects', projectId, 'tasks', taskId).withConverter(
+    taskConverter
+  );
+  const writeRef = doc(db, 'projects', projectId, 'tasks', taskId);
+  const currentSnap = await getDoc(readRef);
+  const currentTask = currentSnap.exists() ? currentSnap.data() : null;
+  await updateDoc(writeRef, {
     ...data,
     updatedAt: serverTimestamp(),
+  });
+
+  if (!currentTask) {
+    return;
+  }
+
+  const nextTitle = data.title ?? currentTask.title;
+  const nextStatus = data.status ?? currentTask.status;
+  const statusChanged = data.status && data.status !== currentTask.status;
+  const activityType =
+    statusChanged && nextStatus === 'serve' ? 'task_serve' : 'task_update';
+  const text = statusChanged
+    ? `タスク #${currentTask.displayId}「${nextTitle}」を${TASK_STATUS_META[nextStatus].ja}にしました`
+    : `タスク #${currentTask.displayId}「${nextTitle}」を更新しました`;
+
+  await createCurrentUserActivity(projectId, {
+    type: activityType,
+    teamId: currentTask.teamId,
+    text,
   });
 }
 
@@ -122,5 +167,21 @@ export async function deleteTask(
   projectId: string,
   taskId: string
 ): Promise<void> {
-  await deleteDoc(doc(db, 'projects', projectId, 'tasks', taskId));
+  const readRef = doc(db, 'projects', projectId, 'tasks', taskId).withConverter(
+    taskConverter
+  );
+  const writeRef = doc(db, 'projects', projectId, 'tasks', taskId);
+  const currentSnap = await getDoc(readRef);
+  const currentTask = currentSnap.exists() ? currentSnap.data() : null;
+  await deleteDoc(writeRef);
+
+  if (!currentTask) {
+    return;
+  }
+
+  await createCurrentUserActivity(projectId, {
+    type: 'task_delete',
+    teamId: currentTask.teamId,
+    text: `タスク #${currentTask.displayId}「${currentTask.title}」を削除しました`,
+  });
 }

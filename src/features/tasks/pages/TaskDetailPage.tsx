@@ -14,8 +14,8 @@ import { Select, SelectItem } from '@/ui/components/Select';
 import { TextArea } from '@/ui/components/TextArea';
 import { TextField } from '@/ui/components/TextField';
 import { CommentThread } from '../components/CommentThread';
-import { useComments, useCommentMutations } from '../hooks/useComments';
-import { useTask, useTaskMutations } from '../hooks/useTasks';
+import { useCommentsQuery, useCommentMutations } from '../hooks/useComments';
+import { useTaskMutations, useTaskQuery } from '../hooks/useTasks';
 
 export function TaskDetailPage() {
   const { project } = useOutletContext<{ project: Project }>();
@@ -23,9 +23,9 @@ export function TaskDetailPage() {
     projectId: string;
     taskId: string;
   }>();
-  const { task, isLoading } = useTask(projectId, taskId);
+  const { task, isLoading } = useTaskQuery(projectId, taskId);
   const { update, remove } = useTaskMutations(projectId!, project.teamId);
-  const { comments } = useComments(projectId, taskId);
+  const { comments } = useCommentsQuery(projectId, taskId);
   const { create: createComment } = useCommentMutations(projectId!, taskId!);
   const navigate = useNavigate();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);

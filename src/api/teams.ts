@@ -19,22 +19,32 @@ const teamsCol = collection(db, 'teams').withConverter(teamConverter);
 
 export function subscribeTeams(
   userId: string,
-  callback: (teams: Team[]) => void
+  callback: (teams: Team[]) => void,
+  onError?: (error: Error) => void
 ): () => void {
   const q = query(teamsCol, where('memberIds', 'array-contains', userId));
-  return onSnapshot(q, (snap) => {
-    callback(snap.docs.map((d) => d.data()));
-  });
+  return onSnapshot(
+    q,
+    (snap) => {
+      callback(snap.docs.map((d) => d.data()));
+    },
+    (error) => onError?.(error)
+  );
 }
 
 export function subscribeTeam(
   teamId: string,
-  callback: (team: Team | null) => void
+  callback: (team: Team | undefined) => void,
+  onError?: (error: Error) => void
 ): () => void {
   const ref = doc(db, 'teams', teamId).withConverter(teamConverter);
-  return onSnapshot(ref, (snap) => {
-    callback(snap.exists() ? snap.data() : null);
-  });
+  return onSnapshot(
+    ref,
+    (snap) => {
+      callback(snap.exists() ? snap.data() : undefined);
+    },
+    (error) => onError?.(error)
+  );
 }
 
 export async function createTeam(data: {

@@ -25,12 +25,17 @@ function commentsCol(projectId: string, taskId: string) {
 export function subscribeComments(
   projectId: string,
   taskId: string,
-  callback: (comments: Comment[]) => void
+  callback: (comments: Comment[]) => void,
+  onError?: (error: Error) => void
 ): () => void {
   const q = query(commentsCol(projectId, taskId), orderBy('createdAt', 'asc'));
-  return onSnapshot(q, (snap) => {
-    callback(snap.docs.map((d) => d.data()));
-  });
+  return onSnapshot(
+    q,
+    (snap) => {
+      callback(snap.docs.map((d) => d.data()));
+    },
+    (error) => onError?.(error)
+  );
 }
 
 export async function createComment(

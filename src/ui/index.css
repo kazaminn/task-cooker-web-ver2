@@ -240,20 +240,18 @@
     outline-offset: 2px;
   }
 
-  /* Reduced motion support */
-  /* INFO: Intentionally commented out by Human. */
-  /* @media (prefers-reduced-motion: reduce) {
-    * {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-      scroll-behavior: auto !important;
-    }
-  } */
+  html[data-reduced-motion='true'] *,
+  html[data-reduced-motion='true'] *::before,
+  html[data-reduced-motion='true'] *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  html {
+  html[data-reduced-motion='false'] {
     scroll-behavior: smooth;
   }
 }

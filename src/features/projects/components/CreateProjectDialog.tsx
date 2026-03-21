@@ -2,7 +2,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { useTeams } from '@/features/teams/hooks/useTeams';
-import { projectFormSchema } from '@/types/schemas';
 import { Button } from '@/ui/components/Button';
 import { Dialog } from '@/ui/components/Dialog';
 import { Modal } from '@/ui/components/Modal';
@@ -11,8 +10,11 @@ import { TextArea } from '@/ui/components/TextArea';
 import { TextField } from '@/ui/components/TextField';
 import { useProjectMutations } from '../hooks/useProjects';
 
-const createProjectSchema = projectFormSchema.extend({
-  slug: z.string(),
+const createProjectSchema = z.object({
+  name: z.string().min(1, 'プロジェクト名は必須です'),
+  slug: z.string().min(1, 'Slug は必須です'),
+  overview: z.string(),
+  status: z.literal('planning'),
   teamId: z.string().min(1, 'チームを選択してください'),
 });
 
@@ -36,7 +38,13 @@ export function CreateProjectDialog({
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(createProjectSchema),
-    defaultValues: { name: '', slug: '', overview: '', teamId: '' },
+    defaultValues: {
+      name: '',
+      slug: '',
+      overview: '',
+      status: 'planning',
+      teamId: '',
+    },
   });
 
   const onSubmit = async (values: FormValues) => {
@@ -45,7 +53,7 @@ export function CreateProjectDialog({
       name: values.name,
       slug: values.slug || values.name.toLowerCase().replace(/\s+/g, '-'),
       overview: values.overview,
-      status: 'planning',
+      status: values.status,
       teamId,
     });
     reset();
@@ -61,7 +69,7 @@ export function CreateProjectDialog({
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            void handleSubmit(onSubmit)(e);
+            void handleSubmit(onSubmit)();
           }}
           className="space-y-4"
         >

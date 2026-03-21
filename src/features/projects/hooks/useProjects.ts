@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   subscribeProjects,
   subscribeProject,
@@ -7,49 +8,71 @@ import {
   deleteProject,
 } from '@/api/projects';
 import { useAuth } from '@/features/auth/hooks/useAuth';
+import { queryKeys } from '@/hooks/queryKeys';
 import { useFirestoreSubscription } from '@/hooks/useFirestoreSubscription';
 import type { Project, ProjectFormInput } from '@/types/types';
 
-export function useProjects() {
+export function useProjectsQuery() {
   const { user } = useAuth();
   const userId = user?.uid ?? '';
-
-  const { data, isLoading, error } = useFirestoreSubscription<Project>(
-    ['projects', userId],
-    (cb) => {
+  const subscribeToProjects = useCallback(
+    (cb: (data: Project[]) => void, onError?: (error: Error) => void) => {
       if (!userId)
         return () => {
           /* noop */
         };
-      return subscribeProjects(userId, cb);
-    }
+      return subscribeProjects(userId, cb, onError);
+    },
+    [userId]
+  );
+
+  const { data, isLoading, error } = useFirestoreSubscription<Project>(
+    queryKeys.projects.list(userId),
+    subscribeToProjects,
+    { enabled: Boolean(userId) }
   );
 
   return { projects: data, isLoading, error };
 }
 
-export function useProject(projectId: string | undefined) {
-  const { data, isLoading, error } = useFirestoreSubscription<Project>(
-    ['project', projectId],
-    (cb) => {
+export function useProjectQuery(projectId: string | undefined) {
+  const subscribeToProject = useCallback(
+    (cb: (data: Project[]) => void, onError?: (error: Error) => void) => {
       if (!projectId)
         return () => {
           /* noop */
         };
-      return subscribeProject(projectId, (project) => {
-        cb(project ? [project] : []);
-      });
-    }
+      return subscribeProject(
+        projectId,
+        (project) => {
+          cb(project ? [project] : []);
+        },
+        onError
+      );
+    },
+    [projectId]
+  );
+
+  const { data, isLoading, error } = useFirestoreSubscription<Project>(
+    queryKeys.projects.detail(projectId),
+    subscribeToProject,
+    { enabled: Boolean(projectId) }
   );
 
   return { project: data?.[0] ?? null, isLoading, error };
 }
 
+/** @deprecated Use useProjectsQuery */
+export const useProjects = useProjectsQuery;
+/** @deprecated Use useProjectQuery */
+export const useProject = useProjectQuery;
+
 export function useProjectMutations() {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
 
-  const create = useCallback(
-    async (data: ProjectFormInput & { teamId: string }) => {
+  const createMutation = useMutation({
+    mutationFn: async (data: ProjectFormInput & { teamId: string }) => {
       if (!user) throw new Error('Not authenticated');
       return createProject({
         ...data,
@@ -57,19 +80,49 @@ export function useProjectMutations() {
         memberIds: [user.uid],
       });
     },
-    [user]
-  );
+    onSuccess: async () => {
+      if (!user) return;
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.projects.list(user.uid),
+      });
+    },
+  });
 
-  const update = useCallback(
-    async (projectId: string, data: Partial<ProjectFormInput>) => {
+  const updateMutation = useMutation({
+    mutationFn: async ({
+      projectId,
+      data,
+    }: {
+      projectId: string;
+      data: Partial<ProjectFormInput>;
+    }) => {
       return updateProject(projectId, data);
     },
-    []
-  );
+    onSuccess: async (_, { projectId }) => {
+      await queryClient.invalidateQueries({ queryKey: queryKeys.projects.all });
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.projects.detail(projectId),
+      });
+    },
+  });
 
-  const remove = useCallback(async (projectId: string) => {
-    return deleteProject(projectId);
-  }, []);
+  const removeMutation = useMutation({
+    mutationFn: async (projectId: string) => deleteProject(projectId),
+    onSuccess: async (_, projectId) => {
+      await queryClient.invalidateQueries({ queryKey: queryKeys.projects.all });
+      queryClient.removeQueries({
+        queryKey: queryKeys.projects.detail(projectId),
+      });
+    },
+  });
 
-  return { create, update, remove };
+  return {
+    create: createMutation.mutateAsync,
+    update: (projectId: string, data: Partial<ProjectFormInput>) =>
+      updateMutation.mutateAsync({ projectId, data }),
+    remove: removeMutation.mutateAsync,
+    createMutation,
+    updateMutation,
+    removeMutation,
+  };
 }

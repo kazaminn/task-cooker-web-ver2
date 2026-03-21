@@ -2,6 +2,10 @@
 
 @CONTRIBUTING.md
 
-## 教訓
+## コーディング規約
 
-add, commitを並列実行しないこと
+@CODINGRULE.md
+
+## 教訓リスト
+
+@docs/lesson-learned.md

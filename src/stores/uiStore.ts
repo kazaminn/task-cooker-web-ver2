@@ -42,6 +42,15 @@ function getInitialTheme(): Theme {
   return (localStorage.getItem('theme') as Theme) ?? 'system';
 }
 
+function getInitialReducedMotion(): boolean {
+  if (typeof window === 'undefined') return false;
+  const storedValue = localStorage.getItem('reducedMotion');
+  if (storedValue != null) {
+    return storedValue === 'true';
+  }
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
 function resolveTheme(theme: Theme): Exclude<Theme, 'system'> {
   if (theme !== 'system') return theme;
   return window.matchMedia('(prefers-color-scheme: dark)').matches
@@ -59,7 +68,7 @@ export const useUIStore = create<UIState>((set) => ({
   isUserMenuOpen: false,
   activeProjectTab: 'overview',
   toasts: [],
-  reducedMotion: false,
+  reducedMotion: getInitialReducedMotion(),
 
   setTheme: (theme) => {
     localStorage.setItem('theme', theme);
@@ -82,7 +91,11 @@ export const useUIStore = create<UIState>((set) => ({
     })),
   removeToast: (id) =>
     set((state) => ({ toasts: state.toasts.filter((t) => t.id !== id) })),
-  setReducedMotion: (reducedMotion) => set({ reducedMotion }),
+  setReducedMotion: (reducedMotion) => {
+    localStorage.setItem('reducedMotion', String(reducedMotion));
+    applyReducedMotion(reducedMotion);
+    set({ reducedMotion });
+  },
 }));
 
 function applyTheme(theme: Theme) {
@@ -93,9 +106,15 @@ function applyTheme(theme: Theme) {
   root.style.colorScheme = resolvedTheme;
 }
 
+function applyReducedMotion(reducedMotion: boolean) {
+  const root = document.documentElement;
+  root.setAttribute('data-reduced-motion', reducedMotion ? 'true' : 'false');
+}
+
 // Initialize theme on load
 if (typeof window !== 'undefined') {
   applyTheme(getInitialTheme());
+  applyReducedMotion(getInitialReducedMotion());
 
   window
     .matchMedia('(prefers-color-scheme: dark)')
@@ -103,6 +122,15 @@ if (typeof window !== 'undefined') {
       const currentTheme = useUIStore.getState().theme;
       if (currentTheme === 'system') {
         applyTheme('system');
+      }
+    });
+
+  window
+    .matchMedia('(prefers-reduced-motion: reduce)')
+    .addEventListener('change', (event) => {
+      if (localStorage.getItem('reducedMotion') == null) {
+        applyReducedMotion(event.matches);
+        useUIStore.setState({ reducedMotion: event.matches });
       }
     });
 }

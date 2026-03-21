@@ -1,4 +1,4 @@
-import { useTasks } from '@/features/tasks/hooks/useTasks';
+import { useTasksQuery } from '@/features/tasks/hooks/useTasks';
 import type { Project, ProjectStatus } from '@/types/types';
 import { ProgressMeter } from './ProgressMeter';
 
@@ -25,7 +25,7 @@ interface ProjectCardProps {
 }
 
 export function ProjectCard({ project, onPress }: ProjectCardProps) {
-  const { allTasks } = useTasks(project.id);
+  const { allTasks } = useTasksQuery(project.id);
   const total = allTasks?.length ?? 0;
   const served =
     allTasks?.filter((task) => task.status === 'serve').length ?? 0;

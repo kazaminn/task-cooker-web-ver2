@@ -3,13 +3,14 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   onSnapshot,
-  orderBy,
   query,
   serverTimestamp,
   updateDoc,
   where,
 } from 'firebase/firestore';
+import { createCurrentUserActivity } from '@/api/activities';
 import { projectConverter } from '@/libs/firestore-converters';
 import type { Project, ProjectFormInput } from '@/types/types';
 import { db } from './firebase';
@@ -21,14 +22,15 @@ export function subscribeProjects(
   callback: (projects: Project[]) => void,
   onError?: (error: Error) => void
 ): () => void {
-  const q = query(
-    projectsCol,
-    where('memberIds', 'array-contains', userId),
-    orderBy('updatedAt', 'desc')
-  );
+  const q = query(projectsCol, where('memberIds', 'array-contains', userId));
   return onSnapshot(
     q,
-    (snap) => callback(snap.docs.map((d) => d.data())),
+    (snap) =>
+      callback(
+        snap.docs
+          .map((d) => d.data())
+          .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
+      ),
     (err) => onError?.(err)
   );
 }
@@ -58,6 +60,14 @@ export async function createProject(
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   } as unknown as Project);
+
+  await createCurrentUserActivity(docRef.id, {
+    type: 'project_create',
+    teamId: data.teamId,
+    projectId: docRef.id,
+    text: `プロジェクト「${data.name}」を作成しました`,
+  });
+
   return docRef.id;
 }
 
@@ -65,13 +75,45 @@ export async function updateProject(
   projectId: string,
   data: Partial<ProjectFormInput>
 ): Promise<void> {
-  const ref = doc(db, 'projects', projectId);
-  await updateDoc(ref, {
+  const readRef = doc(db, 'projects', projectId).withConverter(
+    projectConverter
+  );
+  const writeRef = doc(db, 'projects', projectId);
+  const currentSnap = await getDoc(readRef);
+  const currentProject = currentSnap.exists() ? currentSnap.data() : null;
+  await updateDoc(writeRef, {
     ...data,
     updatedAt: serverTimestamp(),
+  });
+
+  if (!currentProject) {
+    return;
+  }
+
+  await createCurrentUserActivity(projectId, {
+    type: 'project_update',
+    teamId: currentProject.teamId,
+    projectId,
+    text: `プロジェクト「${data.name ?? currentProject.name}」を更新しました`,
   });
 }
 
 export async function deleteProject(projectId: string): Promise<void> {
-  await deleteDoc(doc(db, 'projects', projectId));
+  const readRef = doc(db, 'projects', projectId).withConverter(
+    projectConverter
+  );
+  const writeRef = doc(db, 'projects', projectId);
+  const currentSnap = await getDoc(readRef);
+  const currentProject = currentSnap.exists() ? currentSnap.data() : null;
+
+  if (currentProject) {
+    await createCurrentUserActivity(projectId, {
+      type: 'project_delete',
+      teamId: currentProject.teamId,
+      projectId,
+      text: `プロジェクト「${currentProject.name}」を削除しました`,
+    });
+  }
+
+  await deleteDoc(writeRef);
 }
