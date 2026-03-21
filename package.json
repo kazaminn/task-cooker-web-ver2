@@ -4,7 +4,7 @@
   "description": "todo app using a cooking metaphor for task statuses.",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --mode development",
     "preview": "vite preview",
     "build": "tsc -b && vite build --mode production",
     "typecheck": "tsc --noEmit",

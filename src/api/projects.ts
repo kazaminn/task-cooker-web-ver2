@@ -18,26 +18,32 @@ const projectsCol = collection(db, 'projects').withConverter(projectConverter);
 
 export function subscribeProjects(
   userId: string,
-  callback: (projects: Project[]) => void
+  callback: (projects: Project[]) => void,
+  onError?: (error: Error) => void
 ): () => void {
   const q = query(
     projectsCol,
     where('memberIds', 'array-contains', userId),
     orderBy('updatedAt', 'desc')
   );
-  return onSnapshot(q, (snap) => {
-    callback(snap.docs.map((d) => d.data()));
-  });
+  return onSnapshot(
+    q,
+    (snap) => callback(snap.docs.map((d) => d.data())),
+    (err) => onError?.(err)
+  );
 }
 
 export function subscribeProject(
   projectId: string,
-  callback: (project: Project | null) => void
+  callback: (project: Project | null) => void,
+  onError?: (error: Error) => void
 ): () => void {
   const ref = doc(db, 'projects', projectId).withConverter(projectConverter);
-  return onSnapshot(ref, (snap) => {
-    callback(snap.exists() ? snap.data() : null);
-  });
+  return onSnapshot(
+    ref,
+    (snap) => callback(snap.exists() ? snap.data() : null),
+    (err) => onError?.(err)
+  );
 }
 
 export async function createProject(

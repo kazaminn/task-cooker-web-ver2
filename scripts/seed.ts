@@ -28,9 +28,7 @@ if (!firestoreHost || !authHost) {
 process.env.FIREBASE_AUTH_EMULATOR_HOST = authHost;
 process.env.FIRESTORE_EMULATOR_HOST = firestoreHost;
 
-const PROJECT_ID = 'task-cooker';
-process.env.GCLOUD_PROJECT = PROJECT_ID;
-
+const PROJECT_ID = process.env.GCLOUD_PROJECT || 'task-cooker';
 console.log(`\n🔧 Initializing Admin SDK (Project: ${PROJECT_ID})`);
 
 initializeApp({ projectId: PROJECT_ID });
@@ -50,6 +48,8 @@ async function seed() {
 
   try {
     // 1. User Creation
+    const DEFAULT_PASSWORD = 'password123';
+
     const usersData = [
       {
         uid: 'user-alice',
@@ -88,6 +88,7 @@ async function seed() {
         await auth.createUser({
           uid: user.id,
           email: user.email,
+          password: DEFAULT_PASSWORD,
           displayName: user.displayName,
           photoURL: user.photoURL,
         });
@@ -96,7 +97,9 @@ async function seed() {
       }
       await db.collection('users').doc(user.id!).set(user);
     }
-    console.log(`✅ ${users.length} users created.`);
+    console.log(
+      `✅ ${users.length} users created (password: ${DEFAULT_PASSWORD}).`
+    );
 
     // 2. Team Creation
     const teams: Team[] = [
@@ -260,12 +263,14 @@ async function seed() {
 
         const task: Task = {
           id: taskId,
+          displayId: i + 1,
           projectRef: p.id,
           teamId: p.team.id!,
           title: candidate.title,
           description: candidate.desc,
           status,
           priority,
+          linkedTaskIds: [],
           position: i,
           createdAt: createdDate,
           updatedAt: createdDate,
@@ -332,6 +337,11 @@ async function seed() {
       };
 
       batch.set(projectRef, project);
+
+      // Counter for displayId
+      const counterRef = projectRef.collection('counters').doc('task');
+      batch.set(counterRef, { current: p.taskCandidates.length });
+
       await batch.commit();
     }
 

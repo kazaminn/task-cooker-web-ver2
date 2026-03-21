@@ -1,12 +1,19 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { connectAuthEmulator, getAuth } from 'firebase/auth';
-import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
+import {
+  connectFirestoreEmulator,
+  initializeFirestore,
+  memoryLocalCache,
+  getFirestore,
+} from 'firebase/firestore';
 
 declare global {
   interface Window {
     _firebase_emulators_connected?: boolean;
   }
 }
+
+const useEmulator = import.meta.env.VITE_USE_EMULATOR === 'true';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY as string,
@@ -22,16 +29,23 @@ const firebaseConfig = {
 const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
-export const db = getFirestore(app);
+export const db = useEmulator
+  ? initializeFirestore(app, { localCache: memoryLocalCache() })
+  : getFirestore(app);
 
-if (import.meta.env.DEV) {
-  // Guard against multiple calls to support Vite's HMR.
-  if (!window._firebase_emulators_connected) {
-    connectAuthEmulator(auth, 'http://localhost:9099', {
-      disableWarnings: true,
-    });
-    connectFirestoreEmulator(db, 'localhost', 8080);
-    window._firebase_emulators_connected = true;
-    console.warn('connected to firebase emulators');
-  }
+if (useEmulator && !window._firebase_emulators_connected) {
+  const authHost =
+    (import.meta.env.VITE_AUTH_EMULATOR_HOST as string) ||
+    'http://localhost:9099';
+  const firestoreHost =
+    (import.meta.env.VITE_FIRESTORE_EMULATOR_HOST as string) ||
+    'localhost:8080';
+  const [fsHost, fsPort] = firestoreHost.split(':');
+
+  connectAuthEmulator(auth, authHost, { disableWarnings: true });
+  connectFirestoreEmulator(db, fsHost, Number(fsPort));
+  window._firebase_emulators_connected = true;
+  console.warn(
+    `[firebase] connected to emulators (auth: ${authHost}, firestore: ${firestoreHost})`
+  );
 }

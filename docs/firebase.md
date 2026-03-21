@@ -95,7 +95,7 @@ function useFirestoreSubscription<T>(
 
 ### Firebase projectId
 
-`task-cooker-dev`（エミュレータ用）
+`task-cooker`（エミュレータ用）
 
 ### ダッシュボードの collection group query
 

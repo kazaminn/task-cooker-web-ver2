@@ -5,14 +5,25 @@ type Unsubscribe = () => void;
 
 export function useFirestoreSubscription<T>(
   queryKey: QueryKey,
-  subscribeFn: (callback: (data: T[]) => void) => Unsubscribe
+  subscribeFn: (
+    callback: (data: T[]) => void,
+    onError?: (error: Error) => void
+  ) => Unsubscribe
 ): { data: T[] | undefined; isLoading: boolean; error: Error | null } {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    const unsubscribe = subscribeFn((data) => {
-      queryClient.setQueryData(queryKey, data);
-    });
+    const unsubscribe = subscribeFn(
+      (data) => {
+        queryClient.setQueryData(queryKey, data);
+      },
+      (error) => {
+        console.error(
+          `[firestore] subscription error (${JSON.stringify(queryKey)}):`,
+          error.message
+        );
+      }
+    );
     return () => unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(queryKey)]);

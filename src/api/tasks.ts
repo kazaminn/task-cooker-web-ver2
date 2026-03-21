@@ -25,38 +25,47 @@ function tasksCol(projectId: string) {
 
 export function subscribeTasks(
   projectId: string,
-  callback: (tasks: Task[]) => void
+  callback: (tasks: Task[]) => void,
+  onError?: (error: Error) => void
 ): () => void {
   const q = query(tasksCol(projectId), orderBy('position', 'asc'));
-  return onSnapshot(q, (snap) => {
-    callback(snap.docs.map((d) => d.data()));
-  });
+  return onSnapshot(
+    q,
+    (snap) => callback(snap.docs.map((d) => d.data())),
+    (err) => onError?.(err)
+  );
 }
 
 export function subscribeTask(
   projectId: string,
   taskId: string,
-  callback: (task: Task | null) => void
+  callback: (task: Task | null) => void,
+  onError?: (error: Error) => void
 ): () => void {
   const ref = doc(db, 'projects', projectId, 'tasks', taskId).withConverter(
     taskConverter
   );
-  return onSnapshot(ref, (snap) => {
-    callback(snap.exists() ? snap.data() : null);
-  });
+  return onSnapshot(
+    ref,
+    (snap) => callback(snap.exists() ? snap.data() : null),
+    (err) => onError?.(err)
+  );
 }
 
 export function subscribeTasksCollectionGroup(
   statuses: string[],
-  callback: (tasks: Task[]) => void
+  callback: (tasks: Task[]) => void,
+  onError?: (error: Error) => void
 ): () => void {
   const q = query(
     collectionGroup(db, 'tasks').withConverter(taskConverter),
     where('status', 'in', statuses)
   );
-  return onSnapshot(q, (snap) => {
-    callback(snap.docs.map((d) => d.data()));
-  });
+  return onSnapshot(
+    q,
+    (snap) => callback(snap.docs.map((d) => d.data())),
+    (err) => onError?.(err)
+  );
 }
 
 async function getNextDisplayId(projectId: string): Promise<number> {

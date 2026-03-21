@@ -76,17 +76,17 @@ export function CalendarHeader() {
     <header className="border-box flex items-center gap-1 px-1 pb-4">
       <Button variant="quiet" slot="previous">
         {direction === 'rtl' ? (
-          <FontAwesomeIcon icon={faChevronRight} aria-hidden size={18} />
+          <FontAwesomeIcon icon={faChevronRight} aria-hidden size="lg" />
         ) : (
-          <FontAwesomeIcon icon={faChevronLeft} aria-hidden size={18} />
+          <FontAwesomeIcon icon={faChevronLeft} aria-hidden size="lg" />
         )}
       </Button>
       <Heading className="mx-2 my-0 flex-1 text-center font-sans text-base font-semibold text-body [font-variation-settings:normal] dark:text-body" />
       <Button variant="quiet" slot="next">
         {direction === 'rtl' ? (
-          <FontAwesomeIcon icon={faChevronLeft} aria-hidden size={18} />
+          <FontAwesomeIcon icon={faChevronLeft} aria-hidden size="lg" />
         ) : (
-          <FontAwesomeIcon icon={faChevronRight} aria-hidden size={18} />
+          <FontAwesomeIcon icon={faChevronRight} aria-hidden size="lg" />
         )}
       </Button>
     </header>

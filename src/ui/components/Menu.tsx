@@ -18,7 +18,7 @@ import {
   type SubmenuTriggerProps,
   composeRenderProps,
 } from 'react-aria-components';
-import { dropdownItemStyles } from './ListBox';
+import { dropdownItemStyles } from '@/libs/variants';
 import { Popover, type PopoverProps } from './Popover';
 
 export function Menu<T extends object>(props: MenuProps<T>) {
@@ -38,7 +38,6 @@ export function MenuItem(props: MenuItemProps) {
     <AriaMenuItem
       textValue={textValue}
       {...props}
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- tv() return type is not resolvable by eslint
       className={dropdownItemStyles}
     >
       {composeRenderProps(
