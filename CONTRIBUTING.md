@@ -1,6 +1,6 @@
 # Contributing Guide
 
-このドキュメントは、TaskCooker CLI への貢献ルールを定義します。
+このドキュメントは、TaskCooker Web版への貢献ルールを定義します。
 
 ## 1. ブランチと PR 運用
 
@@ -59,7 +59,7 @@
   - lint
   - format:check
   - test
-- AI 向け workflow は `src/`, `bin/`, `tests/` などソース変更時のみ実行
+- AI 向け workflow は `src/`, `tests/` などソース変更時のみ実行
 
 ## 6. AI エージェント向け追加ルール
 
