@@ -5,6 +5,23 @@
     <!-- <link rel="icon" type="image/svg+xml" href="/vite.svg" /> -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TaskCooker</title>
+    <script>
+      (() => {
+        const storedTheme = localStorage.getItem('theme') ?? 'system';
+        const resolvedTheme =
+          storedTheme === 'system'
+            ? window.matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light'
+            : storedTheme;
+        document.documentElement.setAttribute('data-theme', resolvedTheme);
+        document.documentElement.setAttribute(
+          'data-theme-mode',
+          storedTheme
+        );
+        document.documentElement.style.colorScheme = resolvedTheme;
+      })();
+    </script>
   </head>
 
   <body>

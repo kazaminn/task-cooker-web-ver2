@@ -13,7 +13,7 @@ const styles = tv({
     isSelected: {
       false:
         'bg-surface text-body hover:bg-hover dark:bg-surface dark:text-body dark:hover:bg-hover forced-colors:bg-[ButtonFace]! forced-colors:text-[ButtonText]! pressed:bg-hover dark:pressed:bg-hover',
-      true: 'bg-surface text-white hover:bg-surface dark:bg-hover dark:text-black dark:hover:bg-hover forced-colors:bg-[Highlight]! forced-colors:text-[HighlightText]! pressed:bg-base dark:pressed:bg-hover',
+      true: 'border-primary bg-primary/10 text-primary hover:bg-primary/15 dark:border-primary dark:bg-primary/20 dark:text-primary forced-colors:bg-[Highlight]! forced-colors:text-[HighlightText]! pressed:bg-primary/20 dark:pressed:bg-primary/25',
     },
     isDisabled: {
       true: 'border-transparent bg-disabled text-disabled dark:border-transparent dark:bg-surface dark:text-disabled forced-colors:bg-[ButtonFace]! forced-colors:text-[GrayText]!',
