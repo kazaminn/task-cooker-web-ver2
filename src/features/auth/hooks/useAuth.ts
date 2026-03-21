@@ -1,30 +1,20 @@
-import { useEffect } from 'react';
 import { FirebaseError } from 'firebase/app';
 import {
-  createUserWithEmailAndPassword,
-  GoogleAuthProvider,
-  linkWithCredential,
-  sendPasswordResetEmail,
-  signInWithEmailAndPassword,
-  signInWithPopup,
+  linkCurrentUserWithGoogle,
+  sendPasswordReset,
+  signInWithEmail,
+  signInWithGoogle,
   signOut,
-} from 'firebase/auth';
-import { auth } from '@/api/firebase';
+  signUpWithEmail,
+} from '@/api/auth';
 import { useAuthStore } from '../store/authStore';
 
 export const useAuth = () => {
   const store = useAuthStore();
 
-  // 初期化処理（重複防止）
-  useEffect(() => {
-    store.initialize();
-    return () => store.cleanup();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const login = async (email: string, password: string) => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      await signInWithEmail(email, password);
     } catch (e: unknown) {
       if (e instanceof FirebaseError) {
         const message = getErrorMessage(e.code);
@@ -36,7 +26,7 @@ export const useAuth = () => {
 
   const logout = async () => {
     try {
-      await signOut(auth);
+      await signOut();
     } catch (e: unknown) {
       if (e instanceof FirebaseError) {
         const message = getErrorMessage(e.code);
@@ -48,7 +38,7 @@ export const useAuth = () => {
 
   const signup = async (email: string, password: string) => {
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      await signUpWithEmail(email, password);
     } catch (e: unknown) {
       if (e instanceof FirebaseError) {
         const message = getErrorMessage(e.code);
@@ -59,9 +49,8 @@ export const useAuth = () => {
   };
 
   const loginWithGoogle = async () => {
-    const provider = new GoogleAuthProvider();
     try {
-      await signInWithPopup(auth, provider);
+      await signInWithGoogle();
     } catch (e: unknown) {
       if (e instanceof FirebaseError) {
         const message = getErrorMessage(e.code);
@@ -72,19 +61,8 @@ export const useAuth = () => {
   };
 
   const linkWithGoogle = async () => {
-    const currentUser = auth.currentUser;
-    if (!currentUser) {
-      throw new Error('ログインが必要です');
-    }
-
-    const provider = new GoogleAuthProvider();
     try {
-      const result = await signInWithPopup(auth, provider);
-      const credential = GoogleAuthProvider.credentialFromResult(result);
-
-      if (credential) {
-        await linkWithCredential(currentUser, credential);
-      }
+      await linkCurrentUserWithGoogle();
     } catch (e: unknown) {
       if (e instanceof FirebaseError) {
         const message = getErrorMessage(e.code);
@@ -96,7 +74,7 @@ export const useAuth = () => {
 
   const sendResetMail = async (email: string) => {
     try {
-      await sendPasswordResetEmail(auth, email);
+      await sendPasswordReset(email);
     } catch (e: unknown) {
       if (e instanceof FirebaseError) {
         const message = getErrorMessage(e.code);
@@ -107,6 +85,7 @@ export const useAuth = () => {
   };
 
   return {
+    currentUser: store.user,
     user: store.user,
     loading: store.loading,
     isAuthenticated: !!store.user,

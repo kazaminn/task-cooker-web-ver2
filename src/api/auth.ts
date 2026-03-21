@@ -1,6 +1,9 @@
 import {
+  createUserWithEmailAndPassword,
   GoogleAuthProvider,
+  linkWithCredential,
   onAuthStateChanged as firebaseOnAuthStateChanged,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut as firebaseSignOut,
@@ -15,12 +18,38 @@ export async function signInWithGoogle(): Promise<FirebaseUser> {
   return result.user;
 }
 
+export async function signUpWithEmail(
+  email: string,
+  password: string
+): Promise<FirebaseUser> {
+  const result = await createUserWithEmailAndPassword(auth, email, password);
+  return result.user;
+}
+
 export async function signInWithEmail(
   email: string,
   password: string
 ): Promise<FirebaseUser> {
   const result = await signInWithEmailAndPassword(auth, email, password);
   return result.user;
+}
+
+export async function linkCurrentUserWithGoogle(): Promise<void> {
+  const currentUser = auth.currentUser;
+  if (!currentUser) {
+    throw new Error('ログインが必要です');
+  }
+
+  const result = await signInWithPopup(auth, googleProvider);
+  const credential = GoogleAuthProvider.credentialFromResult(result);
+
+  if (credential) {
+    await linkWithCredential(currentUser, credential);
+  }
+}
+
+export async function sendPasswordReset(email: string): Promise<void> {
+  await sendPasswordResetEmail(auth, email);
 }
 
 export async function signOut(): Promise<void> {

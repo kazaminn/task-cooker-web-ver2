@@ -8,8 +8,8 @@ export default mergeConfig(
       globals: true,
       environment: 'jsdom',
       setupFiles: ['./vitest.setup.ts'],
-      include: ['tests/**/*.test.ts', 'src/**/*.test.ts'],
-      exclude: ['**/node_modules/**', 'src/**/*.emulator.test.ts'],
+      include: ['**/*.test.ts', '**/*.test.tsx'],
+      exclude: ['**/node_modules/**', '**/*.emulator.test.ts'],
     },
   })
 );

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useQueryClient, useQuery, type QueryKey } from '@tanstack/react-query';
 
 type Unsubscribe = () => void;
@@ -11,13 +11,18 @@ export function useFirestoreSubscription<T>(
   ) => Unsubscribe
 ): { data: T[] | undefined; isLoading: boolean; error: Error | null } {
   const queryClient = useQueryClient();
+  const [subscriptionError, setSubscriptionError] = useState<Error | null>(
+    null
+  );
 
   useEffect(() => {
     const unsubscribe = subscribeFn(
       (data) => {
+        setSubscriptionError(null);
         queryClient.setQueryData(queryKey, data);
       },
       (error) => {
+        setSubscriptionError(error);
         console.error(
           `[firestore] subscription error (${JSON.stringify(queryKey)}):`,
           error.message
@@ -35,5 +40,9 @@ export function useFirestoreSubscription<T>(
     staleTime: Infinity,
   });
 
-  return { data, isLoading: isLoading && !data, error: error };
+  return {
+    data,
+    isLoading: isLoading && !data && !subscriptionError,
+    error: subscriptionError ?? error,
+  };
 }
