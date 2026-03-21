@@ -23,6 +23,8 @@ function projectSummary(project: Project, tasks: Task[]) {
   };
 }
 
+export type DashboardProjectSummary = ReturnType<typeof projectSummary>;
+
 export function useDashboardData() {
   const { user } = useAuth();
   const userId = user?.uid;
