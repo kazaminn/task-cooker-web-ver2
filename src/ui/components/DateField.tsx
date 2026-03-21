@@ -9,8 +9,8 @@ import {
   type DateValue,
   type ValidationResult,
 } from 'react-aria-components';
-import { tv } from 'tailwind-variants';
-import { composeProps, fieldGroupStyles } from '@/libs/variants';
+import { composeProps, tv } from '@/libs/tv';
+import { fieldGroupStyles } from '@/libs/variants';
 import { Description, FieldError, Label } from './Field';
 
 export interface DateFieldProps<

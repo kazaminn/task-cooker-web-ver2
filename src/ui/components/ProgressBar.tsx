@@ -4,7 +4,7 @@ import {
   ProgressBar as AriaProgressBar,
   type ProgressBarProps as AriaProgressBarProps,
 } from 'react-aria-components';
-import { composeProps } from '@/libs/variants';
+import { composeProps } from '@/libs/tv';
 import { Label } from './Field';
 
 export interface ProgressBarProps extends AriaProgressBarProps {

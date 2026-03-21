@@ -5,7 +5,7 @@ import {
   type ButtonProps as RACButtonProps,
   composeRenderProps,
 } from 'react-aria-components';
-import { tv } from 'tailwind-variants';
+import { tv } from '@/libs/tv';
 import { focusRing } from '@/libs/variants';
 
 export interface ButtonProps extends RACButtonProps {

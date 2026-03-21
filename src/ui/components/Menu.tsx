@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Menu as AriaMenu,
   MenuItem as AriaMenuItem,
@@ -47,14 +47,24 @@ export function MenuItem(props: MenuItemProps) {
           <>
             {selectionMode !== 'none' && (
               <span className="flex w-4 items-center">
-                {isSelected && <FontAwesomeIcon icon={faCheck} aria-hidden className="h-4 w-4" />}
+                {isSelected && (
+                  <FontAwesomeIcon
+                    icon={faCheck}
+                    aria-hidden
+                    className="h-4 w-4"
+                  />
+                )}
               </span>
             )}
-            <span className="flex flex-1 items-center gap-2 truncate font-normal group-selected:font-semibold">
+            <span className="group-selected:font-semibold flex flex-1 items-center gap-2 truncate font-normal">
               {children}
             </span>
             {hasSubmenu && (
-              <FontAwesomeIcon icon={faChevronRight} aria-hidden className="absolute right-2 h-4 w-4" />
+              <FontAwesomeIcon
+                icon={faChevronRight}
+                aria-hidden
+                className="absolute right-2 h-4 w-4"
+              />
             )}
           </>
         )
@@ -67,14 +77,14 @@ export function MenuSeparator(props: SeparatorProps) {
   return (
     <Separator
       {...props}
-      className="mx-3 my-1 border-b border-main dark:border-main"
+      className="border-main dark:border-main mx-3 my-1 border-b"
     />
   );
 }
 
 export interface MenuSectionProps<T> extends AriaMenuSectionProps<T> {
   title?: string;
-  items?: any;
+  items?: Iterable<T>;
 }
 
 export function MenuSection<T extends object>(props: MenuSectionProps<T>) {
@@ -84,11 +94,11 @@ export function MenuSection<T extends object>(props: MenuSectionProps<T>) {
       className="after:block after:h-1.25 after:content-[''] first:-mt-1.25"
     >
       {props.title && (
-        <Header className="bg-hover/60 supports-[-moz-appearance:none]:bg-hover sticky -top-1.25 z-10 -mx-1 -mt-px truncate border-y border-y-main px-4 py-1 text-sm font-semibold text-muted backdrop-blur-md dark:border-y-main dark:bg-surface/60 dark:text-muted [&+*]:mt-1">
+        <Header className="bg-hover/60 supports-[-moz-appearance:none]:bg-hover border-y-main text-muted dark:border-y-main dark:bg-surface/60 dark:text-muted sticky -top-1.25 z-10 -mx-1 -mt-px truncate border-y px-4 py-1 text-sm font-semibold backdrop-blur-md [&+*]:mt-1">
           {props.title}
         </Header>
       )}
-      {/* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */}
+      {}
       <Collection items={props.items}>{props.children}</Collection>
     </AriaMenuSection>
   );

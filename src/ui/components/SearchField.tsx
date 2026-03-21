@@ -7,7 +7,7 @@ import {
   type SearchFieldProps as AriaSearchFieldProps,
   type ValidationResult,
 } from 'react-aria-components';
-import { composeProps } from '@/libs/variants';
+import { composeProps } from '@/libs/tv';
 import { Description, FieldError, FieldGroup, Input, Label } from './Field';
 import { FieldButton } from './FieldButton';
 

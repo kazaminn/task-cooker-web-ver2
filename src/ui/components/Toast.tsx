@@ -12,7 +12,7 @@ import {
   UNSTABLE_ToastRegion as ToastRegion,
 } from 'react-aria-components';
 import { flushSync } from 'react-dom';
-import { composeProps } from '@/libs/variants';
+import { composeProps } from '@/libs/tv';
 import './Toast.css';
 
 // Define the type for your toast content. This interface defines the properties of your toast content, affecting what you

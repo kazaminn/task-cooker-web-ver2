@@ -8,8 +8,8 @@ import {
   type ValidationResult,
   composeRenderProps,
 } from 'react-aria-components';
-import { tv } from 'tailwind-variants';
-import { composeProps, focusRing } from '@/libs/variants';
+import { composeProps, tv } from '@/libs/tv';
+import { focusRing } from '@/libs/variants';
 import { Description, FieldError, Label } from './Field';
 
 export interface RadioGroupProps extends Omit<RACRadioGroupProps, 'children'> {
