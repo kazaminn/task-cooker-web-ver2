@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument -- Firestore converters handle untyped DocumentData by design */
 import {
   type FirestoreDataConverter,
   type QueryDocumentSnapshot,

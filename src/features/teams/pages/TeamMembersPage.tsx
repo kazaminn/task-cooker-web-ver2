@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useParams } from 'react-router';
 import { Button } from '@/ui/components/Button';
 import { Dialog } from '@/ui/components/Dialog';
@@ -28,9 +28,7 @@ function InviteMemberDialog({
   return (
     <Modal isOpen={isOpen} onOpenChange={(open) => !open && onClose()}>
       <Dialog aria-label="メンバー招待">
-        <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-white">
-          メンバー招待
-        </h2>
+        <h2 className="mb-4 text-lg font-semibold text-body">メンバー招待</h2>
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -75,7 +73,7 @@ export function TeamMembersPage() {
   if (!team) {
     return (
       <div className="p-6">
-        <p className="text-slate-500">チームが見つかりません</p>
+        <p className="text-muted">チームが見つかりません</p>
       </div>
     );
   }
@@ -83,7 +81,7 @@ export function TeamMembersPage() {
   return (
     <div className="mx-auto max-w-3xl p-6">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+        <h1 className="text-2xl font-bold text-body">
           {team.name} — メンバー管理
         </h1>
         <Button variant="primary" onPress={() => setInviteOpen(true)}>
@@ -95,20 +93,18 @@ export function TeamMembersPage() {
         {team.memberIds.map((memberId) => (
           <div
             key={memberId}
-            className="flex items-center justify-between rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800"
+            className="flex items-center justify-between rounded-lg border border-main bg-surface p-4"
           >
             <div className="flex items-center gap-3">
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 text-sm font-medium text-slate-600 dark:bg-slate-600 dark:text-slate-200">
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-hover text-sm font-medium text-body">
                 {memberId.slice(0, 2).toUpperCase()}
               </span>
               <div>
-                <span className="text-sm font-medium text-slate-900 dark:text-white">
+                <span className="text-sm font-medium text-body">
                   {memberId}
                 </span>
                 {memberId === team.ownerId && (
-                  <span className="ml-2 text-xs text-orange-600 dark:text-orange-400">
-                    owner
-                  </span>
+                  <span className="text-primary ml-2 text-xs">owner</span>
                 )}
               </div>
             </div>

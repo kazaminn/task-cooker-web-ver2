@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Project, ProjectStatus } from '@/types/types';
 
 const STATUS_LABELS: Record<ProjectStatus, string> = {
@@ -25,33 +24,26 @@ interface ProjectCardProps {
 
 export function ProjectCard({ project, onPress }: ProjectCardProps) {
   return (
-    <div
-      role="button"
-      tabIndex={0}
-      className="cursor-pointer rounded-lg border border-slate-200 bg-white p-4 transition hover:border-orange-300 hover:shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:hover:border-orange-600"
-      onClick={onPress}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onPress();
-        }
-      }}
-    >
-      <div className="flex items-center gap-3">
-        <span
-          className={`rounded-md px-2 py-0.5 text-xs font-medium ${STATUS_STYLES[project.status]}`}
-        >
-          {STATUS_LABELS[project.status]}
-        </span>
-        <h3 className="font-semibold text-slate-900 dark:text-white">
-          {project.name}
-        </h3>
-      </div>
-      {project.overview && (
-        <p className="mt-1 line-clamp-2 text-sm text-slate-500 dark:text-slate-400">
-          {project.overview}
-        </p>
-      )}
+    <div className="rounded-lg border border-main bg-surface transition hover:border-primary hover:shadow-sm">
+      <button
+        type="button"
+        className="w-full cursor-pointer p-4 text-left"
+        onClick={onPress}
+      >
+        <div className="flex items-center gap-3">
+          <span
+            className={`rounded-md px-2 py-0.5 text-xs font-medium ${STATUS_STYLES[project.status]}`}
+          >
+            {STATUS_LABELS[project.status]}
+          </span>
+          <h3 className="font-semibold text-body">{project.name}</h3>
+        </div>
+        {project.overview && (
+          <p className="mt-1 line-clamp-2 text-sm text-muted">
+            {project.overview}
+          </p>
+        )}
+      </button>
     </div>
   );
 }

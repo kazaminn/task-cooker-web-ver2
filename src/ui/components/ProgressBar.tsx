@@ -1,5 +1,3 @@
-'use client';
-import React from 'react';
 import {
   ProgressBar as AriaProgressBar,
   type ProgressBarProps as AriaProgressBarProps,
@@ -24,13 +22,13 @@ export function ProgressBar({ label, ...props }: ProgressBarProps) {
         <>
           <div className="flex justify-between gap-2">
             <Label>{label}</Label>
-            <span className="text-muted dark:text-subtle text-sm">
+            <span className="dark:text-subtle text-sm text-muted">
               {valueText}
             </span>
           </div>
-          <div className="bg-disabled dark:bg-surface relative h-2 max-w-full overflow-hidden rounded-full outline outline-1 -outline-offset-1 outline-transparent">
+          <div className="relative h-2 max-w-full overflow-hidden rounded-full bg-disabled outline outline-1 -outline-offset-1 outline-transparent dark:bg-surface">
             <div
-              className={`bg-primary absolute top-0 h-full rounded-full forced-colors:bg-[Highlight] ${isIndeterminate ? 'animate-in slide-in-from-left-[20rem] repeat-infinite left-full duration-1000 ease-out' : 'left-0'}`}
+              className={`absolute top-0 h-full rounded-full bg-primary forced-colors:bg-[Highlight] ${isIndeterminate ? 'animate-in slide-in-from-left-[20rem] repeat-infinite left-full duration-1000 ease-out' : 'left-0'}`}
               style={{ width: (isIndeterminate ? 40 : percentage) + '%' }}
             />
           </div>

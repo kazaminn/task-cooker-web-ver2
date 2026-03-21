@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { format } from 'date-fns';
 import type { Comment } from '@/api/comments';
 import { Button } from '@/ui/components/Button';
 import { TextField } from '@/ui/components/TextField';
 
 const AUTHOR_TYPE_STYLES: Record<string, string> = {
-  user: 'bg-slate-100 dark:bg-slate-700',
+  user: 'bg-surface',
   claude: 'bg-purple-50 dark:bg-purple-900/20',
   codex: 'bg-green-50 dark:bg-green-900/20',
 };
@@ -23,20 +23,18 @@ function CommentItem({ comment }: { comment: Comment }) {
             className="h-5 w-5 rounded-full"
           />
         ) : (
-          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-300 text-[10px] font-medium text-slate-700 dark:bg-slate-600 dark:text-slate-200">
+          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-hover text-[10px] font-medium text-body">
             {comment.authorName[0]}
           </span>
         )}
-        <span className="text-xs font-medium text-slate-700 dark:text-slate-300">
+        <span className="text-xs font-medium text-body">
           {comment.authorName}
         </span>
-        <span className="text-xs text-slate-400 dark:text-slate-500">
+        <span className="text-xs text-muted">
           {format(comment.createdAt, 'M/d HH:mm')}
         </span>
       </div>
-      <p className="text-sm whitespace-pre-wrap text-slate-700 dark:text-slate-300">
-        {comment.body}
-      </p>
+      <p className="text-sm whitespace-pre-wrap text-body">{comment.body}</p>
     </div>
   );
 }
@@ -75,13 +73,9 @@ interface CommentThreadProps {
 export function CommentThread({ comments, onSubmit }: CommentThreadProps) {
   return (
     <div className="space-y-3">
-      <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-        コメント
-      </h2>
+      <h2 className="text-sm font-semibold text-body">コメント</h2>
       {!comments.length ? (
-        <p className="text-sm text-slate-400 dark:text-slate-500">
-          まだコメントはありません
-        </p>
+        <p className="text-sm text-muted">まだコメントはありません</p>
       ) : (
         <div className="space-y-2">
           {comments.map((comment) => (

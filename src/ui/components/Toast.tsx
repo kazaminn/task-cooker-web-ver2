@@ -1,5 +1,4 @@
-'use client';
-import React, { type CSSProperties } from 'react';
+import { type CSSProperties } from 'react';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -23,6 +22,7 @@ interface MyToastContent {
 }
 
 // This is a global toast queue, to be imported and called where ever you want to queue a toast via queue.add().
+// eslint-disable-next-line react-refresh/only-export-components
 export const queue = new ToastQueue<MyToastContent>({
   // Wrap state updates in a CSS view transition.
   wrapUpdate(fn) {
@@ -41,7 +41,7 @@ export function MyToastRegion() {
     // The ToastRegion should be rendered at the root of your app.
     <ToastRegion
       queue={queue}
-      className="focus-visible:outline-focus-ring fixed right-4 bottom-4 flex flex-col-reverse gap-2 rounded-lg outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-solid"
+      className="fixed right-4 bottom-4 flex flex-col-reverse gap-2 rounded-lg outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring focus-visible:outline-solid"
     >
       {({ toast }) => (
         <MyToast toast={toast}>
@@ -58,7 +58,7 @@ export function MyToastRegion() {
           <Button
             slot="close"
             aria-label="Close"
-            className="hover:bg-base/10 pressed:bg-base/15 flex h-8 w-8 flex-none appearance-none items-center justify-center rounded-sm border-none bg-transparent p-0 text-white outline-none [-webkit-tap-highlight-color:transparent] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white focus-visible:outline-solid"
+            className="flex h-8 w-8 flex-none appearance-none items-center justify-center rounded-sm border-none bg-transparent p-0 text-white outline-none [-webkit-tap-highlight-color:transparent] hover:bg-base/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white focus-visible:outline-solid pressed:bg-base/15"
           >
             <FontAwesomeIcon icon={faXmark} className="h-4 w-4" />
           </Button>
@@ -75,7 +75,7 @@ export function MyToast(props: ToastProps<MyToastContent>) {
       style={{ viewTransitionName: props.toast.key } as CSSProperties}
       className={composeProps(
         props.className,
-        'bg-primary focus-visible:outline-focus-ring flex w-57.5 items-center gap-4 rounded-lg px-4 py-3 font-sans outline-none [view-transition-class:toast] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-solid forced-colors:outline'
+        'flex w-57.5 items-center gap-4 rounded-lg bg-primary px-4 py-3 font-sans outline-none [view-transition-class:toast] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring focus-visible:outline-solid forced-colors:outline'
       )}
     />
   );

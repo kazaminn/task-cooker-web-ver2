@@ -1,4 +1,3 @@
-'use client';
 import React from 'react';
 import {
   Switch as AriaSwitch,
@@ -57,7 +56,7 @@ export function Switch({ children, ...props }: SwitchProps) {
       {...props}
       className={composeProps(
         props.className,
-        'group text-body disabled:text-disabled dark:text-body dark:disabled:text-disabled relative flex items-center gap-2 text-sm transition [-webkit-tap-highlight-color:transparent] forced-colors:disabled:text-[GrayText]'
+        'group relative flex items-center gap-2 text-sm text-body transition [-webkit-tap-highlight-color:transparent] disabled:text-disabled dark:text-body dark:disabled:text-disabled forced-colors:disabled:text-[GrayText]'
       )}
     >
       {(renderProps) => (

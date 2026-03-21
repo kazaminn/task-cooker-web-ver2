@@ -1,4 +1,3 @@
-import React from 'react';
 import { ProgressBar } from '@/ui/components/ProgressBar';
 
 interface ProgressMeterProps {
@@ -16,7 +15,7 @@ export function ProgressMeter({ total, served }: ProgressMeterProps) {
         value={percentage}
         aria-label={`${served}/${total} タスク完了 (${percentage}%)`}
       />
-      <p className="text-xs text-slate-500 dark:text-slate-400">
+      <p className="text-xs text-muted">
         {served}/{total} タスク ({percentage}%)
       </p>
     </div>

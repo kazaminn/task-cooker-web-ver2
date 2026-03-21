@@ -1,5 +1,4 @@
-'use client';
-import React, { createContext, useContext } from 'react';
+import { createContext, useContext } from 'react';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -98,7 +97,7 @@ export function TagGroup<T extends object>({
       </ColorContext.Provider>
       {description && <Description>{description}</Description>}
       {errorMessage && (
-        <Text slot="errorMessage" className="text-danger text-sm">
+        <Text slot="errorMessage" className="text-sm text-danger">
           {errorMessage}
         </Text>
       )}

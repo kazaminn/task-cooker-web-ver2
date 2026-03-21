@@ -1,4 +1,3 @@
-import React from 'react';
 import { STATUS_COLORS } from '@/libs/variants';
 import { TASK_STATUSES, TASK_STATUS_META } from '@/types/constants';
 import type { Task, TaskStatus } from '@/types/types';

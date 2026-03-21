@@ -1,4 +1,3 @@
-import React from 'react';
 import { Outlet, useParams, NavLink } from 'react-router';
 import { Breadcrumbs, Breadcrumb } from '@/ui/components/Breadcrumbs';
 import { Link } from '@/ui/components/Link';
@@ -7,8 +6,8 @@ import { useProject } from '../hooks/useProjects';
 const tabClass = ({ isActive }: { isActive: boolean }) =>
   `inline-block px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
     isActive
-      ? 'border-orange-500 text-orange-600 dark:text-orange-400'
-      : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 dark:text-slate-400 dark:hover:text-slate-200'
+      ? 'border-primary text-primary'
+      : 'border-transparent text-muted hover:text-body hover:border-main'
   }`;
 
 export function ProjectLayout() {
@@ -26,7 +25,7 @@ export function ProjectLayout() {
   if (!project) {
     return (
       <div className="p-6">
-        <p className="text-slate-500">プロジェクトが見つかりません</p>
+        <p className="text-muted">プロジェクトが見つかりません</p>
       </div>
     );
   }
@@ -40,7 +39,7 @@ export function ProjectLayout() {
         <Breadcrumb>{project.name}</Breadcrumb>
       </Breadcrumbs>
 
-      <nav className="mt-4 flex gap-0 overflow-x-auto border-b border-slate-200 dark:border-slate-700">
+      <nav className="mt-4 flex gap-0 overflow-x-auto border-b border-main">
         <NavLink to="" end className={tabClass}>
           Overview
         </NavLink>

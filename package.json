@@ -13,6 +13,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "lint:ci": "eslint .",
+    "lint:strict": "eslint . --no-warn-ignored --max-warnings 0",
     "test": "vitest --pass-with-no-tests --run --mode test",
     "test:watch": "vitest --pass-with-no-tests --mode test",
     "test:coverage": "vitest --pass-with-no-tests --run --mode test --coverage",

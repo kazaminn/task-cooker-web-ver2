@@ -1,4 +1,3 @@
-import React from 'react';
 import { createBrowserRouter } from 'react-router';
 import { AuthGuard } from '@/features/auth/components/AuthGuard';
 import { LoginPage } from '@/features/auth/pages/LoginPage';

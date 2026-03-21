@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Task } from '@/types/types';
 import { TaskCard } from './TaskCard';
 
@@ -10,10 +9,8 @@ interface TaskListViewProps {
 export function TaskListView({ tasks, projectId }: TaskListViewProps) {
   if (!tasks.length) {
     return (
-      <div className="rounded-xl border border-dashed border-slate-300 p-8 text-center dark:border-slate-600">
-        <p className="text-slate-500 dark:text-slate-400">
-          タスクはまだありません
-        </p>
+      <div className="rounded-xl border border-dashed border-main p-8 text-center">
+        <p className="text-muted">タスクはまだありません</p>
       </div>
     );
   }

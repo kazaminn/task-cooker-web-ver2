@@ -1,4 +1,3 @@
-import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import type { TaskFormInput } from '@/types/types';
 import { Button } from '@/ui/components/Button';
@@ -40,9 +39,7 @@ export function CreateTaskDialog({
   return (
     <Modal isOpen={isOpen} onOpenChange={(open) => !open && onClose()}>
       <Dialog aria-label="新しい注文を作成">
-        <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-white">
-          新しい注文
-        </h2>
+        <h2 className="mb-4 text-lg font-semibold text-body">新しい注文</h2>
         <form
           onSubmit={(e) => {
             e.preventDefault();

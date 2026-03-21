@@ -1,5 +1,3 @@
-'use client';
-import React from 'react';
 import {
   Button as RACButton,
   type ButtonProps as RACButtonProps,

@@ -1,5 +1,3 @@
-'use client';
-import React from 'react';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -36,7 +34,7 @@ export function Breadcrumb(
           {!isCurrent && (
             <FontAwesomeIcon
               icon={faChevronRight}
-              className="text-muted dark:text-subtle h-3 w-3"
+              className="dark:text-subtle h-3 w-3 text-muted"
             />
           )}
         </>

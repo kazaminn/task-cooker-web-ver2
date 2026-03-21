@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button } from '@/ui/components/Button';
@@ -37,9 +37,7 @@ export function GoogleLoginButton({
         <FontAwesomeIcon icon={faGoogle} />
         {isLoading ? 'ログイン中...' : label}
       </Button>
-      {error && (
-        <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-      )}
+      {error && <p className="text-sm text-danger">{error}</p>}
     </div>
   );
 }

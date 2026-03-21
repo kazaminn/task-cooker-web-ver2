@@ -1,5 +1,3 @@
-'use client';
-import React from 'react';
 import {
   Link as AriaLink,
   type LinkProps as AriaLinkProps,

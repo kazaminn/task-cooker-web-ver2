@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useOutletContext, useParams } from 'react-router';
 import { CreateTaskDialog } from '@/features/tasks/components/CreateTaskDialog';
 import { FilterBar } from '@/features/tasks/components/FilterBar';

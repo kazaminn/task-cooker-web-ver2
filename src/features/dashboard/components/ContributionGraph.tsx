@@ -1,4 +1,3 @@
-import React from 'react';
 import { format, subDays, startOfDay } from 'date-fns';
 import type { Activity } from '@/types/types';
 import { Tooltip, TooltipTrigger } from '@/ui/components/Tooltip';
@@ -11,7 +10,7 @@ const BROWNING_LEVELS = [
   'bg-amber-600 dark:bg-amber-500',
 ];
 
-const EMPTY_CELL = 'bg-slate-100 dark:bg-slate-800';
+const EMPTY_CELL = 'bg-surface';
 
 interface ContributionGraphProps {
   activities: Activity[];
@@ -60,9 +59,11 @@ export function ContributionGraph({
     <div className="overflow-x-auto">
       <div className="flex gap-0.5">
         {weeks.map((week, wi) => (
+          // eslint-disable-next-line react/no-array-index-key
           <div key={wi} className="flex flex-col gap-0.5">
             {week.map((cell) => (
               <TooltipTrigger key={cell.key} delay={0}>
+                {/* eslint-disable-next-line jsx-a11y/prefer-tag-over-role */}
                 <div
                   className={`h-3 w-3 rounded-sm ${cell.level === -1 ? EMPTY_CELL : BROWNING_LEVELS[cell.level]}`}
                   role="img"

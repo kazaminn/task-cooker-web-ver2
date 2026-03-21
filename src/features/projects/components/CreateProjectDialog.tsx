@@ -1,4 +1,3 @@
-import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useTeams } from '@/features/teams/hooks/useTeams';
 import { Button } from '@/ui/components/Button';
@@ -45,7 +44,7 @@ export function CreateProjectDialog({
   return (
     <Modal isOpen={isOpen} onOpenChange={(open) => !open && onClose()}>
       <Dialog aria-label="新規プロジェクト作成">
-        <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-white">
+        <h2 className="mb-4 text-lg font-semibold text-body">
           新規プロジェクト
         </h2>
         <form

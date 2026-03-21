@@ -1,5 +1,3 @@
-'use client';
-import React from 'react';
 import { faMagnifyingGlass, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -38,7 +36,7 @@ export function SearchField({
         <FontAwesomeIcon
           icon={faMagnifyingGlass}
           aria-hidden
-          className="dark:text-subtle text-muted group-disabled:text-disabled dark:group-disabled:text-disabled ml-2 h-4 w-4 forced-colors:text-[ButtonText] forced-colors:group-disabled:text-[GrayText]"
+          className="dark:text-subtle ml-2 h-4 w-4 text-muted group-disabled:text-disabled dark:group-disabled:text-disabled forced-colors:text-[ButtonText] forced-colors:group-disabled:text-[GrayText]"
         />
         <Input
           placeholder={placeholder}

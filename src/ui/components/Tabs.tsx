@@ -1,5 +1,3 @@
-'use client';
-import React from 'react';
 import {
   Tab as RACTab,
   TabList as RACTabList,
@@ -81,7 +79,7 @@ export function Tab(props: TabProps) {
       {composeRenderProps(props.children, (children) => (
         <>
           {children}
-          <SelectionIndicator className="bg-base group-disabled:bg-disabled group-disabled:dark:bg-hover absolute top-0 left-0 z-10 h-full w-full rounded-full mix-blend-difference group-disabled:-z-1 group-disabled:mix-blend-normal motion-safe:transition-[translate,width,height]" />
+          <SelectionIndicator className="absolute top-0 left-0 z-10 h-full w-full rounded-full bg-base mix-blend-difference group-disabled:-z-1 group-disabled:bg-disabled group-disabled:mix-blend-normal motion-safe:transition-[translate,width,height] group-disabled:dark:bg-hover" />
         </>
       ))}
     </RACTab>

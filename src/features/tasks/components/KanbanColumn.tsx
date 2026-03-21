@@ -41,10 +41,8 @@ export function KanbanColumn({
 
   return (
     <div
-      className={`flex w-64 shrink-0 flex-col rounded-lg border bg-slate-50 p-3 dark:bg-slate-800/50 ${
-        isDragOver
-          ? 'border-orange-400 bg-orange-50 dark:border-orange-500 dark:bg-orange-900/20'
-          : 'border-slate-200 dark:border-slate-700'
+      className={`flex w-64 shrink-0 flex-col rounded-lg border bg-surface p-3 ${
+        isDragOver ? 'border-primary bg-primary/10' : 'border-main'
       }`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
@@ -55,13 +53,9 @@ export function KanbanColumn({
           <span
             className={`inline-block h-2.5 w-2.5 rounded-full ${colorClass.split(' ')[0]}`}
           />
-          <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-            {label}
-          </h3>
+          <h3 className="text-sm font-semibold text-body">{label}</h3>
         </div>
-        <span className="text-xs text-slate-400 dark:text-slate-500">
-          {tasks.length}
-        </span>
+        <span className="text-xs text-muted">{tasks.length}</span>
       </div>
       <div className="space-y-2">
         {tasks.map((task) => (

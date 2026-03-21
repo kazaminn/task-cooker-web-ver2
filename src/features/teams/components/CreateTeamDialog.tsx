@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@/ui/components/Button';
 import { Dialog } from '@/ui/components/Dialog';
 import { Modal } from '@/ui/components/Modal';
@@ -24,9 +24,7 @@ export function CreateTeamDialog({ isOpen, onClose }: CreateTeamDialogProps) {
   return (
     <Modal isOpen={isOpen} onOpenChange={(open) => !open && onClose()}>
       <Dialog aria-label="新規チーム作成">
-        <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-white">
-          新規チーム
-        </h2>
+        <h2 className="mb-4 text-lg font-semibold text-body">新規チーム</h2>
         <form
           onSubmit={(e) => {
             e.preventDefault();

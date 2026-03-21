@@ -1,5 +1,3 @@
-'use client';
-import React from 'react';
 import {
   faChevronLeft,
   faChevronRight,
@@ -63,7 +61,7 @@ export function Calendar<T extends DateValue>({
         </CalendarGridBody>
       </CalendarGrid>
       {errorMessage && (
-        <Text slot="errorMessage" className="text-danger text-sm">
+        <Text slot="errorMessage" className="text-sm text-danger">
           {errorMessage}
         </Text>
       )}
@@ -83,7 +81,7 @@ export function CalendarHeader() {
           <FontAwesomeIcon icon={faChevronLeft} aria-hidden size={18} />
         )}
       </Button>
-      <Heading className="text-body dark:text-body mx-2 my-0 flex-1 text-center font-sans text-base font-semibold [font-variation-settings:normal]" />
+      <Heading className="mx-2 my-0 flex-1 text-center font-sans text-base font-semibold text-body [font-variation-settings:normal] dark:text-body" />
       <Button variant="quiet" slot="next">
         {direction === 'rtl' ? (
           <FontAwesomeIcon icon={faChevronLeft} aria-hidden size={18} />
@@ -99,7 +97,7 @@ export function CalendarGridHeader() {
   return (
     <AriaCalendarGridHeader>
       {(day) => (
-        <CalendarHeaderCell className="text-muted text-xs font-semibold">
+        <CalendarHeaderCell className="text-xs font-semibold text-muted">
           {day}
         </CalendarHeaderCell>
       )}

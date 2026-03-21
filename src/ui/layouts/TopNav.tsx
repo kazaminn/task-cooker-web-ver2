@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   faBars,
   faUser,
@@ -17,15 +17,13 @@ import { Popover } from '@/ui/components/Popover';
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   `px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
     isActive
-      ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300'
-      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700'
+      ? 'bg-primary/10 text-primary'
+      : 'text-muted hover:text-body hover:bg-hover'
   }`;
 
 const mobileNavLinkClass = ({ isActive }: { isActive: boolean }) =>
-  `block px-4 py-3 text-sm font-medium border-b border-slate-100 dark:border-slate-700 ${
-    isActive
-      ? 'bg-orange-50 text-orange-700 dark:bg-orange-900/20 dark:text-orange-300'
-      : 'text-slate-700 dark:text-slate-300'
+  `block px-4 py-3 text-sm font-medium border-b border-main ${
+    isActive ? 'bg-primary/5 text-primary' : 'text-body'
   }`;
 
 export function TopNav() {
@@ -42,7 +40,7 @@ export function TopNav() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 flex h-12 items-center justify-between border-b border-slate-200 bg-white/95 px-4 backdrop-blur dark:border-slate-700 dark:bg-slate-900/95">
+      <header className="sticky top-0 z-40 flex h-12 items-center justify-between border-b border-main bg-base/95 px-4 backdrop-blur">
         <div className="flex items-center gap-2">
           <Button
             variant="quiet"
@@ -54,10 +52,7 @@ export function TopNav() {
           >
             <FontAwesomeIcon icon={isMobileMenuOpen ? faXmark : faBars} />
           </Button>
-          <NavLink
-            to="/home"
-            className="text-base font-bold text-orange-600 dark:text-orange-400"
-          >
+          <NavLink to="/home" className="text-primary text-base font-bold">
             Task Cooker
           </NavLink>
         </div>
@@ -85,7 +80,7 @@ export function TopNav() {
                     className="h-7 w-7 rounded-full"
                   />
                 ) : (
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-orange-100 text-xs font-medium text-orange-700 dark:bg-orange-900/30 dark:text-orange-300">
+                  <span className="text-primary flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-xs font-medium">
                     {user.displayName?.[0] ?? user.email?.[0] ?? '?'}
                   </span>
                 )}
@@ -123,7 +118,7 @@ export function TopNav() {
       {/* Mobile drawer */}
       {isMobileMenuOpen && (
         <nav
-          className="fixed inset-x-0 top-12 z-30 border-b border-slate-200 bg-white shadow-lg sm:hidden dark:border-slate-700 dark:bg-slate-800"
+          className="fixed inset-x-0 top-12 z-30 border-b border-main bg-surface shadow-lg sm:hidden"
           aria-label="モバイルナビゲーション"
         >
           <NavLink

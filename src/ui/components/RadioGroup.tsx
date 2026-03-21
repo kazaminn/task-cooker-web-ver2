@@ -1,5 +1,4 @@
-'use client';
-import React, { type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import {
   Radio as RACRadio,
   RadioGroup as RACRadioGroup,
@@ -29,7 +28,7 @@ export function RadioGroup(props: RadioGroupProps) {
       )}
     >
       <Label>{props.label}</Label>
-      <div className="group-orientation-horizontal:gap-4 group-orientation-vertical:flex-col flex gap-2">
+      <div className="flex gap-2 group-orientation-horizontal:gap-4 group-orientation-vertical:flex-col">
         {props.children}
       </div>
       {props.description && <Description>{props.description}</Description>}
@@ -62,7 +61,7 @@ export function Radio(props: RadioProps) {
       {...props}
       className={composeProps(
         props.className,
-        'group text-body disabled:text-disabled dark:text-body dark:disabled:text-disabled relative flex items-center gap-2 text-sm transition [-webkit-tap-highlight-color:transparent] forced-colors:disabled:text-[GrayText]'
+        'group relative flex items-center gap-2 text-sm text-body transition [-webkit-tap-highlight-color:transparent] disabled:text-disabled dark:text-body dark:disabled:text-disabled forced-colors:disabled:text-[GrayText]'
       )}
     >
       {composeRenderProps(props.children, (children, renderProps) => (

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useOutletContext, useParams } from 'react-router';
 import { useTasks } from '@/features/tasks/hooks/useTasks';
 import { STATUS_COLORS } from '@/libs/variants';
@@ -44,15 +44,13 @@ export function ProjectOverviewPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <span className="rounded-md bg-orange-100 px-2 py-0.5 text-xs font-medium text-orange-700 dark:bg-orange-900/30 dark:text-orange-300">
+        <span className="text-primary rounded-md bg-primary/10 px-2 py-0.5 text-xs font-medium">
           {PROJECT_STATUS_LABELS[project.status] ?? project.status}
         </span>
-        <h1 className="text-xl font-bold text-slate-900 dark:text-white">
-          {project.name}
-        </h1>
+        <h1 className="text-xl font-bold text-body">{project.name}</h1>
       </div>
 
-      <div className="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
+      <div className="rounded-lg border border-main bg-surface p-4">
         <ProgressMeter total={total} served={served} />
         <div className="mt-3 flex flex-wrap gap-3">
           {TASK_STATUSES.map((status) => (
@@ -60,7 +58,7 @@ export function ProjectOverviewPage() {
               <span
                 className={`inline-block h-2.5 w-2.5 rounded-full ${STATUS_COLORS[status].split(' ')[0]}`}
               />
-              <span className="text-xs text-slate-600 dark:text-slate-400">
+              <span className="text-xs text-muted">
                 {TASK_STATUS_META[status].ja}: {statusCounts[status]}
               </span>
             </div>
@@ -68,11 +66,9 @@ export function ProjectOverviewPage() {
         </div>
       </div>
 
-      <div className="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
+      <div className="rounded-lg border border-main bg-surface p-4">
         <div className="mb-2 flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-            概要
-          </h2>
+          <h2 className="text-sm font-semibold text-body">概要</h2>
           {!isEditingOverview && (
             <Button
               variant="quiet"
@@ -108,7 +104,7 @@ export function ProjectOverviewPage() {
             </div>
           </div>
         ) : (
-          <p className="text-sm whitespace-pre-wrap text-slate-600 dark:text-slate-400">
+          <p className="text-sm whitespace-pre-wrap text-muted">
             {project.overview || 'まだ概要がありません'}
           </p>
         )}

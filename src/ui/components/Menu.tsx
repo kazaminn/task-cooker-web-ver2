@@ -1,4 +1,3 @@
-'use client';
 import React from 'react';
 import { faCheck, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -39,6 +38,7 @@ export function MenuItem(props: MenuItemProps) {
     <AriaMenuItem
       textValue={textValue}
       {...props}
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- tv() return type is not resolvable by eslint
       className={dropdownItemStyles}
     >
       {composeRenderProps(
@@ -56,7 +56,7 @@ export function MenuItem(props: MenuItemProps) {
                 )}
               </span>
             )}
-            <span className="group-selected:font-semibold flex flex-1 items-center gap-2 truncate font-normal">
+            <span className="flex flex-1 items-center gap-2 truncate font-normal group-selected:font-semibold">
               {children}
             </span>
             {hasSubmenu && (
@@ -77,7 +77,7 @@ export function MenuSeparator(props: SeparatorProps) {
   return (
     <Separator
       {...props}
-      className="border-main dark:border-main mx-3 my-1 border-b"
+      className="mx-3 my-1 border-b border-main dark:border-main"
     />
   );
 }
@@ -94,7 +94,7 @@ export function MenuSection<T extends object>(props: MenuSectionProps<T>) {
       className="after:block after:h-1.25 after:content-[''] first:-mt-1.25"
     >
       {props.title && (
-        <Header className="bg-hover/60 supports-[-moz-appearance:none]:bg-hover border-y-main text-muted dark:border-y-main dark:bg-surface/60 dark:text-muted sticky -top-1.25 z-10 -mx-1 -mt-px truncate border-y px-4 py-1 text-sm font-semibold backdrop-blur-md [&+*]:mt-1">
+        <Header className="sticky -top-1.25 z-10 -mx-1 -mt-px truncate border-y border-y-main bg-hover/60 px-4 py-1 text-sm font-semibold text-muted backdrop-blur-md supports-[-moz-appearance:none]:bg-hover dark:border-y-main dark:bg-surface/60 dark:text-muted [&+*]:mt-1">
           {props.title}
         </Header>
       )}

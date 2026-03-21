@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { format, isToday, isBefore, startOfDay } from 'date-fns';
 import { useNavigate } from 'react-router';
 import { subscribeAllActivities } from '@/api/activities';
@@ -53,21 +53,17 @@ export function DashboardPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-6 p-6">
       {/* Daily Pulse */}
-      <section className="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
-        <h2 className="mb-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
-          本日のサマリー
-        </h2>
+      <section className="rounded-lg border border-main bg-surface p-4">
+        <h2 className="mb-2 text-sm font-semibold text-body">本日のサマリー</h2>
         <div className="flex items-center gap-6">
           <div>
-            <span className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+            <span className="text-primary text-2xl font-bold">
               {todayServed}
             </span>
-            <span className="ml-1 text-sm text-slate-500 dark:text-slate-400">
-              serve 済み
-            </span>
+            <span className="ml-1 text-sm text-muted">serve 済み</span>
           </div>
           {overdueTasks.length > 0 && (
-            <div className="text-sm text-red-600 dark:text-red-400">
+            <div className="text-sm text-danger">
               {overdueTasks.length} 件の期限切れ
             </div>
           )}
@@ -77,9 +73,7 @@ export function DashboardPage() {
       {/* On the Stove */}
       {activeTasks && activeTasks.length > 0 && (
         <section>
-          <h2 className="mb-3 text-sm font-semibold text-slate-700 dark:text-slate-300">
-            On the Stove
-          </h2>
+          <h2 className="mb-3 text-sm font-semibold text-body">On the Stove</h2>
           <div className="space-y-2">
             {activeTasks.slice(0, 10).map((task) => (
               <TaskCard
@@ -95,9 +89,7 @@ export function DashboardPage() {
 
       {/* Contribution Graph */}
       <section>
-        <h2 className="mb-3 text-sm font-semibold text-slate-700 dark:text-slate-300">
-          草グラフ
-        </h2>
+        <h2 className="mb-3 text-sm font-semibold text-body">草グラフ</h2>
         {/* sm: 直近6ヶ月、md+: フル表示 */}
         <div className="hidden sm:block">
           <ContributionGraph activities={activities ?? []} />
@@ -111,9 +103,7 @@ export function DashboardPage() {
       {projects && projects.length > 0 && (
         <section>
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-              Recent Recipes
-            </h2>
+            <h2 className="text-sm font-semibold text-body">Recent Recipes</h2>
             <Button variant="quiet" onPress={() => void navigate('/projects')}>
               すべて見る
             </Button>
@@ -122,20 +112,17 @@ export function DashboardPage() {
             {projects.slice(0, 5).map((project) => (
               <div
                 key={project.id}
-                role="button"
-                tabIndex={0}
-                className="cursor-pointer rounded-lg border border-slate-200 bg-white p-3 transition hover:border-orange-300 dark:border-slate-700 dark:bg-slate-800 dark:hover:border-orange-600"
-                onClick={() => void navigate(`/projects/${project.id}`)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    void navigate(`/projects/${project.id}`);
-                  }
-                }}
+                className="rounded-lg border border-main bg-surface transition hover:border-primary"
               >
-                <span className="text-sm font-medium text-slate-900 dark:text-white">
-                  {project.name}
-                </span>
+                <button
+                  type="button"
+                  className="w-full cursor-pointer p-3 text-left"
+                  onClick={() => void navigate(`/projects/${project.id}`)}
+                >
+                  <span className="text-sm font-medium text-body">
+                    {project.name}
+                  </span>
+                </button>
               </div>
             ))}
           </div>
@@ -145,16 +132,14 @@ export function DashboardPage() {
       {/* Kitchen Logs */}
       {activities && activities.length > 0 && (
         <section>
-          <h2 className="mb-3 text-sm font-semibold text-slate-700 dark:text-slate-300">
-            Kitchen Logs
-          </h2>
+          <h2 className="mb-3 text-sm font-semibold text-body">Kitchen Logs</h2>
           <div className="space-y-1">
             {activities.slice(0, 10).map((activity) => (
               <div
                 key={activity.id}
-                className="flex items-center gap-2 py-1 text-sm text-slate-600 dark:text-slate-400"
+                className="flex items-center gap-2 py-1 text-sm text-muted"
               >
-                <span className="text-xs text-slate-400 dark:text-slate-500">
+                <span className="text-xs text-muted">
                   {format(activity.createdAt, 'M/d HH:mm')}
                 </span>
                 <span>{activity.text}</span>
@@ -165,10 +150,8 @@ export function DashboardPage() {
       )}
 
       {/* Quick Add */}
-      <section className="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
-        <h2 className="mb-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
-          Quick Add
-        </h2>
+      <section className="rounded-lg border border-main bg-surface p-4">
+        <h2 className="mb-2 text-sm font-semibold text-body">Quick Add</h2>
         <form
           onSubmit={(e) => {
             e.preventDefault();

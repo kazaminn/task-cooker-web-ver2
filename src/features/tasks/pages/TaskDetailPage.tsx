@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, useOutletContext, useParams } from 'react-router';
 import { TASK_STATUS_META, PRIORITY_META } from '@/types/constants';
 import type { Project } from '@/types/types';
@@ -31,7 +31,7 @@ export function TaskDetailPage() {
   }
 
   if (!task) {
-    return <p className="text-slate-500">タスクが見つかりません</p>;
+    return <p className="text-muted">タスクが見つかりません</p>;
   }
 
   const handleTitleSave = async () => {
@@ -73,28 +73,17 @@ export function TaskDetailPage() {
               </Button>
             </div>
           ) : (
-            <div
-              role="button"
-              tabIndex={0}
-              className="cursor-pointer"
+            <button
+              type="button"
+              className="cursor-pointer text-left"
               onClick={() => {
                 setTitleDraft(task.title);
                 setEditingTitle(true);
               }}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  setTitleDraft(task.title);
-                  setEditingTitle(true);
-                }
-              }}
             >
-              <span className="mr-2 text-sm text-slate-400">
-                #{task.displayId}
-              </span>
-              <span className="text-xl font-bold text-slate-900 dark:text-white">
-                {task.title}
-              </span>
-            </div>
+              <span className="mr-2 text-sm text-muted">#{task.displayId}</span>
+              <span className="text-xl font-bold text-body">{task.title}</span>
+            </button>
           )}
         </div>
         {showDeleteConfirm ? (
@@ -152,11 +141,9 @@ export function TaskDetailPage() {
         </Select>
       </div>
 
-      <div className="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
+      <div className="rounded-lg border border-main bg-surface p-4">
         <div className="mb-2 flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-            説明
-          </h2>
+          <h2 className="text-sm font-semibold text-body">説明</h2>
           {!isEditingDescription && (
             <Button
               variant="quiet"
@@ -189,7 +176,7 @@ export function TaskDetailPage() {
             </div>
           </div>
         ) : (
-          <p className="text-sm whitespace-pre-wrap text-slate-600 dark:text-slate-400">
+          <p className="text-sm whitespace-pre-wrap text-muted">
             {task.description ?? 'まだ説明がありません'}
           </p>
         )}

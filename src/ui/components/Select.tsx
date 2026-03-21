@@ -1,4 +1,3 @@
-'use client';
 import React from 'react';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -70,7 +69,7 @@ export function Select<T extends object>({
         <FontAwesomeIcon
           icon={faChevronDown}
           aria-hidden
-          className="text-muted group-disabled:text-disabled dark:text-subtle dark:group-disabled:text-disabled h-4 w-4 forced-colors:text-[ButtonText] forced-colors:group-disabled:text-[GrayText]"
+          className="dark:text-subtle h-4 w-4 text-muted group-disabled:text-disabled dark:group-disabled:text-disabled forced-colors:text-[ButtonText] forced-colors:group-disabled:text-[GrayText]"
         />
       </Button>
       {description && <Description>{description}</Description>}

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useUIStore } from '@/stores/uiStore';
 import { Select, SelectItem } from '@/ui/components/Select';
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router';
 import { signOut } from '@/api/auth';
 import { useUIStore } from '@/stores/uiStore';
@@ -21,14 +20,10 @@ export function AppSettingsPage() {
 
   return (
     <div className="mx-auto max-w-xl space-y-8 p-6">
-      <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-        設定
-      </h1>
+      <h1 className="text-2xl font-bold text-body">設定</h1>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-          テーマ
-        </h2>
+        <h2 className="text-sm font-semibold text-body">テーマ</h2>
         <ToggleButtonGroup
           selectionMode="single"
           selectedKeys={new Set([theme])}
@@ -44,18 +39,14 @@ export function AppSettingsPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-          アクセシビリティ
-        </h2>
+        <h2 className="text-sm font-semibold text-body">アクセシビリティ</h2>
         <Switch isSelected={reducedMotion} onChange={setReducedMotion}>
           モーション軽減
         </Switch>
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-          アカウント
-        </h2>
+        <h2 className="text-sm font-semibold text-body">アカウント</h2>
         <Button variant="secondary" onPress={() => void handleSignOut()}>
           ログアウト
         </Button>

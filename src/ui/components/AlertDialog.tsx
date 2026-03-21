@@ -1,11 +1,9 @@
-'use client';
-import React, { type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import {
   faCircleExclamation,
   faCircleInfo,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { chain } from 'react-aria';
 import { type DialogProps, Heading } from 'react-aria-components';
 import { Button } from './Button';
 import { Dialog } from './Dialog';
@@ -47,7 +45,7 @@ export function AlertDialog({
               <FontAwesomeIcon icon={faCircleInfo} aria-hidden />
             )}
           </div>
-          <p className="dark:text-subtle text-muted mt-3">{children}</p>
+          <p className="dark:text-subtle mt-3 text-muted">{children}</p>
           <div className="mt-6 flex justify-end gap-2">
             <Button variant="secondary" onPress={close}>
               {cancelLabel ?? 'Cancel'}
@@ -56,7 +54,10 @@ export function AlertDialog({
               variant={variant === 'destructive' ? 'destructive' : 'primary'}
               // eslint-disable-next-line jsx-a11y/no-autofocus
               autoFocus
-              onPress={chain(onAction, close)}
+              onPress={() => {
+                onAction?.();
+                close();
+              }}
             >
               {actionLabel}
             </Button>

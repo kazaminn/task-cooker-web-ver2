@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useNavigate, useOutletContext, useParams } from 'react-router';
 import type { Project, ProjectFormInput } from '@/types/types';
@@ -37,7 +37,7 @@ export function ProjectSettingsPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="mb-4 text-lg font-semibold text-slate-900 dark:text-white">
+        <h1 className="mb-4 text-lg font-semibold text-body">
           プロジェクト設定
         </h1>
         <form
@@ -104,11 +104,9 @@ export function ProjectSettingsPage() {
         </form>
       </div>
 
-      <div className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-900/20">
-        <h2 className="mb-2 text-sm font-semibold text-red-700 dark:text-red-400">
-          危険ゾーン
-        </h2>
-        <p className="mb-3 text-sm text-red-600 dark:text-red-400">
+      <div className="rounded-lg border border-danger bg-danger-subtle p-4">
+        <h2 className="mb-2 text-sm font-semibold text-danger">危険ゾーン</h2>
+        <p className="mb-3 text-sm text-danger">
           プロジェクトを削除すると、すべてのタスクとデータが失われます。この操作は取り消せません。
         </p>
         {showDeleteConfirm ? (
