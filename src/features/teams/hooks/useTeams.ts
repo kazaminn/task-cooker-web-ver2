@@ -9,7 +9,7 @@ import {
 } from '@/api/teams';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useFirestoreSubscription } from '@/hooks/useFirestoreSubscription';
-import type { Team } from '@/types/types';
+import type { Team, TeamType } from '@/types/types';
 
 export function useTeams() {
   const { user } = useAuth();
@@ -50,11 +50,11 @@ export function useTeamMutations() {
   const { user } = useAuth();
 
   const create = useCallback(
-    async (name: string) => {
+    async (name: string, type: TeamType) => {
       if (!user) throw new Error('Not authenticated');
       return createTeam({
         name,
-        type: 'team',
+        type,
         ownerId: user.uid,
         memberIds: [user.uid],
       });

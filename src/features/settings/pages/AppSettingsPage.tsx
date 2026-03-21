@@ -19,7 +19,7 @@ export function AppSettingsPage() {
   };
 
   return (
-    <div className="mx-auto max-w-xl space-y-8 p-6">
+    <div className="w-full space-y-8 py-6">
       <h1 className="text-2xl font-bold text-body">設定</h1>
 
       <section className="space-y-3">

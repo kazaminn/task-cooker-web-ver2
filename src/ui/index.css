@@ -203,9 +203,10 @@
 
 @layer base {
   html {
-    color-scheme: light dark;
     width: 100%;
     min-width: 320px;
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
   }
 
   body {
@@ -213,6 +214,7 @@
     background: var(--background-color-base);
     color: var(--text-color-body);
     font-family: var(--font-sans);
+    width: 100%;
   }
 
   * {

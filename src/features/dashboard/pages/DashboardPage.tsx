@@ -51,7 +51,7 @@ export function DashboardPage() {
   };
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6 p-6">
+    <div className="w-full space-y-6 py-6">
       {/* Daily Pulse */}
       <section className="rounded-lg border border-main bg-surface p-4">
         <h2 className="mb-2 text-sm font-semibold text-body">本日のサマリー</h2>

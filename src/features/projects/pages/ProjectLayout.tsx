@@ -33,7 +33,7 @@ export function ProjectLayout() {
       : 'overview';
 
   return (
-    <div className="mx-auto max-w-5xl p-6">
+    <div className="w-full py-6">
       <Breadcrumbs>
         <Breadcrumb href="/projects">Projects</Breadcrumb>
         <Breadcrumb>{project.name}</Breadcrumb>
@@ -49,10 +49,7 @@ export function ProjectLayout() {
         }}
         className="mt-4"
       >
-        <TabList
-          aria-label="Project tabs"
-          className="border-b border-main pb-2"
-        >
+        <TabList aria-label="Project tabs" className="border-b border-main">
           <Tab id="overview">Overview</Tab>
           <Tab id="tasks">Tasks</Tab>
           <Tab id="settings">Settings</Tab>

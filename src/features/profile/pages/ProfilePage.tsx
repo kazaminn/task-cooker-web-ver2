@@ -24,7 +24,7 @@ export function ProfilePage() {
     activities?.filter((a) => a.type === 'task_create').length ?? 0;
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6 p-6">
+    <div className="w-full space-y-6 py-6">
       <section className="flex items-center gap-4">
         {user?.photoURL ? (
           <img src={user.photoURL} alt="" className="h-16 w-16 rounded-full" />

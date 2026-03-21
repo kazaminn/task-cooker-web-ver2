@@ -1,9 +1,17 @@
 import { useState } from 'react';
+import {
+  getLocalTimeZone,
+  parseDate,
+  type CalendarDate,
+} from '@internationalized/date';
+import { format } from 'date-fns';
 import { useNavigate, useOutletContext, useParams } from 'react-router';
 import { TASK_STATUS_META, PRIORITY_META } from '@/types/constants';
 import type { Project } from '@/types/types';
 import { Button } from '@/ui/components/Button';
+import { DatePicker } from '@/ui/components/DatePicker';
 import { Select, SelectItem } from '@/ui/components/Select';
+import { TextArea } from '@/ui/components/TextArea';
 import { TextField } from '@/ui/components/TextField';
 import { CommentThread } from '../components/CommentThread';
 import { useComments, useCommentMutations } from '../hooks/useComments';
@@ -73,17 +81,32 @@ export function TaskDetailPage() {
               </Button>
             </div>
           ) : (
-            <button
-              type="button"
-              className="cursor-pointer text-left"
-              onClick={() => {
-                setTitleDraft(task.title);
-                setEditingTitle(true);
-              }}
-            >
-              <span className="mr-2 text-sm text-muted">#{task.displayId}</span>
-              <span className="text-xl font-bold text-body">{task.title}</span>
-            </button>
+            <div className="flex items-start justify-between gap-3">
+              <button
+                type="button"
+                className="cursor-pointer text-left"
+                onClick={() => {
+                  setTitleDraft(task.title);
+                  setEditingTitle(true);
+                }}
+              >
+                <span className="mr-2 text-sm text-muted">
+                  #{task.displayId}
+                </span>
+                <span className="text-xl font-bold text-body">
+                  {task.title}
+                </span>
+              </button>
+              <Button
+                variant="outline"
+                onPress={() => {
+                  setTitleDraft(task.title);
+                  setEditingTitle(true);
+                }}
+              >
+                編集
+              </Button>
+            </div>
           )}
         </div>
         {showDeleteConfirm ? (
@@ -139,6 +162,35 @@ export function TaskDetailPage() {
             </SelectItem>
           ))}
         </Select>
+        <DatePicker
+          label="期限"
+          value={
+            task.dueDate ? parseDate(format(task.dueDate, 'yyyy-MM-dd')) : null
+          }
+          onChange={(value) =>
+            void update(taskId!, {
+              dueDate: value
+                ? (value as CalendarDate).toDate(getLocalTimeZone())
+                : undefined,
+            })
+          }
+        />
+        <Select
+          label="担当者"
+          selectedKey={task.assigneeId ?? 'unassigned'}
+          onSelectionChange={(key) =>
+            void update(taskId!, {
+              assigneeId: key === 'unassigned' ? undefined : (key as string),
+            })
+          }
+        >
+          <SelectItem id="unassigned">未割り当て</SelectItem>
+          {project.memberIds.map((memberId) => (
+            <SelectItem key={memberId} id={memberId}>
+              {memberId}
+            </SelectItem>
+          ))}
+        </Select>
       </div>
 
       <div className="rounded-lg border border-main bg-surface p-4">
@@ -146,7 +198,7 @@ export function TaskDetailPage() {
           <h2 className="text-sm font-semibold text-body">説明</h2>
           {!isEditingDescription && (
             <Button
-              variant="quiet"
+              variant="outline"
               onPress={() => {
                 setDescDraft(task.description ?? '');
                 setEditingDescription(true);
@@ -158,7 +210,7 @@ export function TaskDetailPage() {
         </div>
         {isEditingDescription ? (
           <div className="space-y-2">
-            <TextField
+            <TextArea
               aria-label="説明"
               value={descDraft}
               onChange={setDescDraft}

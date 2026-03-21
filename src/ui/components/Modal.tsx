@@ -6,7 +6,7 @@ import {
 import { tv } from '@/libs/tv';
 
 const overlayStyles = tv({
-  base: 'absolute top-0 left-0 isolate z-20 h-(--page-height) w-full bg-backdrop text-center backdrop-blur-lg',
+  base: 'fixed inset-0 isolate z-60 bg-backdrop text-center backdrop-blur-lg',
   variants: {
     isEntering: {
       true: 'animate-in fade-in duration-200 ease-out',
@@ -18,7 +18,7 @@ const overlayStyles = tv({
 });
 
 const modalStyles = tv({
-  base: 'max-h-[calc(var(--visual-viewport-height)*.9)] w-full max-w-[min(90vw,450px)] rounded-2xl border border-main/10 bg-base bg-clip-padding text-left align-middle font-sans text-body shadow-2xl dark:border-main/10 dark:bg-surface/70 dark:text-muted dark:backdrop-blur-2xl dark:backdrop-saturate-200 forced-colors:bg-[Canvas]',
+  base: 'h-[min(100dvh,100%)] w-full max-w-full overflow-auto rounded-none border border-main/10 bg-base bg-clip-padding text-left align-middle font-sans text-body shadow-2xl dark:border-main/10 dark:bg-surface/70 dark:text-muted dark:backdrop-blur-2xl dark:backdrop-saturate-200 forced-colors:bg-[Canvas] sm:h-auto sm:max-h-[calc(100dvh-4rem)] sm:max-w-[min(90vw,720px)] sm:rounded-2xl',
   variants: {
     isEntering: {
       true: 'animate-in zoom-in-105 duration-200 ease-out',
@@ -32,7 +32,7 @@ const modalStyles = tv({
 export function Modal(props: ModalOverlayProps) {
   return (
     <ModalOverlay {...props} className={overlayStyles}>
-      <div className="sticky top-0 left-0 box-border flex h-(--visual-viewport-height) w-full items-center justify-center">
+      <div className="box-border flex h-full w-full items-end justify-center p-0 sm:items-center sm:p-4">
         <RACModal {...props} className={modalStyles} />
       </div>
     </ModalOverlay>
