@@ -2,7 +2,7 @@
 
 A task management application using cooking metaphors for task statuses.
 
-*This is a learning project focused on modern React architecture patterns.*
+_This is a learning project focused on modern React architecture patterns._
 
 ## Tech Stack
 
@@ -15,7 +15,7 @@ A task management application using cooking metaphors for task statuses.
 ## Task Metaphors
 
 - `order` - Not started
-- `prep` - In preparation  
+- `prep` - In preparation
 - `cook` - In progress
 - `serve` - Completed
 
