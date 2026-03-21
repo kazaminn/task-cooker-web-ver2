@@ -32,3 +32,6 @@ storybook-static
 firebase-data
 
 .localFiles
+
+.claude/nanJ/**
+.claude/**/nanj-brainstorm
