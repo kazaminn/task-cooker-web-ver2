@@ -3,6 +3,8 @@ import { useForm, Controller } from 'react-hook-form';
 import { useNavigate, useOutletContext, useParams } from 'react-router';
 import type { Project, ProjectFormInput } from '@/types/types';
 import { Button } from '@/ui/components/Button';
+import { Dialog } from '@/ui/components/Dialog';
+import { Modal } from '@/ui/components/Modal';
 import { Select, SelectItem } from '@/ui/components/Select';
 import { TextField } from '@/ui/components/TextField';
 import { useProjectMutations } from '../hooks/useProjects';
@@ -109,27 +111,38 @@ export function ProjectSettingsPage() {
         <p className="mb-3 text-sm text-danger">
           プロジェクトを削除すると、すべてのタスクとデータが失われます。この操作は取り消せません。
         </p>
-        {showDeleteConfirm ? (
-          <div className="flex items-center gap-2">
-            <Button variant="destructive" onPress={() => void handleDelete()}>
-              本当に削除する
-            </Button>
+        <Button
+          variant="destructive"
+          onPress={() => setShowDeleteConfirm(true)}
+        >
+          削除する
+        </Button>
+      </div>
+
+      <Modal
+        isOpen={showDeleteConfirm}
+        onOpenChange={(open) => setShowDeleteConfirm(open)}
+      >
+        <Dialog aria-label="プロジェクト削除の確認">
+          <h2 className="mb-3 text-lg font-semibold text-body">
+            プロジェクトを削除しますか
+          </h2>
+          <p className="mb-4 text-sm text-muted">
+            この操作は取り消せません。削除すると `/projects` に戻ります。
+          </p>
+          <div className="flex justify-end gap-2">
             <Button
               variant="secondary"
               onPress={() => setShowDeleteConfirm(false)}
             >
               キャンセル
             </Button>
+            <Button variant="destructive" onPress={() => void handleDelete()}>
+              本当に削除する
+            </Button>
           </div>
-        ) : (
-          <Button
-            variant="destructive"
-            onPress={() => setShowDeleteConfirm(true)}
-          >
-            削除する
-          </Button>
-        )}
-      </div>
+        </Dialog>
+      </Modal>
     </div>
   );
 }

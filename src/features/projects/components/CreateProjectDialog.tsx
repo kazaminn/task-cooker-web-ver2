@@ -1,17 +1,21 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Controller } from 'react-hook-form';
+import { z } from 'zod';
 import { useTeams } from '@/features/teams/hooks/useTeams';
+import { projectFormSchema } from '@/types/schemas';
 import { Button } from '@/ui/components/Button';
 import { Dialog } from '@/ui/components/Dialog';
 import { Modal } from '@/ui/components/Modal';
+import { Select, SelectItem } from '@/ui/components/Select';
 import { TextField } from '@/ui/components/TextField';
 import { useProjectMutations } from '../hooks/useProjects';
 
-interface FormValues {
-  name: string;
-  slug: string;
-  overview: string;
-  teamId: string;
-}
+const createProjectSchema = projectFormSchema.extend({
+  slug: z.string(),
+  teamId: z.string().min(1, 'チームを選択してください'),
+});
+
+type FormValues = z.infer<typeof createProjectSchema>;
 
 interface CreateProjectDialogProps {
   isOpen: boolean;
@@ -24,7 +28,13 @@ export function CreateProjectDialog({
 }: CreateProjectDialogProps) {
   const { create } = useProjectMutations();
   const { teams } = useTeams();
-  const { control, handleSubmit, reset } = useForm<FormValues>({
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormValues>({
+    resolver: zodResolver(createProjectSchema),
     defaultValues: { name: '', slug: '', overview: '', teamId: '' },
   });
 
@@ -64,6 +74,7 @@ export function CreateProjectDialog({
                 value={field.value}
                 onChange={field.onChange}
                 isRequired
+                errorMessage={errors.name?.message}
               />
             )}
           />
@@ -75,6 +86,7 @@ export function CreateProjectDialog({
                 label="Slug"
                 value={field.value}
                 onChange={field.onChange}
+                errorMessage={errors.slug?.message}
               />
             )}
           />
@@ -86,7 +98,31 @@ export function CreateProjectDialog({
                 label="概要"
                 value={field.value}
                 onChange={field.onChange}
+                errorMessage={errors.overview?.message}
               />
+            )}
+          />
+          <Controller
+            name="teamId"
+            control={control}
+            render={({ field }) => (
+              <Select
+                label="チーム"
+                selectedKey={field.value || null}
+                onSelectionChange={(key) =>
+                  field.onChange((key as string) ?? '')
+                }
+                errorMessage={errors.teamId?.message}
+                isRequired
+              >
+                {(teams ?? []).map((team) =>
+                  team.id ? (
+                    <SelectItem key={team.id} id={team.id}>
+                      {team.name}
+                    </SelectItem>
+                  ) : null
+                )}
+              </Select>
             )}
           />
           <div className="flex justify-end gap-2 pt-2">
