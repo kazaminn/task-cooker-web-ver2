@@ -20,6 +20,7 @@
     "test:coverage": "vitest --pass-with-no-tests --run --mode test --coverage",
     "test:related": "bash scripts/test-related.sh",
     "ai:check": "pnpm format && pnpm lint:fix && pnpm typecheck && pnpm test:related",
+    "ai:verify": "pnpm format:check && pnpm lint:ci && pnpm typecheck && pnpm test:related",
     "ci": "pnpm format:check && pnpm lint:ci && pnpm typecheck && pnpm test",
     "check": "pnpm ci",
     "prepare": "husky",
