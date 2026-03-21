@@ -5,7 +5,7 @@ import { STATUS_COLORS } from '@/libs/variants';
 import { TASK_STATUS_META, TASK_STATUSES } from '@/types/constants';
 import type { Project, TaskStatus } from '@/types/types';
 import { Button } from '@/ui/components/Button';
-import { TextField } from '@/ui/components/TextField';
+import { TextArea } from '@/ui/components/TextArea';
 import { ProgressMeter } from '../components/ProgressMeter';
 import { useProjectMutations } from '../hooks/useProjects';
 
@@ -71,7 +71,7 @@ export function ProjectOverviewPage() {
           <h2 className="text-sm font-semibold text-body">概要</h2>
           {!isEditingOverview && (
             <Button
-              variant="quiet"
+              variant="outline"
               onPress={() => {
                 setOverviewText(project.overview);
                 setEditingOverview(true);
@@ -83,7 +83,7 @@ export function ProjectOverviewPage() {
         </div>
         {isEditingOverview ? (
           <div className="space-y-2">
-            <TextField
+            <TextArea
               aria-label="概要"
               value={overviewText}
               onChange={setOverviewText}

@@ -6,6 +6,7 @@ import { Button } from '@/ui/components/Button';
 import { Dialog } from '@/ui/components/Dialog';
 import { Modal } from '@/ui/components/Modal';
 import { Select, SelectItem } from '@/ui/components/Select';
+import { TextArea } from '@/ui/components/TextArea';
 import { TextField } from '@/ui/components/TextField';
 import { useProjectMutations } from '../hooks/useProjects';
 
@@ -77,7 +78,7 @@ export function ProjectSettingsPage() {
             name="overview"
             control={control}
             render={({ field }) => (
-              <TextField
+              <TextArea
                 label="概要"
                 value={field.value}
                 onChange={field.onChange}

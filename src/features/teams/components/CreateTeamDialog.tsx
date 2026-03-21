@@ -1,7 +1,11 @@
-import { useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm, Controller } from 'react-hook-form';
+import { z } from 'zod';
+import { teamFormSchema } from '@/types/schemas';
 import { Button } from '@/ui/components/Button';
 import { Dialog } from '@/ui/components/Dialog';
 import { Modal } from '@/ui/components/Modal';
+import { Select, SelectItem } from '@/ui/components/Select';
 import { TextField } from '@/ui/components/TextField';
 import { useTeamMutations } from '../hooks/useTeams';
 
@@ -10,14 +14,25 @@ interface CreateTeamDialogProps {
   onClose: () => void;
 }
 
+const createTeamSchema = teamFormSchema.extend({
+  type: z.enum(['team', 'personal']),
+});
+
+type CreateTeamFormValues = z.infer<typeof createTeamSchema>;
+
 export function CreateTeamDialog({ isOpen, onClose }: CreateTeamDialogProps) {
   const { create } = useTeamMutations();
-  const [name, setName] = useState('');
+  const { control, handleSubmit, reset } = useForm<CreateTeamFormValues>({
+    resolver: zodResolver(createTeamSchema),
+    defaultValues: {
+      name: '',
+      type: 'team',
+    },
+  });
 
-  const handleSubmit = async () => {
-    if (!name.trim()) return;
-    await create(name.trim());
-    setName('');
+  const handleCreate = async (values: CreateTeamFormValues) => {
+    await create(values.name.trim(), values.type);
+    reset();
     onClose();
   };
 
@@ -28,15 +43,37 @@ export function CreateTeamDialog({ isOpen, onClose }: CreateTeamDialogProps) {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            void handleSubmit();
+            void handleSubmit(handleCreate)(e);
           }}
           className="space-y-4"
         >
-          <TextField
-            label="チーム名"
-            value={name}
-            onChange={setName}
-            isRequired
+          <Controller
+            name="name"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                label="チーム名"
+                value={field.value}
+                onChange={field.onChange}
+                isRequired
+              />
+            )}
+          />
+          <Controller
+            name="type"
+            control={control}
+            render={({ field }) => (
+              <Select
+                label="種別"
+                selectedKey={field.value}
+                onSelectionChange={(key) =>
+                  field.onChange(key as 'team' | 'personal')
+                }
+              >
+                <SelectItem id="team">Team</SelectItem>
+                <SelectItem id="personal">Personal</SelectItem>
+              </Select>
+            )}
           />
           <div className="flex justify-end gap-2 pt-2">
             <Button variant="secondary" onPress={onClose}>

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { format } from 'date-fns';
 import type { Comment } from '@/api/comments';
 import { Button } from '@/ui/components/Button';
-import { TextField } from '@/ui/components/TextField';
+import { TextArea } from '@/ui/components/TextArea';
 
 const AUTHOR_TYPE_STYLES: Record<string, string> = {
   user: 'bg-surface',
@@ -49,16 +49,16 @@ function CommentInput({ onSubmit }: { onSubmit: (body: string) => void }) {
   };
 
   return (
-    <div className="flex gap-2">
+    <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
       <div className="flex-1">
-        <TextField
+        <TextArea
           aria-label="コメント"
           placeholder="コメントを入力..."
           value={body}
           onChange={setBody}
         />
       </div>
-      <Button variant="primary" onPress={handleSubmit}>
+      <Button variant="primary" onPress={handleSubmit} className="sm:self-auto">
         送信
       </Button>
     </div>

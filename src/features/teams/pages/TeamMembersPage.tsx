@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
+import { getUser } from '@/api/users';
+import type { User } from '@/types/types';
 import { Button } from '@/ui/components/Button';
 import { Dialog } from '@/ui/components/Dialog';
 import { Modal } from '@/ui/components/Modal';
@@ -61,6 +63,35 @@ export function TeamMembersPage() {
   const { team, isLoading } = useTeam(teamId);
   const { kick } = useTeamMutations();
   const [isInviteOpen, setInviteOpen] = useState(false);
+  const [members, setMembers] = useState<Record<string, User | null>>({});
+  const [isMembersLoading, setMembersLoading] = useState(false);
+
+  useEffect(() => {
+    let isActive = true;
+    void (async () => {
+      if (!team?.memberIds.length) {
+        if (isActive) {
+          setMembers({});
+          setMembersLoading(false);
+        }
+        return;
+      }
+
+      if (isActive) setMembersLoading(true);
+      const entries = await Promise.all(
+        team.memberIds.map(
+          async (memberId) => [memberId, await getUser(memberId)] as const
+        )
+      );
+      if (!isActive) return;
+      setMembers(Object.fromEntries(entries));
+      setMembersLoading(false);
+    })();
+
+    return () => {
+      isActive = false;
+    };
+  }, [team?.memberIds]);
 
   if (isLoading) {
     return (
@@ -78,8 +109,29 @@ export function TeamMembersPage() {
     );
   }
 
+  if (isMembersLoading) {
+    return (
+      <div className="w-full py-6">
+        <div className="mb-6 flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-body">
+            {team.name} — メンバー管理
+          </h1>
+          <Button variant="primary" onPress={() => setInviteOpen(true)}>
+            + メンバー招待
+          </Button>
+        </div>
+        <p className="text-muted">メンバー情報を読み込み中...</p>
+        <InviteMemberDialog
+          isOpen={isInviteOpen}
+          onClose={() => setInviteOpen(false)}
+          teamId={teamId!}
+        />
+      </div>
+    );
+  }
+
   return (
-    <div className="mx-auto max-w-3xl p-6">
+    <div className="w-full py-6">
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold text-body">
           {team.name} — メンバー管理
@@ -100,12 +152,18 @@ export function TeamMembersPage() {
                 {memberId.slice(0, 2).toUpperCase()}
               </span>
               <div>
-                <span className="text-sm font-medium text-body">
-                  {memberId}
-                </span>
-                {memberId === team.ownerId && (
-                  <span className="text-primary ml-2 text-xs">owner</span>
+                <div className="text-sm font-medium text-body">
+                  {members[memberId]?.email ?? memberId}
+                  {memberId === team.ownerId && (
+                    <span className="text-primary ml-2 text-xs">owner</span>
+                  )}
+                </div>
+                {members[memberId]?.displayName && (
+                  <div className="text-xs text-muted">
+                    {members[memberId]?.displayName}
+                  </div>
                 )}
+                <div className="text-xs text-muted">ID: {memberId}</div>
               </div>
             </div>
             {memberId !== team.ownerId && (

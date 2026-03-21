@@ -8,7 +8,7 @@ import { focusRing } from '@/libs/variants';
 
 export interface ButtonProps extends RACButtonProps {
   /** @default 'primary' */
-  variant?: 'primary' | 'secondary' | 'destructive' | 'quiet';
+  variant?: 'primary' | 'secondary' | 'outline' | 'destructive' | 'quiet';
 }
 
 const button = tv({
@@ -19,11 +19,13 @@ const button = tv({
       primary:
         'pressed:bg-primary-pressed bg-primary text-white hover:bg-primary-hover',
       secondary:
-        'hover:bg-hover pressed:bg-hover border-main/10 bg-surface text-body',
+        'border-main bg-base text-body shadow-xs hover:border-primary/40 hover:bg-surface pressed:bg-hover',
+      outline:
+        'border-primary/40 bg-transparent text-primary hover:border-primary hover:bg-primary/8 pressed:bg-primary/12',
       destructive:
-        'pressed:bg-danger-pressed bg-danger-hover text-white hover:bg-danger-hover',
+        'border-danger/30 bg-transparent text-danger hover:border-danger hover:bg-danger/8 pressed:bg-danger/12',
       quiet:
-        'hover:bg-hover pressed:bg-hover border-0 bg-transparent text-body',
+        'border-0 bg-transparent text-muted hover:bg-hover hover:text-body pressed:bg-hover',
     },
     isDisabled: {
       true: 'border-transparent bg-disabled text-disabled forced-colors:text-[GrayText]',
@@ -64,7 +66,10 @@ export function Button(props: ButtonProps) {
                 className="h-4 w-4 animate-spin text-white"
                 viewBox="0 0 24 24"
                 stroke={
-                  props.variant === 'secondary' || props.variant === 'quiet'
+                  props.variant === 'secondary' ||
+                  props.variant === 'quiet' ||
+                  props.variant === 'outline' ||
+                  props.variant === 'destructive'
                     ? 'light-dark(black, white)'
                     : 'white'
                 }

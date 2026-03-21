@@ -4,7 +4,6 @@ import {
   TabPanel as RACTabPanel,
   TabPanels as RACTabPanels,
   Tabs as RACTabs,
-  SelectionIndicator,
   type TabListProps,
   type TabPanelProps,
   type TabPanelsProps,
@@ -38,7 +37,7 @@ export function Tabs(props: TabsProps) {
 }
 
 const tabListStyles = tv({
-  base: '-m-1 flex max-w-full overflow-x-auto overflow-y-clip p-1 [scrollbar-width:none]',
+  base: 'flex max-w-full overflow-x-auto overflow-y-clip [scrollbar-width:none]',
   variants: {
     orientation: {
       horizontal: 'flex-row',
@@ -60,10 +59,14 @@ export function TabList<T extends object>(props: TabListProps<T>) {
 
 const tabProps = tv({
   extend: focusRing,
-  base: 'group relative flex cursor-default items-center rounded-full px-3 py-1.5 text-sm font-medium transition forced-color-adjust-none [-webkit-tap-highlight-color:transparent]',
+  base: 'group relative -mb-px flex cursor-default items-center border-b-2 border-transparent px-4 py-3 text-sm font-medium transition forced-color-adjust-none [-webkit-tap-highlight-color:transparent]',
   variants: {
+    isSelected: {
+      false: 'text-muted hover:text-body hover:border-main/60',
+      true: 'border-primary text-body',
+    },
     isDisabled: {
-      true: 'text-disabled dark:text-disabled forced-colors:text-[GrayText] selected:bg-selected selected:text-white dark:selected:bg-selected dark:selected:text-muted forced-colors:selected:bg-[GrayText] forced-colors:selected:text-[HighlightText]',
+      true: 'text-disabled dark:text-disabled forced-colors:text-[GrayText]',
     },
   },
 });
@@ -75,14 +78,7 @@ export function Tab(props: TabProps) {
       className={composeRenderProps(props.className, (className, renderProps) =>
         tabProps({ ...renderProps, className })
       )}
-    >
-      {composeRenderProps(props.children, (children) => (
-        <>
-          {children}
-          <SelectionIndicator className="absolute top-0 left-0 z-10 h-full w-full rounded-full bg-base mix-blend-difference group-disabled:-z-1 group-disabled:bg-disabled group-disabled:mix-blend-normal motion-safe:transition-[translate,width,height] group-disabled:dark:bg-hover" />
-        </>
-      ))}
-    </RACTab>
+    />
   );
 }
 

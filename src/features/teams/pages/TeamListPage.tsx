@@ -18,7 +18,7 @@ export function TeamListPage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl p-6">
+    <div className="w-full py-6">
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold text-body">チーム一覧</h1>
         <Button variant="primary" onPress={() => setDialogOpen(true)}>
