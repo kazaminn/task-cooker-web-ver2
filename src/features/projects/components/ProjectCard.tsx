@@ -1,0 +1,57 @@
+import React from 'react';
+import type { Project, ProjectStatus } from '@/types/types';
+
+const STATUS_LABELS: Record<ProjectStatus, string> = {
+  planning: '企画中',
+  cooking: '進行中',
+  on_hold: '保留',
+  completed: '完了',
+};
+
+const STATUS_STYLES: Record<ProjectStatus, string> = {
+  planning: 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300',
+  cooking:
+    'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300',
+  on_hold:
+    'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300',
+  completed:
+    'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300',
+};
+
+interface ProjectCardProps {
+  project: Project;
+  onPress: () => void;
+}
+
+export function ProjectCard({ project, onPress }: ProjectCardProps) {
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      className="cursor-pointer rounded-lg border border-slate-200 bg-white p-4 transition hover:border-orange-300 hover:shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:hover:border-orange-600"
+      onClick={onPress}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onPress();
+        }
+      }}
+    >
+      <div className="flex items-center gap-3">
+        <span
+          className={`rounded-md px-2 py-0.5 text-xs font-medium ${STATUS_STYLES[project.status]}`}
+        >
+          {STATUS_LABELS[project.status]}
+        </span>
+        <h3 className="font-semibold text-slate-900 dark:text-white">
+          {project.name}
+        </h3>
+      </div>
+      {project.overview && (
+        <p className="mt-1 line-clamp-2 text-sm text-slate-500 dark:text-slate-400">
+          {project.overview}
+        </p>
+      )}
+    </div>
+  );
+}
