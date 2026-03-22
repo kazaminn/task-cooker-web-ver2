@@ -18,18 +18,6 @@ service cloud.firestore {
         request.auth.uid in get(/databases/$(database)/documents/projects/$(projectId)).data.memberIds;
     }
 
-    function isTaskProjectMember() {
-      return resource != null &&
-        resource.data.projectRef is string &&
-        isProjectMember(resource.data.projectRef);
-    }
-
-    function isActivityProjectMember() {
-      return resource != null &&
-        resource.data.projectId is string &&
-        isProjectMember(resource.data.projectId);
-    }
-
     // ユーザープロファイル
     match /users/{userId} {
       allow read: if isAuthenticated();
@@ -44,15 +32,6 @@ service cloud.firestore {
       allow create: if isAuthenticated();
       // オーナーのみ更新・削除可能
       allow update, delete: if isAuthenticated() && request.auth.uid == resource.data.ownerId;
-    }
-
-    // collectionGroup クエリ用ルール
-    // tasks, activities は collectionGroup でクロスプロジェクト検索される
-    match /{path=**}/tasks/{taskId} {
-      allow read: if isTaskProjectMember();
-    }
-    match /{path=**}/activities/{activityId} {
-      allow read: if isActivityProjectMember();
     }
 
     // プロジェクトおよびサブコレクション

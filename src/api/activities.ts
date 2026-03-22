@@ -1,12 +1,10 @@
 import {
   addDoc,
   collection,
-  collectionGroup,
   onSnapshot,
   orderBy,
   query,
   serverTimestamp,
-  where,
   limit as firestoreLimit,
 } from 'firebase/firestore';
 import type { Activity, ActivityFormInput } from '@/types/types';
@@ -30,40 +28,6 @@ export function subscribeProjectActivities(
     activitiesCol(projectId),
     orderBy('createdAt', 'desc'),
     firestoreLimit(limitCount)
-  );
-  return onSnapshot(
-    q,
-    (snap) => callback(snap.docs.map((d) => d.data())),
-    (err) => onError?.(err)
-  );
-}
-
-export function subscribeAllActivities(
-  limitCount: number,
-  callback: (activities: Activity[]) => void,
-  onError?: (error: Error) => void
-): () => void {
-  const q = query(
-    collectionGroup(db, 'activities').withConverter(activityConverter),
-    orderBy('createdAt', 'desc'),
-    firestoreLimit(limitCount)
-  );
-  return onSnapshot(
-    q,
-    (snap) => callback(snap.docs.map((d) => d.data())),
-    (err) => onError?.(err)
-  );
-}
-
-export function subscribeUserActivities(
-  userId: string,
-  callback: (activities: Activity[]) => void,
-  onError?: (error: Error) => void
-): () => void {
-  const q = query(
-    collectionGroup(db, 'activities').withConverter(activityConverter),
-    where('userId', '==', userId),
-    orderBy('createdAt', 'desc')
   );
   return onSnapshot(
     q,
