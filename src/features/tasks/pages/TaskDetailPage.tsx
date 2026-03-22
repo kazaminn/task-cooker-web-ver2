@@ -15,10 +15,18 @@ export function TaskDetailPage() {
     projectId: string;
     taskId: string;
   }>();
-  const { task, isLoading } = useTaskQuery(projectId, taskId);
-  const { comments } = useCommentsQuery(projectId, taskId);
-  const { create: createComment } = useCommentMutations(projectId!, taskId!);
-  const actions = useTaskDetailActions(projectId!, taskId!, project.teamId);
+  const resolvedProjectId = project.id ?? projectId;
+  const { task, isLoading } = useTaskQuery(resolvedProjectId, taskId);
+  const { comments } = useCommentsQuery(resolvedProjectId, taskId);
+  const { create: createComment } = useCommentMutations(
+    resolvedProjectId!,
+    taskId!
+  );
+  const actions = useTaskDetailActions(
+    resolvedProjectId!,
+    taskId!,
+    project.teamId
+  );
 
   if (isLoading) {
     return <p className="text-muted">読み込み中...</p>;

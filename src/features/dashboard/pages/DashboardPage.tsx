@@ -1,7 +1,5 @@
 import { useNavigate } from 'react-router';
 import type { Task } from '@/types/types';
-import { AttentionSection } from '../components/AttentionSection';
-import { ContributionSection } from '../components/ContributionSection';
 import { DailyPulseSection } from '../components/DailyPulseSection';
 import { KitchenLogsSection } from '../components/KitchenLogsSection';
 import { QuickAddSection } from '../components/QuickAddSection';
@@ -14,7 +12,6 @@ export function DashboardPage() {
   const {
     projects,
     activities,
-    userActivities,
     stoveTasks,
     overdueTasks,
     todayServed,
@@ -31,7 +28,7 @@ export function DashboardPage() {
 
   return (
     <div className="w-full py-6">
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.8fr)_minmax(18rem,0.9fr)]">
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.75fr)_22rem]">
         <div className="space-y-6">
           <DailyPulseSection
             isLoading={isLoading}
@@ -40,36 +37,29 @@ export function DashboardPage() {
             stoveCount={stoveTasks.length}
             onBrowseProjects={() => void navigate('/projects')}
           />
-
-          <ContributionSection
-            activities={userActivities}
-            onOpenProfile={() => void navigate('/profile')}
+          <QuickAddSection
+            projectId={defaultProject?.id}
+            projectName={defaultProject?.name}
+            teamId={defaultProject?.teamId}
+            disabled={!defaultProject}
           />
-
-          <section className="grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.85fr)]">
-            <RecentProjectsSection
-              projects={recentProjects}
-              isLoading={isLoading}
-              onBrowseProjects={() => void navigate('/projects')}
-              onOpenProject={openProject}
-            />
-            <QuickAddSection
-              projectId={defaultProject?.id}
-              teamId={defaultProject?.teamId}
-              disabled={!defaultProject}
-            />
-          </section>
-
           <StoveSection
             isLoading={isLoading}
             tasks={stoveTasks}
             onOpenTask={openTask}
           />
+          <KitchenLogsSection activities={activities ?? []} />
         </div>
 
-        <aside className="space-y-6">
-          <KitchenLogsSection activities={activities ?? []} />
-          <AttentionSection tasks={overdueTasks} onOpenTask={openTask} />
+        <aside>
+          <RecentProjectsSection
+            projects={recentProjects}
+            isLoading={isLoading}
+            onBrowseProjects={() => void navigate('/projects')}
+            onOpenProject={openProject}
+            title="Project Overview"
+            description="進行中プロジェクトの状況を右側で俯瞰"
+          />
         </aside>
       </div>
     </div>

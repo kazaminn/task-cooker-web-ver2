@@ -256,6 +256,27 @@
   }
 }
 
+@layer base {
+  body,
+  header,
+  nav,
+  section,
+  aside,
+  button,
+  a,
+  input,
+  textarea,
+  [role='button'],
+  [data-theme],
+  [data-theme] * {
+    transition-property:
+      background-color, border-color, color, fill, stroke, box-shadow,
+      outline-color;
+    transition-duration: 160ms;
+    transition-timing-function: ease;
+  }
+}
+
 @layer utilities {
   .pt-safe {
     padding-top: env(safe-area-inset-top);

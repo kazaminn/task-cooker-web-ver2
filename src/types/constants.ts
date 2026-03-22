@@ -1,5 +1,7 @@
 import type { TaskStatus, TaskPriority } from './types';
 
+export type { TaskStatus, TaskPriority };
+
 export const TASK_STATUSES = ['order', 'prep', 'cook', 'serve'] as const;
 
 // emoji は仮置き。最終的に icon（Lucide コンポーネント）に差し替え予定

@@ -14,9 +14,9 @@ import { NavLink, useNavigate } from 'react-router';
 import { signOut } from '@/api/auth';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useDarkTheme } from '@/hooks/useDarkTheme';
+import { Avatar } from '@/ui/components/Avatar';
 import { Button } from '@/ui/components/Button';
 import { Menu, MenuItem, MenuTrigger } from '@/ui/components/Menu';
-import { Popover } from '@/ui/components/Popover';
 import { ToggleButton } from '@/ui/components/ToggleButton';
 import { ToggleButtonGroup } from '@/ui/components/ToggleButtonGroup';
 import { pageContainerClass } from './pageContainer';
@@ -41,7 +41,7 @@ export function TopNav() {
 
   const handleSignOut = async () => {
     await signOut();
-    void navigate('/login');
+    void navigate('/');
   };
 
   const closeMobileMenu = () => setMobileMenuOpen(false);
@@ -98,56 +98,65 @@ export function TopNav() {
               }}
               className="hidden sm:flex"
             >
-              <ToggleButton id="light" aria-label="ライトモード">
+              <ToggleButton
+                id="light"
+                aria-label="ライトモード"
+                className="h-8 w-8 rounded-full"
+              >
                 <FontAwesomeIcon icon={faSun} />
               </ToggleButton>
-              <ToggleButton id="dark" aria-label="ダークモード">
+              <ToggleButton
+                id="dark"
+                aria-label="ダークモード"
+                className="h-8 w-8 rounded-full"
+              >
                 <FontAwesomeIcon icon={faMoon} />
               </ToggleButton>
-              <ToggleButton id="system" aria-label="システム設定に合わせる">
+              <ToggleButton
+                id="system"
+                aria-label="システム設定に合わせる"
+                className="h-8 w-8 rounded-full"
+              >
                 <FontAwesomeIcon icon={faDesktop} />
               </ToggleButton>
             </ToggleButtonGroup>
             {user && (
               <MenuTrigger>
-                <Button variant="quiet" aria-label="ユーザーメニュー">
-                  {user.photoURL ? (
-                    <img
-                      src={user.photoURL}
-                      alt=""
-                      className="h-7 w-7 rounded-full"
-                    />
-                  ) : (
-                    <span className="text-primary flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-xs font-medium">
-                      {user.displayName?.[0] ?? user.email?.[0] ?? '?'}
-                    </span>
-                  )}
+                <Button
+                  variant="quiet"
+                  aria-label="ユーザーメニュー"
+                  className="rounded-full bg-transparent p-0 hover:bg-transparent pressed:bg-transparent"
+                >
+                  <Avatar
+                    src={user.photoURL ?? undefined}
+                    fallback={user.displayName?.[0] ?? user.email?.[0] ?? '?'}
+                    size="md"
+                    className="h-9 w-9 border-main/60"
+                  />
                 </Button>
-                <Popover placement="bottom end">
-                  <Menu
-                    onAction={(key) => {
-                      if (key === 'profile') void navigate('/profile');
-                      else if (key === 'settings') void navigate('/settings');
-                      else if (key === 'logout') void handleSignOut();
-                    }}
-                  >
-                    <MenuItem id="profile">
-                      <FontAwesomeIcon icon={faUser} className="mr-2 w-4" />
-                      プロフィール
-                    </MenuItem>
-                    <MenuItem id="settings">
-                      <FontAwesomeIcon icon={faGear} className="mr-2 w-4" />
-                      設定
-                    </MenuItem>
-                    <MenuItem id="logout">
-                      <FontAwesomeIcon
-                        icon={faRightFromBracket}
-                        className="mr-2 w-4"
-                      />
-                      ログアウト
-                    </MenuItem>
-                  </Menu>
-                </Popover>
+                <Menu
+                  onAction={(key) => {
+                    if (key === 'profile') void navigate('/profile');
+                    else if (key === 'settings') void navigate('/settings');
+                    else if (key === 'logout') void handleSignOut();
+                  }}
+                >
+                  <MenuItem id="profile">
+                    <FontAwesomeIcon icon={faUser} className="mr-2 w-4" />
+                    プロフィール
+                  </MenuItem>
+                  <MenuItem id="settings">
+                    <FontAwesomeIcon icon={faGear} className="mr-2 w-4" />
+                    設定
+                  </MenuItem>
+                  <MenuItem id="logout">
+                    <FontAwesomeIcon
+                      icon={faRightFromBracket}
+                      className="mr-2 w-4"
+                    />
+                    ログアウト
+                  </MenuItem>
+                </Menu>
               </MenuTrigger>
             )}
           </div>

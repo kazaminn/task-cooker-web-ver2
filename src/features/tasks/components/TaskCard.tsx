@@ -1,14 +1,26 @@
+import type { ReactNode } from 'react';
+import {
+  faDownLong,
+  faFire,
+  faRightLong,
+  faUpLong,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router';
 import { STATUS_COLORS } from '@/libs/variants';
 import { TASK_STATUS_META, PRIORITY_META } from '@/types/constants';
 import type { Task, TaskPriority } from '@/types/types';
 
-const PRIORITY_ICONS: Record<TaskPriority, string> = {
-  urgent: '\u23EB',
-  high: '\u2191',
-  medium: '\u2192',
-  low: '\u2193',
+const PRIORITY_ICONS: Record<TaskPriority, ReactNode> = {
+  urgent: <FontAwesomeIcon icon={faFire} aria-hidden className="h-3.5 w-3.5" />,
+  high: <FontAwesomeIcon icon={faUpLong} aria-hidden className="h-3.5 w-3.5" />,
+  medium: (
+    <FontAwesomeIcon icon={faRightLong} aria-hidden className="h-3.5 w-3.5" />
+  ),
+  low: (
+    <FontAwesomeIcon icon={faDownLong} aria-hidden className="h-3.5 w-3.5" />
+  ),
 };
 
 interface TaskCardProps {
@@ -34,7 +46,10 @@ export function TaskCard({
       <>
         <p className="text-sm font-medium text-body">{task.title}</p>
         <div className="mt-1 flex items-center gap-2 text-xs text-muted">
-          <span aria-label={PRIORITY_META[task.priority].ja}>
+          <span
+            aria-label={PRIORITY_META[task.priority].ja}
+            className="inline-flex"
+          >
             {PRIORITY_ICONS[task.priority]}
           </span>
           {task.dueDate && <span>{format(task.dueDate, 'M/d')}</span>}
@@ -83,8 +98,12 @@ export function TaskCard({
             >
               {TASK_STATUS_META[task.status].ja}
             </span>
-            <span aria-label={PRIORITY_META[task.priority].ja}>
-              {PRIORITY_ICONS[task.priority]} {PRIORITY_META[task.priority].ja}
+            <span
+              aria-label={PRIORITY_META[task.priority].ja}
+              className="inline-flex items-center gap-1"
+            >
+              {PRIORITY_ICONS[task.priority]}
+              <span>{PRIORITY_META[task.priority].ja}</span>
             </span>
             {task.dueDate && <span>{format(task.dueDate, 'M/d')}</span>}
           </div>

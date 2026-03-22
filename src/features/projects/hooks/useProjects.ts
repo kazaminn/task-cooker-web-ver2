@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   subscribeProjects,
@@ -35,31 +35,56 @@ export function useProjectsQuery() {
   return { projects: data, isLoading, error };
 }
 
-export function useProjectQuery(projectId: string | undefined) {
+export function useProjectQuery(projectKey: string | undefined) {
+  const {
+    projects,
+    isLoading: isProjectsLoading,
+    error: projectsError,
+  } = useProjectsQuery();
+  const resolvedProjectId = useMemo(() => {
+    if (!projectKey) {
+      return undefined;
+    }
+
+    const matchedProject = projects?.find(
+      (project) => project.id === projectKey || project.slug === projectKey
+    );
+
+    return matchedProject?.id ?? projectKey;
+  }, [projectKey, projects]);
+
   const subscribeToProject = useCallback(
     (cb: (data: Project[]) => void, onError?: (error: Error) => void) => {
-      if (!projectId)
+      if (!resolvedProjectId)
         return () => {
           /* noop */
         };
       return subscribeProject(
-        projectId,
+        resolvedProjectId,
         (project) => {
           cb(project ? [project] : []);
         },
         onError
       );
     },
-    [projectId]
+    [resolvedProjectId]
   );
 
   const { data, isLoading, error } = useFirestoreSubscription<Project>(
-    queryKeys.projects.detail(projectId),
+    queryKeys.projects.detail(resolvedProjectId),
     subscribeToProject,
-    { enabled: Boolean(projectId) }
+    { enabled: Boolean(resolvedProjectId) }
   );
 
-  return { project: data?.[0] ?? null, isLoading, error };
+  const matchedProject = projects?.find(
+    (project) => project.id === projectKey || project.slug === projectKey
+  );
+
+  return {
+    project: data?.[0] ?? matchedProject ?? null,
+    isLoading: isProjectsLoading || isLoading,
+    error: error ?? projectsError,
+  };
 }
 
 /** @deprecated Use useProjectsQuery */

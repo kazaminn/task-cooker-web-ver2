@@ -39,12 +39,15 @@ export function ProjectLayout() {
       ? 'tasks'
       : 'overview';
   const isTaskDetailPage = path.includes('/tasks/') && !path.endsWith('/tasks');
+  const projectPath = project.slug || project.id;
 
   return (
     <div className="w-full py-6">
       <Breadcrumbs>
         <Breadcrumb href="/home">Dashboard</Breadcrumb>
-        <Breadcrumb href={`/projects/${project.id}`}>{project.slug}</Breadcrumb>
+        <Breadcrumb href={`/projects/${projectPath}`}>
+          {project.slug}
+        </Breadcrumb>
         {isTaskDetailPage ? <Breadcrumb>Task</Breadcrumb> : undefined}
       </Breadcrumbs>
 
@@ -72,10 +75,10 @@ export function ProjectLayout() {
       <Tabs
         selectedKey={selectedTab}
         onSelectionChange={(key) => {
-          if (key === 'overview') void navigate(`/projects/${project.id}`);
-          if (key === 'tasks') void navigate(`/projects/${project.id}/tasks`);
+          if (key === 'overview') void navigate(`/projects/${projectPath}`);
+          if (key === 'tasks') void navigate(`/projects/${projectPath}/tasks`);
           if (key === 'settings')
-            void navigate(`/projects/${project.id}/settings`);
+            void navigate(`/projects/${projectPath}/settings`);
         }}
         className="mt-6"
       >

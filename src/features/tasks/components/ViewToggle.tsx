@@ -8,10 +8,11 @@ export function ViewToggle() {
 
   return (
     <ToggleButtonGroup
+      aria-label="ビュー切替"
       selectionMode="single"
       selectedKeys={new Set([selectedView])}
       onSelectionChange={(keys) => {
-        const key = [...keys][0] as 'list' | 'kanban';
+        const key = Array.from(keys)[0] as 'list' | 'kanban' | undefined;
         if (key) setSelectedView(key);
       }}
     >

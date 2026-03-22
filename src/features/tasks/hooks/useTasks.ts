@@ -99,9 +99,18 @@ export function useTaskMutations(projectId: string, teamId: string) {
     mutationFn: async (data: TaskFormInput) => {
       return createTask(projectId, teamId, data);
     },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
         queryKey: queryKeys.tasks.list(projectId),
+        refetchType: 'none',
+      });
+      void queryClient.invalidateQueries({
+        queryKey: queryKeys.tasks.dashboard(),
+        refetchType: 'none',
+      });
+      void queryClient.invalidateQueries({
+        queryKey: queryKeys.tasks.profile(undefined),
+        refetchType: 'none',
       });
     },
   });
@@ -116,15 +125,22 @@ export function useTaskMutations(projectId: string, teamId: string) {
     }) => {
       return updateTask(projectId, taskId, data);
     },
-    onSuccess: async (_, { taskId }) => {
-      await queryClient.invalidateQueries({
+    onSuccess: (_, { taskId }) => {
+      void queryClient.invalidateQueries({
         queryKey: queryKeys.tasks.list(projectId),
+        refetchType: 'none',
       });
-      await queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: queryKeys.tasks.detail(projectId, taskId),
+        refetchType: 'none',
       });
-      await queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: queryKeys.tasks.dashboard(),
+        refetchType: 'none',
+      });
+      void queryClient.invalidateQueries({
+        queryKey: queryKeys.tasks.profile(undefined),
+        refetchType: 'none',
       });
     },
   });
@@ -133,15 +149,21 @@ export function useTaskMutations(projectId: string, teamId: string) {
     mutationFn: async (taskId: string) => {
       return deleteTask(projectId, taskId);
     },
-    onSuccess: async (_, taskId) => {
-      await queryClient.invalidateQueries({
+    onSuccess: (_, taskId) => {
+      void queryClient.invalidateQueries({
         queryKey: queryKeys.tasks.list(projectId),
+        refetchType: 'none',
       });
       queryClient.removeQueries({
         queryKey: queryKeys.tasks.detail(projectId, taskId),
       });
-      await queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: queryKeys.tasks.dashboard(),
+        refetchType: 'none',
+      });
+      void queryClient.invalidateQueries({
+        queryKey: queryKeys.tasks.profile(undefined),
+        refetchType: 'none',
       });
     },
   });
