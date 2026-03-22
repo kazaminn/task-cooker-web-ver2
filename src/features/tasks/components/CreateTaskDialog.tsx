@@ -17,6 +17,7 @@ import { useTaskMutations } from '../hooks/useTasks';
 interface CreateTaskDialogProps {
   isOpen: boolean;
   onClose: () => void;
+  onCreated?: (taskId: string) => void;
   projectId: string;
   teamId: string;
 }
@@ -26,13 +27,20 @@ type CreateTaskFormValues = Omit<TaskFormInput, 'dueDate'>;
 export function CreateTaskDialog({
   isOpen,
   onClose,
+  onCreated,
   projectId,
   teamId,
 }: CreateTaskDialogProps) {
-  const { create } = useTaskMutations(projectId, teamId);
+  const { create, createMutation } = useTaskMutations(projectId, teamId);
   const { team } = useTeam(teamId);
   const [dueDate, setDueDate] = useState<CalendarDate | null>(null);
-  const { control, handleSubmit, reset } = useForm<CreateTaskFormValues>({
+  const [submitError, setSubmitError] = useState<string | undefined>(undefined);
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<CreateTaskFormValues>({
     resolver: zodResolver(taskFormSchema.omit({ dueDate: true })),
     defaultValues: {
       title: '',
@@ -44,40 +52,57 @@ export function CreateTaskDialog({
   });
 
   const onSubmit = async (values: CreateTaskFormValues) => {
-    await create({
-      title: values.title,
-      description: values.description,
-      status: values.status,
-      priority: values.priority,
-      assigneeId: values.assigneeId ?? undefined,
-      dueDate: dueDate ? dueDate.toDate(getLocalTimeZone()) : undefined,
-    });
-    reset();
-    setDueDate(null);
-    onClose();
+    setSubmitError(undefined);
+
+    try {
+      const taskId = await create({
+        title: values.title,
+        description: values.description,
+        status: values.status,
+        priority: values.priority,
+        assigneeId: values.assigneeId ?? undefined,
+        dueDate: dueDate ? dueDate.toDate(getLocalTimeZone()) : undefined,
+      });
+      reset();
+      setDueDate(null);
+      onClose();
+      onCreated?.(taskId);
+    } catch (error) {
+      setSubmitError(
+        error instanceof Error ? error.message : '注文の作成に失敗しました。'
+      );
+    }
   };
 
   return (
-    <Modal isOpen={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <Modal
+      isOpen={isOpen}
+      onOpenChange={(open) => {
+        if (!open) {
+          setSubmitError(undefined);
+          onClose();
+        }
+      }}
+    >
       <Dialog aria-label="新しい注文を作成">
         <h2 className="mb-4 text-lg font-semibold text-body">新しい注文</h2>
         <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            void handleSubmit(onSubmit)(e);
+          onSubmit={(event) => {
+            event.preventDefault();
+            void handleSubmit(onSubmit)(event);
           }}
           className="space-y-4 sm:space-y-5"
         >
           <Controller
             name="title"
             control={control}
-            rules={{ required: true }}
             render={({ field }) => (
               <TextField
-                label="タイトル"
+                label="タイトル (必須)"
                 value={field.value}
                 onChange={field.onChange}
                 isRequired
+                errorMessage={errors.title?.message}
               />
             )}
           />
@@ -93,6 +118,40 @@ export function CreateTaskDialog({
             )}
           />
           <div className="grid gap-4 sm:grid-cols-2">
+            <Controller
+              name="status"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  label="ステータス"
+                  selectedKey={field.value}
+                  onSelectionChange={(key) => field.onChange(key as string)}
+                  isRequired
+                >
+                  <SelectItem id="order">注文済み</SelectItem>
+                  <SelectItem id="prep">仕込み中</SelectItem>
+                  <SelectItem id="cook">調理中</SelectItem>
+                  <SelectItem id="serve">提供済み</SelectItem>
+                </Select>
+              )}
+            />
+            <Controller
+              name="priority"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  label="優先順位"
+                  selectedKey={field.value}
+                  onSelectionChange={(key) => field.onChange(key as string)}
+                  isRequired
+                >
+                  <SelectItem id="urgent">緊急</SelectItem>
+                  <SelectItem id="high">高</SelectItem>
+                  <SelectItem id="medium">中</SelectItem>
+                  <SelectItem id="low">低</SelectItem>
+                </Select>
+              )}
+            />
             <DatePicker
               label="期限"
               value={dueDate}
@@ -125,44 +184,25 @@ export function CreateTaskDialog({
                 </Select>
               )}
             />
-            <Controller
-              name="status"
-              control={control}
-              render={({ field }) => (
-                <Select
-                  label="ステータス"
-                  selectedKey={field.value}
-                  onSelectionChange={(key) => field.onChange(key as string)}
-                >
-                  <SelectItem id="order">注文済み</SelectItem>
-                  <SelectItem id="prep">仕込み中</SelectItem>
-                  <SelectItem id="cook">調理中</SelectItem>
-                  <SelectItem id="serve">提供済み</SelectItem>
-                </Select>
-              )}
-            />
-            <Controller
-              name="priority"
-              control={control}
-              render={({ field }) => (
-                <Select
-                  label="優先順位"
-                  selectedKey={field.value}
-                  onSelectionChange={(key) => field.onChange(key as string)}
-                >
-                  <SelectItem id="urgent">緊急</SelectItem>
-                  <SelectItem id="high">高</SelectItem>
-                  <SelectItem id="medium">中</SelectItem>
-                  <SelectItem id="low">低</SelectItem>
-                </Select>
-              )}
-            />
           </div>
+          {submitError ? (
+            <p role="alert" className="text-sm text-danger">
+              {submitError}
+            </p>
+          ) : null}
           <div className="flex justify-end gap-2 pt-2">
-            <Button variant="secondary" onPress={onClose}>
+            <Button
+              variant="secondary"
+              onPress={onClose}
+              isDisabled={isSubmitting || createMutation.isPending}
+            >
               キャンセル
             </Button>
-            <Button variant="primary" type="submit">
+            <Button
+              variant="primary"
+              type="submit"
+              isPending={isSubmitting || createMutation.isPending}
+            >
               作成
             </Button>
           </div>

@@ -1,17 +1,13 @@
 import { format } from 'date-fns';
+import { PRIORITY_ICONS } from '@/features/tasks/components/TaskCard';
+import { STATUS_COLORS } from '@/libs/variants';
+import { PRIORITY_META, TASK_STATUS_META } from '@/types/constants';
 import type { Task } from '@/types/types';
 
 interface DashboardTaskCardProps {
   task: Task;
   onPress: (task: Task) => void;
 }
-
-const STATUS_LABELS = {
-  order: '注文済み',
-  prep: '仕込み中',
-  cook: '調理中',
-  serve: '提供済み',
-} as const;
 
 export function DashboardTaskCard({ task, onPress }: DashboardTaskCardProps) {
   return (
@@ -27,12 +23,20 @@ export function DashboardTaskCard({ task, onPress }: DashboardTaskCardProps) {
             {task.title}
           </p>
         </div>
-        <span className="rounded-full bg-hover px-2.5 py-1 text-xs text-muted">
-          {STATUS_LABELS[task.status]}
+        <span
+          className={`rounded-full px-2.5 py-1 text-xs ${STATUS_COLORS[task.status]}`}
+        >
+          {TASK_STATUS_META[task.status].ja}
         </span>
       </div>
       <div className="mt-3 flex items-center gap-3 text-xs text-muted">
-        <span>{task.priority}</span>
+        <span
+          aria-label={PRIORITY_META[task.priority].ja}
+          className="inline-flex items-center gap-1"
+        >
+          {PRIORITY_ICONS[task.priority]}
+          <span>{PRIORITY_META[task.priority].ja}</span>
+        </span>
         <span>{task.dueDate ? format(task.dueDate, 'M/d') : '期限未設定'}</span>
       </div>
     </button>

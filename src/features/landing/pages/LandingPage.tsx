@@ -1,4 +1,5 @@
-import { useNavigate } from 'react-router';
+import { Navigate, useNavigate } from 'react-router';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 import { Button } from '@/ui/components/Button';
 import { Link } from '@/ui/components/Link';
 
@@ -18,7 +19,20 @@ function FeatureCard({
 }
 
 export function LandingPage() {
+  const { isAuthenticated, loading } = useAuth();
   const navigate = useNavigate();
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-base">
+        <p className="text-muted">読み込み中...</p>
+      </div>
+    );
+  }
+
+  if (isAuthenticated) {
+    return <Navigate to="/home" replace />;
+  }
 
   return (
     <div className="min-h-screen bg-base">

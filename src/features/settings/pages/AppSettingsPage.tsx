@@ -15,7 +15,7 @@ export function AppSettingsPage() {
 
   const handleSignOut = async () => {
     await signOut();
-    void navigate('/login');
+    void navigate('/');
   };
 
   return (

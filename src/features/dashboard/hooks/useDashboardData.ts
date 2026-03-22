@@ -1,10 +1,10 @@
 import { useCallback, useMemo } from 'react';
 import { isBefore, isToday, startOfDay } from 'date-fns';
 import {
-  subscribeAllActivities,
+  subscribeProjectActivities,
   subscribeUserActivities,
 } from '@/api/activities';
-import { subscribeAllTasksCollectionGroup } from '@/api/tasks';
+import { subscribeTasks } from '@/api/tasks';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useProjectsQuery } from '@/features/projects/hooks/useProjects';
 import { queryKeys } from '@/hooks/queryKeys';
@@ -29,15 +29,81 @@ export function useDashboardData() {
   const { user } = useAuth();
   const userId = user?.uid;
   const { projects, isLoading: isProjectsLoading } = useProjectsQuery();
+  const projectIds = useMemo(
+    () => (projects ?? []).map((project) => project.id).filter(Boolean),
+    [projects]
+  );
   const subscribeToDashboardTasks = useCallback(
-    (cb: (data: Task[]) => void, onError?: (error: Error) => void) =>
-      subscribeAllTasksCollectionGroup(cb, onError),
-    []
+    (cb: (data: Task[]) => void, onError?: (error: Error) => void) => {
+      if (!projectIds.length) {
+        cb([]);
+        return () => {
+          /* noop */
+        };
+      }
+
+      const tasksByProject = new Map<string, Task[]>();
+      const emit = () => {
+        cb(
+          Array.from(tasksByProject.values())
+            .flat()
+            .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
+        );
+      };
+
+      const unsubscribes = projectIds.map((projectId) =>
+        subscribeTasks(
+          projectId,
+          (tasks) => {
+            tasksByProject.set(projectId, tasks);
+            emit();
+          },
+          onError
+        )
+      );
+
+      return () => {
+        unsubscribes.forEach((unsubscribe) => unsubscribe());
+      };
+    },
+    [projectIds]
   );
   const subscribeToRecentActivities = useCallback(
-    (cb: (data: Activity[]) => void, onError?: (error: Error) => void) =>
-      subscribeAllActivities(50, cb, onError),
-    []
+    (cb: (data: Activity[]) => void, onError?: (error: Error) => void) => {
+      if (!projectIds.length) {
+        cb([]);
+        return () => {
+          /* noop */
+        };
+      }
+
+      const activitiesByProject = new Map<string, Activity[]>();
+      const emit = () => {
+        cb(
+          Array.from(activitiesByProject.values())
+            .flat()
+            .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+            .slice(0, 50)
+        );
+      };
+
+      const unsubscribes = projectIds.map((projectId) =>
+        subscribeProjectActivities(
+          projectId,
+          12,
+          (activities) => {
+            activitiesByProject.set(projectId, activities);
+            emit();
+          },
+          onError
+        )
+      );
+
+      return () => {
+        unsubscribes.forEach((unsubscribe) => unsubscribe());
+      };
+    },
+    [projectIds]
   );
   const subscribeToUserActivities = useCallback(
     (cb: (data: Activity[]) => void, onError?: (error: Error) => void) => {
@@ -52,11 +118,11 @@ export function useDashboardData() {
     [userId]
   );
   const tasksState = useFirestoreSubscription<Task>(
-    queryKeys.tasks.dashboard(),
+    queryKeys.tasks.dashboard(projectIds),
     subscribeToDashboardTasks
   );
   const recentActivitiesState = useFirestoreSubscription<Activity>(
-    queryKeys.activities.dashboard(),
+    queryKeys.activities.dashboard(projectIds),
     subscribeToRecentActivities
   );
   const userActivitiesState = useFirestoreSubscription<Activity>(

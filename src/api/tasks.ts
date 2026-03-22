@@ -19,6 +19,12 @@ import { TASK_STATUS_META } from '@/types/constants';
 import type { Task, TaskFormInput } from '@/types/types';
 import { db } from './firebase';
 
+function omitUndefined<T extends Record<string, unknown>>(value: T): T {
+  return Object.fromEntries(
+    Object.entries(value).filter(([, fieldValue]) => fieldValue !== undefined)
+  ) as T;
+}
+
 function tasksCol(projectId: string) {
   return collection(db, 'projects', projectId, 'tasks').withConverter(
     taskConverter
@@ -107,16 +113,19 @@ export async function createTask(
     ? (snap.data().current as number) * 1000
     : 1000;
 
-  const docRef = await addDoc(col, {
-    ...data,
-    displayId,
-    projectRef: projectId,
-    teamId,
-    linkedTaskIds: [],
-    position,
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-  } as unknown as Task);
+  const docRef = await addDoc(
+    col,
+    omitUndefined({
+      ...data,
+      displayId,
+      projectRef: projectId,
+      teamId,
+      linkedTaskIds: [],
+      position,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    }) as unknown as Task
+  );
 
   await createCurrentUserActivity(projectId, {
     type: 'task_create',
@@ -138,10 +147,13 @@ export async function updateTask(
   const writeRef = doc(db, 'projects', projectId, 'tasks', taskId);
   const currentSnap = await getDoc(readRef);
   const currentTask = currentSnap.exists() ? currentSnap.data() : null;
-  await updateDoc(writeRef, {
-    ...data,
-    updatedAt: serverTimestamp(),
-  });
+  await updateDoc(
+    writeRef,
+    omitUndefined({
+      ...data,
+      updatedAt: serverTimestamp(),
+    })
+  );
 
   if (!currentTask) {
     return;

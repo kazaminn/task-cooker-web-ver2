@@ -9,6 +9,7 @@
 ## Current Focus
 
 - Primary issue context on GitHub: `#21` Kanban view + DnD
+- Current implementation follow-up: `#20` Task list view and `#22` FilterBar/ViewToggle/SearchField
 - Related areas touched during this session:
   - `#30` Dashboard main section
   - `#31` Dashboard activity + Quick Add
@@ -37,8 +38,22 @@ There are still local changes after `2f8feef` in these files:
 
 - `src/hooks/useFirestoreSubscription.ts`
 - `src/hooks/useFirestoreSubscription.test.ts`
+- `src/features/tasks/components/TaskListView.tsx`
+- `src/features/tasks/components/FilterBar.tsx`
+- `src/features/tasks/components/ViewToggle.tsx`
+- `src/features/projects/pages/ProjectTasksPage.tsx`
+- `src/features/tasks/components/TaskListView.test.tsx`
+- `src/features/tasks/components/TaskFilters.test.tsx`
+- `src/types/constants.ts`
 
 These changes are intended to stabilize shared Firestore listeners further.
+
+### Intent of the local task UI changes
+
+- Replace list-mode `TaskCard` reuse with issue-specific `TaskRow` rendering in `TaskListView`
+- Move task title search into `FilterBar` so filters/search live in one feature-level control group
+- Keep `ViewToggle` wired to Zustand with explicit accessibility labeling
+- Add focused tests for list rows and filter/view state wiring
 
 ### Intent of the local `useFirestoreSubscription` changes
 
@@ -49,7 +64,10 @@ These changes are intended to stabilize shared Firestore listeners further.
 ### Local verification for the uncommitted changes
 
 - `pnpm typecheck`
+- `pnpm lint`
+- `pnpm test`
 - `pnpm vitest run src/hooks/useFirestoreSubscription.test.ts --mode test`
+- `pnpm vitest run src/features/tasks/components/TaskListView.test.tsx src/features/tasks/components/TaskFilters.test.tsx --mode test`
 
 ## Remaining Risk
 

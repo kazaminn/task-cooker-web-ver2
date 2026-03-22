@@ -4,6 +4,7 @@ import {
   deleteDoc,
   doc,
   getDoc,
+  limit,
   onSnapshot,
   query,
   serverTimestamp,
@@ -36,16 +37,44 @@ export function subscribeProjects(
 }
 
 export function subscribeProject(
-  projectId: string,
+  projectKey: string,
   callback: (project: Project | null) => void,
   onError?: (error: Error) => void
 ): () => void {
-  const ref = doc(db, 'projects', projectId).withConverter(projectConverter);
-  return onSnapshot(
+  const ref = doc(db, 'projects', projectKey).withConverter(projectConverter);
+  let slugUnsubscribe: (() => void) | undefined;
+  const unsubscribe = onSnapshot(
     ref,
-    (snap) => callback(snap.exists() ? snap.data() : null),
+    (snap) => {
+      if (snap.exists()) {
+        slugUnsubscribe?.();
+        slugUnsubscribe = undefined;
+        callback(snap.data());
+        return;
+      }
+
+      if (slugUnsubscribe) {
+        return;
+      }
+
+      const slugQuery = query(
+        projectsCol,
+        where('slug', '==', projectKey),
+        limit(1)
+      );
+      slugUnsubscribe = onSnapshot(
+        slugQuery,
+        (slugSnap) => callback(slugSnap.docs[0]?.data() ?? null),
+        (err) => onError?.(err)
+      );
+    },
     (err) => onError?.(err)
   );
+
+  return () => {
+    unsubscribe();
+    slugUnsubscribe?.();
+  };
 }
 
 export async function createProject(

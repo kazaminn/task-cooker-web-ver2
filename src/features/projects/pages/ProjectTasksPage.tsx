@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useOutletContext, useParams } from 'react-router';
+import { useNavigate, useOutletContext, useParams } from 'react-router';
 import { CreateTaskDialog } from '@/features/tasks/components/CreateTaskDialog';
 import { FilterBar } from '@/features/tasks/components/FilterBar';
 import { KanbanBoard } from '@/features/tasks/components/KanbanBoard';
@@ -9,14 +9,15 @@ import { useTasksQuery } from '@/features/tasks/hooks/useTasks';
 import { useUIStore } from '@/stores/uiStore';
 import type { Project } from '@/types/types';
 import { Button } from '@/ui/components/Button';
-import { SearchField } from '@/ui/components/SearchField';
 
 export function ProjectTasksPage() {
   const { project } = useOutletContext<{ project: Project }>();
+  const navigate = useNavigate();
   const { projectId } = useParams<{ projectId: string }>();
-  const { tasks, isLoading } = useTasksQuery(projectId);
+  const resolvedProjectId = project.id ?? projectId;
+  const projectPath = project.slug || resolvedProjectId;
+  const { tasks, isLoading } = useTasksQuery(resolvedProjectId);
   const selectedView = useUIStore((s) => s.selectedView);
-  const setSearchQuery = useUIStore((s) => s.setSearchQuery);
   const [isDialogOpen, setDialogOpen] = useState(false);
 
   if (isLoading) {
@@ -30,11 +31,6 @@ export function ProjectTasksPage() {
           + 新しい注文
         </Button>
         <FilterBar />
-        <SearchField
-          aria-label="タイトル検索"
-          placeholder="タイトル検索..."
-          onChange={setSearchQuery}
-        />
         <ViewToggle />
       </div>
 
@@ -44,22 +40,25 @@ export function ProjectTasksPage() {
           <div className="hidden sm:block">
             <KanbanBoard
               tasks={tasks ?? []}
-              projectId={projectId!}
+              projectId={resolvedProjectId!}
               teamId={project.teamId}
             />
           </div>
           <div className="sm:hidden">
-            <TaskListView tasks={tasks ?? []} projectId={projectId!} />
+            <TaskListView tasks={tasks ?? []} projectId={resolvedProjectId!} />
           </div>
         </>
       ) : (
-        <TaskListView tasks={tasks ?? []} projectId={projectId!} />
+        <TaskListView tasks={tasks ?? []} projectId={resolvedProjectId!} />
       )}
 
       <CreateTaskDialog
         isOpen={isDialogOpen}
         onClose={() => setDialogOpen(false)}
-        projectId={projectId!}
+        onCreated={(taskId) => {
+          void navigate(`/projects/${projectPath}/tasks/${taskId}`);
+        }}
+        projectId={resolvedProjectId!}
         teamId={project.teamId}
       />
     </div>

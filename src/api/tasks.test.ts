@@ -171,6 +171,7 @@ describe('api/tasks', () => {
       text: 'タスク #3「Plate dessert」を作成しました',
     });
     expect(taskId).toBe('task-3');
+    expect(mocks.addDoc.mock.calls[0]?.[1]).not.toHaveProperty('dueDate');
   });
 
   it('records a serve activity when status changes to serve', async () => {

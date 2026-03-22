@@ -64,10 +64,11 @@ export function useFirestoreSubscription<T>(
         listeners: new Map(),
       };
       subscriptionRegistry.set(serializedQueryKey, entry);
-      entry.unsubscribe = subscribeFn(
+      const currentEntry = entry;
+      currentEntry.unsubscribe = subscribeFn(
         (nextData) => {
           queryClient.setQueryData(stableQueryKey, nextData);
-          for (const listener of entry.listeners.values()) {
+          for (const listener of currentEntry.listeners.values()) {
             listener.onData(nextData);
           }
         },
@@ -76,7 +77,7 @@ export function useFirestoreSubscription<T>(
             `[firestore] subscription error (${serializedQueryKey}):`,
             error.message
           );
-          for (const listener of entry.listeners.values()) {
+          for (const listener of currentEntry.listeners.values()) {
             listener.onError(error);
           }
         }

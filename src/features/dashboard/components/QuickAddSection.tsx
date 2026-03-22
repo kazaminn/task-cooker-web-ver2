@@ -4,12 +4,14 @@ import { useDashboardQuickAdd } from '../hooks/useDashboardQuickAdd';
 
 interface QuickAddSectionProps {
   projectId: string | undefined;
+  projectName?: string | undefined;
   teamId: string | undefined;
   disabled?: boolean;
 }
 
 export function QuickAddSection({
   projectId,
+  projectName,
   teamId,
   disabled = false,
 }: QuickAddSectionProps) {
@@ -18,12 +20,18 @@ export function QuickAddSection({
 
   return (
     <section className="rounded-3xl border border-main bg-surface p-5 shadow-sm">
-      <h2 className="text-lg font-semibold text-body">Quick Add</h2>
-      <p className="mt-1 text-sm text-muted">
-        デフォルトプロジェクトへ order を即追加します。
-      </p>
+      <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="text-lg font-semibold text-body">Quick Add</h2>
+          <p className="text-sm text-muted">
+            {projectName
+              ? `追加先: ${projectName}`
+              : '追加先のプロジェクトが未選択です'}
+          </p>
+        </div>
+      </div>
       <form
-        className="mt-4 space-y-3"
+        className="flex flex-col gap-3 sm:flex-row"
         onSubmit={(event) => {
           event.preventDefault();
           void submitQuickAdd();
@@ -35,23 +43,17 @@ export function QuickAddSection({
           value={quickAddText}
           onChange={setQuickAddText}
           isDisabled={disabled || isPending}
+          className="flex-1"
         />
         <Button
           variant="primary"
           type="submit"
-          className="w-full"
+          className="sm:min-w-32"
           isDisabled={disabled || isPending}
         >
           注文を追加
         </Button>
       </form>
-
-      <div className="mt-6 border-t border-main pt-5">
-        <h3 className="text-sm font-semibold text-body">Next Action</h3>
-        <p className="mt-2 text-sm text-muted">
-          新しい order を 1 件足すか、進行中タスクの整理に進んでください。
-        </p>
-      </div>
     </section>
   );
 }
