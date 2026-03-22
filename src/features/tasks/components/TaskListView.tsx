@@ -1,8 +1,10 @@
+import { useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router';
+import { getUser } from '@/api/users';
 import { STATUS_COLORS } from '@/libs/variants';
 import { PRIORITY_META, TASK_STATUS_META } from '@/types/constants';
-import type { Task, TaskPriority } from '@/types/types';
+import type { Task, TaskPriority, User } from '@/types/types';
 import { Avatar } from '@/ui/components/Avatar';
 import { PRIORITY_ICONS } from './TaskCard';
 
@@ -14,24 +16,76 @@ interface TaskListViewProps {
 interface TaskRowProps {
   task: Task;
   projectId: string;
+  assignee?: User | null;
 }
 
 const rowPriorityOrder: TaskPriority[] = ['urgent', 'high', 'medium', 'low'];
 
-function getAssigneeBadgeLabel(assigneeId: string | undefined) {
-  if (!assigneeId) {
+function getAssigneeDisplayLabel(
+  assigneeId: string | undefined,
+  assignee?: User | null
+) {
+  if (!assigneeId && !assignee) {
     return undefined;
   }
 
-  return assigneeId.trim().charAt(0).toUpperCase() || '?';
+  return assignee?.displayName ?? assignee?.email ?? assigneeId;
 }
 
-export function TaskRow({ task, projectId }: TaskRowProps) {
+function getAssigneeFallbackLabel(assigneeLabel: string | undefined) {
+  if (!assigneeLabel) {
+    return undefined;
+  }
+
+  return assigneeLabel.trim().charAt(0).toUpperCase() || '?';
+}
+
+function useAssigneeMap(tasks: Task[]) {
+  const [assignees, setAssignees] = useState<Record<string, User | null>>({});
+  const assigneeIds = useMemo(
+    () => [...new Set(tasks.map((task) => task.assigneeId).filter(Boolean))],
+    [tasks]
+  );
+  const hasAssignees = assigneeIds.length > 0;
+
+  useEffect(() => {
+    let isActive = true;
+
+    if (!hasAssignees) {
+      return () => {
+        isActive = false;
+      };
+    }
+
+    void (async () => {
+      const entries = await Promise.all(
+        assigneeIds.map(
+          async (assigneeId) => [assigneeId, await getUser(assigneeId)] as const
+        )
+      );
+      if (!isActive) return;
+      const nextAssignees = Object.fromEntries(entries) as Record<
+        string,
+        User | null
+      >;
+      setAssignees(nextAssignees);
+    })();
+
+    return () => {
+      isActive = false;
+    };
+  }, [assigneeIds, hasAssignees]);
+
+  return hasAssignees ? assignees : {};
+}
+
+export function TaskRow({ task, projectId, assignee }: TaskRowProps) {
   const navigate = useNavigate();
 
   const priorityText = PRIORITY_META[task.priority].ja;
   const dueDateText = task.dueDate ? format(task.dueDate, 'M/d') : undefined;
-  const assigneeBadgeLabel = getAssigneeBadgeLabel(task.assigneeId);
+  const assigneeLabel = getAssigneeDisplayLabel(task.assigneeId, assignee);
+  const assigneeBadgeLabel = getAssigneeFallbackLabel(assigneeLabel);
 
   return (
     <button
@@ -76,13 +130,14 @@ export function TaskRow({ task, projectId }: TaskRowProps) {
           {assigneeBadgeLabel ? (
             <span className="inline-flex items-center gap-2">
               <Avatar
-                src={undefined}
+                src={assignee?.photoURL}
                 alt=""
                 fallback={assigneeBadgeLabel}
+                seed={task.assigneeId}
                 size="sm"
                 className="border-main/60"
               />
-              <span>{task.assigneeId}</span>
+              <span>{assigneeLabel}</span>
             </span>
           ) : null}
         </div>
@@ -92,6 +147,8 @@ export function TaskRow({ task, projectId }: TaskRowProps) {
 }
 
 export function TaskListView({ tasks, projectId }: TaskListViewProps) {
+  const assignees = useAssigneeMap(tasks);
+
   if (!tasks.length) {
     return (
       <div className="rounded-xl border border-dashed border-main p-8 text-center">
@@ -103,7 +160,12 @@ export function TaskListView({ tasks, projectId }: TaskListViewProps) {
   return (
     <div className="space-y-2">
       {tasks.map((task) => (
-        <TaskRow key={task.id} task={task} projectId={projectId} />
+        <TaskRow
+          key={task.id}
+          task={task}
+          projectId={projectId}
+          assignee={task.assigneeId ? assignees[task.assigneeId] : undefined}
+        />
       ))}
     </div>
   );

@@ -7,6 +7,7 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut as firebaseSignOut,
+  updateProfile as firebaseUpdateProfile,
   type User as FirebaseUser,
 } from 'firebase/auth';
 import { auth } from './firebase';
@@ -54,6 +55,18 @@ export async function sendPasswordReset(email: string): Promise<void> {
 
 export async function signOut(): Promise<void> {
   await firebaseSignOut(auth);
+}
+
+export async function updateCurrentUserProfile(data: {
+  displayName?: string;
+  photoURL?: string | null;
+}): Promise<void> {
+  const currentUser = auth.currentUser;
+  if (!currentUser) {
+    throw new Error('ログインが必要です');
+  }
+
+  await firebaseUpdateProfile(currentUser, data);
 }
 
 export function onAuthStateChanged(
