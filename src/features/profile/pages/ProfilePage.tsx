@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { subscribeProjectActivities } from '@/api/activities';
-import { subscribeTasks } from '@/api/tasks';
-import { getUser } from '@/api/users';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { ContributionGraph } from '@/features/dashboard/components/ContributionGraph';
 import { useProjectsQuery } from '@/features/projects/hooks/useProjects';
 import { queryKeys } from '@/hooks/queryKeys';
 import { useFirestoreSubscription } from '@/hooks/useFirestoreSubscription';
+import { subscribeProjectActivities } from '@/services/activityService';
+import { getUser } from '@/services/authService';
+import { subscribeTasks } from '@/services/taskService';
 import type { Activity, Task, User } from '@/types/types';
 import { Avatar } from '@/ui/components/Avatar';
 

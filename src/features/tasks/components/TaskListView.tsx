@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router';
-import { getUser } from '@/api/users';
 import { STATUS_COLORS } from '@/libs/variants';
+import { getUser } from '@/services/authService';
 import { PRIORITY_META, TASK_STATUS_META } from '@/types/constants';
 import type { Task, TaskPriority, User } from '@/types/types';
 import { Avatar } from '@/ui/components/Avatar';

@@ -1,14 +1,14 @@
 import { useCallback, useMemo } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { queryKeys } from '@/hooks/queryKeys';
+import { useFirestoreSubscription } from '@/hooks/useFirestoreSubscription';
 import {
   subscribeTasks,
   subscribeTask,
   createTask,
   updateTask,
   deleteTask,
-} from '@/api/tasks';
-import { queryKeys } from '@/hooks/queryKeys';
-import { useFirestoreSubscription } from '@/hooks/useFirestoreSubscription';
+} from '@/services/taskService';
 import { useUIStore } from '@/stores/uiStore';
 import type { Task, TaskFormInput } from '@/types/types';
 

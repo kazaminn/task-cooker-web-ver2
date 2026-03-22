@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { getUser } from '@/api/users';
+import { getUser } from '@/services/authService';
 import type { User } from '@/types/types';
 import { Avatar } from '@/ui/components/Avatar';
 import { Button } from '@/ui/components/Button';

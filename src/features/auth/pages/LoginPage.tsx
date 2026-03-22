@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { signInWithEmail, signInWithGoogle } from '@/api/auth';
+import { signInWithEmail, signInWithGoogle } from '@/services/authService';
 import { Button } from '@/ui/components/Button';
 import { Link } from '@/ui/components/Link';
 import { TextField } from '@/ui/components/TextField';

@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
-import { subscribeProjectActivities } from '@/api/activities';
 import { useTasksQuery } from '@/features/tasks/hooks/useTasks';
 import { queryKeys } from '@/hooks/queryKeys';
 import { useFirestoreSubscription } from '@/hooks/useFirestoreSubscription';
+import { subscribeProjectActivities } from '@/services/activityService';
 import { TASK_STATUSES, type TaskStatus } from '@/types/constants';
 import type { Activity } from '@/types/types';
 

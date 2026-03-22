@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
-import { signOut, updateCurrentUserProfile } from '@/api/auth';
-import { getUser, updateUser } from '@/api/users';
 import { useAuth } from '@/features/auth/hooks/useAuth';
+import { signOut, updateCurrentUserProfile } from '@/services/authService';
+import { getUser, updateUser } from '@/services/authService';
 import { useUIStore } from '@/stores/uiStore';
 import type { ProfileFormInput } from '@/types/types';
 import { Button } from '@/ui/components/Button';

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
-import type { Comment } from '@/api/comments';
+import type { Comment } from '@/services/commentService';
 import { Button } from '@/ui/components/Button';
 import { TextArea } from '@/ui/components/TextArea';
 

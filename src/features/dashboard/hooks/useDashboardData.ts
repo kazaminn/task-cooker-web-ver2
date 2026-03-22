@@ -1,11 +1,11 @@
 import { useCallback, useMemo } from 'react';
 import { isBefore, isToday, startOfDay } from 'date-fns';
-import { subscribeProjectActivities } from '@/api/activities';
-import { subscribeTasks } from '@/api/tasks';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useProjectsQuery } from '@/features/projects/hooks/useProjects';
 import { queryKeys } from '@/hooks/queryKeys';
 import { useFirestoreSubscription } from '@/hooks/useFirestoreSubscription';
+import { subscribeProjectActivities } from '@/services/activityService';
+import { subscribeTasks } from '@/services/taskService';
 import type { Activity, Project, Task } from '@/types/types';
 
 function isDefined<T>(value: T | undefined): value is T {
