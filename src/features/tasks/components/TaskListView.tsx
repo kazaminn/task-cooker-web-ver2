@@ -43,7 +43,13 @@ function getAssigneeFallbackLabel(assigneeLabel: string | undefined) {
 function useAssigneeMap(tasks: Task[]) {
   const [assignees, setAssignees] = useState<Record<string, User | null>>({});
   const assigneeIds = useMemo(
-    () => [...new Set(tasks.map((task) => task.assigneeId).filter(Boolean))],
+    () => [
+      ...new Set(
+        tasks
+          .map((task) => task.assigneeId)
+          .filter((id): id is string => Boolean(id))
+      ),
+    ],
     [tasks]
   );
   const hasAssignees = assigneeIds.length > 0;
