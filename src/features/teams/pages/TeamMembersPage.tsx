@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { getUser } from '@/api/users';
 import type { User } from '@/types/types';
+import { Avatar } from '@/ui/components/Avatar';
 import { Button } from '@/ui/components/Button';
 import { Dialog } from '@/ui/components/Dialog';
 import { Modal } from '@/ui/components/Modal';
@@ -65,6 +66,12 @@ export function TeamMembersPage() {
   const [isInviteOpen, setInviteOpen] = useState(false);
   const [members, setMembers] = useState<Record<string, User | null>>({});
   const [isMembersLoading, setMembersLoading] = useState(false);
+
+  const getMemberFallback = (memberId: string) => {
+    const label =
+      members[memberId]?.displayName ?? members[memberId]?.email ?? memberId;
+    return label.slice(0, 2).toUpperCase();
+  };
 
   useEffect(() => {
     let isActive = true;
@@ -148,9 +155,12 @@ export function TeamMembersPage() {
             className="flex items-center justify-between rounded-lg border border-main bg-surface p-4"
           >
             <div className="flex items-center gap-3">
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-hover text-sm font-medium text-body">
-                {memberId.slice(0, 2).toUpperCase()}
-              </span>
+              <Avatar
+                src={members[memberId]?.photoURL}
+                fallback={getMemberFallback(memberId)}
+                seed={memberId}
+                size="md"
+              />
               <div>
                 <div className="text-sm font-medium text-body">
                   {members[memberId]?.email ?? memberId}

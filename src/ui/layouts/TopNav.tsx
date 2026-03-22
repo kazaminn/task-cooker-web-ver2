@@ -130,6 +130,7 @@ export function TopNav() {
                   <Avatar
                     src={user.photoURL ?? undefined}
                     fallback={user.displayName?.[0] ?? user.email?.[0] ?? '?'}
+                    seed={user.uid}
                     size="md"
                     className="h-9 w-9 border-main/60"
                   />
