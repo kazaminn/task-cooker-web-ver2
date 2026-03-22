@@ -16,7 +16,7 @@
     "lint:ci": "eslint .",
     "lint:strict": "eslint . --no-warn-ignored --max-warnings 0",
     "test": "vitest --pass-with-no-tests --run --mode test",
-    "test:firestore-rules": "pnpm exec vitest run --config vitest.rules.config.ts --mode test",
+    "test:firestore-rules": "pnpm exec vitest run --config vitest.rules.config.ts test/firestore.rules.test.ts --mode test",
     "test:watch": "vitest --pass-with-no-tests --mode test",
     "test:coverage": "vitest --pass-with-no-tests --run --mode test --coverage",
     "test:related": "bash scripts/test-related.sh",

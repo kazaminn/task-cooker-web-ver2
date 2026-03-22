@@ -53,7 +53,7 @@ pnpm emulators
 pnpm test:firestore-rules
 ```
 
-This test connects to the running Firestore emulator, loads `firestore.rules`, and executes [firestore.rules.test.ts](/home/mikan/projects/task-cooker/apps/task-cooker-web/src/firestore.rules.test.ts).
+This test connects to the running Firestore emulator, loads `firestore.rules`, and executes [firestore.rules.test.ts](/home/mikan/projects/task-cooker/apps/task-cooker-web/test/firestore.rules.test.ts).
 
 The current automated coverage checks:
 
