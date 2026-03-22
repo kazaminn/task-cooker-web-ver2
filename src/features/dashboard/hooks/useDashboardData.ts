@@ -8,6 +8,10 @@ import { queryKeys } from '@/hooks/queryKeys';
 import { useFirestoreSubscription } from '@/hooks/useFirestoreSubscription';
 import type { Activity, Project, Task } from '@/types/types';
 
+function isDefined<T>(value: T | undefined): value is T {
+  return value !== undefined;
+}
+
 function projectSummary(project: Project, tasks: Task[]) {
   const projectTasks = tasks.filter((task) => task.projectRef === project.id);
   const served = projectTasks.filter((task) => task.status === 'serve').length;
@@ -27,7 +31,7 @@ export function useDashboardData() {
   const userId = user?.uid;
   const { projects, isLoading: isProjectsLoading } = useProjectsQuery();
   const projectIds = useMemo(
-    () => (projects ?? []).map((project) => project.id).filter(Boolean),
+    () => (projects ?? []).map((project) => project.id).filter(isDefined),
     [projects]
   );
   const subscribeToDashboardTasks = useCallback(

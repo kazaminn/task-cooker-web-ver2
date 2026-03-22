@@ -10,13 +10,17 @@ import { useFirestoreSubscription } from '@/hooks/useFirestoreSubscription';
 import type { Activity, Task, User } from '@/types/types';
 import { Avatar } from '@/ui/components/Avatar';
 
+function isDefined<T>(value: T | undefined): value is T {
+  return value !== undefined;
+}
+
 export function ProfilePage() {
   const { user } = useAuth();
   const userId = user?.uid;
   const [profile, setProfile] = useState<User | null>(null);
   const { projects } = useProjectsQuery();
   const projectIds = useMemo(
-    () => (projects ?? []).map((project) => project.id).filter(Boolean),
+    () => (projects ?? []).map((project) => project.id).filter(isDefined),
     [projects]
   );
   const subscribeToUserActivities = useCallback(
