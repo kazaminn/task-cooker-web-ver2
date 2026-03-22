@@ -1,15 +1,15 @@
 import { useCallback, useMemo } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuth } from '@/features/auth/hooks/useAuth';
+import { queryKeys } from '@/hooks/queryKeys';
+import { useFirestoreSubscription } from '@/hooks/useFirestoreSubscription';
 import {
   subscribeProjects,
   subscribeProject,
   createProject,
   updateProject,
   deleteProject,
-} from '@/api/projects';
-import { useAuth } from '@/features/auth/hooks/useAuth';
-import { queryKeys } from '@/hooks/queryKeys';
-import { useFirestoreSubscription } from '@/hooks/useFirestoreSubscription';
+} from '@/services/projectService';
 import type { Project, ProjectFormInput } from '@/types/types';
 
 export function useProjectsQuery() {

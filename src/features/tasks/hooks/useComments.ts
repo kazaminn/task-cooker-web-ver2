@@ -1,14 +1,14 @@
 import { useCallback } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuth } from '@/features/auth/hooks/useAuth';
+import { queryKeys } from '@/hooks/queryKeys';
+import { useFirestoreSubscription } from '@/hooks/useFirestoreSubscription';
 import {
   subscribeComments,
   createComment,
   deleteComment,
   type Comment,
-} from '@/api/comments';
-import { useAuth } from '@/features/auth/hooks/useAuth';
-import { queryKeys } from '@/hooks/queryKeys';
-import { useFirestoreSubscription } from '@/hooks/useFirestoreSubscription';
+} from '@/services/commentService';
 
 export function useCommentsQuery(
   projectId: string | undefined,

@@ -1,5 +1,8 @@
 import { useCallback } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuth } from '@/features/auth/hooks/useAuth';
+import { queryKeys } from '@/hooks/queryKeys';
+import { useFirestoreSubscription } from '@/hooks/useFirestoreSubscription';
 import {
   subscribeTeams,
   subscribeTeam,
@@ -7,10 +10,7 @@ import {
   deleteTeam,
   addMember,
   removeMember,
-} from '@/api/teams';
-import { useAuth } from '@/features/auth/hooks/useAuth';
-import { queryKeys } from '@/hooks/queryKeys';
-import { useFirestoreSubscription } from '@/hooks/useFirestoreSubscription';
+} from '@/services/teamService';
 import type { Team, TeamType } from '@/types/types';
 
 export function useTeamsQuery() {

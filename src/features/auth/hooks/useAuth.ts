@@ -6,7 +6,7 @@ import {
   signInWithGoogle,
   signOut,
   signUpWithEmail,
-} from '@/api/auth';
+} from '@/services/authService';
 import { useAuthStore } from '../store/authStore';
 
 export const useAuth = () => {

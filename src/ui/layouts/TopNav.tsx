@@ -11,9 +11,9 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { NavLink, useNavigate } from 'react-router';
-import { signOut } from '@/api/auth';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useDarkTheme } from '@/hooks/useDarkTheme';
+import { signOut } from '@/services/authService';
 import { Avatar } from '@/ui/components/Avatar';
 import { Button } from '@/ui/components/Button';
 import { Menu, MenuItem, MenuTrigger } from '@/ui/components/Menu';

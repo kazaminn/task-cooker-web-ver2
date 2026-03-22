@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router';
-import { signInWithGoogle } from '@/api/auth';
-import { createPersonalTeam } from '@/api/teams';
-import { createUser, getUser } from '@/api/users';
+import { signInWithGoogle } from '@/services/authService';
+import { createUser, getUser } from '@/services/authService';
+import { createPersonalTeam } from '@/services/teamService';
 import { Link } from '@/ui/components/Link';
 import { AuthCard } from '../components/AuthCard';
 import { GoogleLoginButton } from '../components/GoogleLoginButton';
