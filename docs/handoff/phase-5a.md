@@ -5,7 +5,7 @@ status: cook
 
 ## order (未着手)
 
-- [ ] service層の薄い仕込み — src/services/ 導入、既存api/\*.tsをラップ
+（なし）
 
 ## prep (仕込み中)
 
@@ -13,7 +13,7 @@ status: cook
 
 ## cook (調理中)
 
-（なし）
+- [ ] service層の薄い仕込み — PR#48 レビュー待ち (#47, Code)
 
 ## serve (提供済み)
 
