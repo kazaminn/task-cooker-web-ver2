@@ -1,9 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { isBefore, isToday, startOfDay } from 'date-fns';
-import {
-  subscribeProjectActivities,
-  subscribeUserActivities,
-} from '@/api/activities';
+import { subscribeProjectActivities } from '@/api/activities';
 import { subscribeTasks } from '@/api/tasks';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useProjectsQuery } from '@/features/projects/hooks/useProjects';
@@ -107,15 +104,39 @@ export function useDashboardData() {
   );
   const subscribeToUserActivities = useCallback(
     (cb: (data: Activity[]) => void, onError?: (error: Error) => void) => {
-      if (!userId) {
+      if (!userId || !projectIds.length) {
         return () => {
           /* noop */
         };
       }
 
-      return subscribeUserActivities(userId, cb, onError);
+      const activitiesByProject = new Map<string, Activity[]>();
+      const emit = () => {
+        cb(
+          Array.from(activitiesByProject.values())
+            .flat()
+            .filter((activity) => activity.userId === userId)
+            .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+        );
+      };
+
+      const unsubscribes = projectIds.map((projectId) =>
+        subscribeProjectActivities(
+          projectId,
+          120,
+          (activities) => {
+            activitiesByProject.set(projectId, activities);
+            emit();
+          },
+          onError
+        )
+      );
+
+      return () => {
+        unsubscribes.forEach((unsubscribe) => unsubscribe());
+      };
     },
-    [userId]
+    [projectIds, userId]
   );
   const tasksState = useFirestoreSubscription<Task>(
     queryKeys.tasks.dashboard(projectIds),
@@ -126,7 +147,7 @@ export function useDashboardData() {
     subscribeToRecentActivities
   );
   const userActivitiesState = useFirestoreSubscription<Activity>(
-    queryKeys.activities.user(userId),
+    queryKeys.activities.user(userId, projectIds),
     subscribeToUserActivities,
     { enabled: Boolean(userId) }
   );

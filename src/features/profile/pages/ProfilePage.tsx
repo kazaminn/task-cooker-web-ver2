@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
-import { subscribeUserActivities } from '@/api/activities';
-import { subscribeAllTasksCollectionGroup } from '@/api/tasks';
+import { subscribeProjectActivities } from '@/api/activities';
+import { subscribeTasks } from '@/api/tasks';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { ContributionGraph } from '@/features/dashboard/components/ContributionGraph';
 import { useProjectsQuery } from '@/features/projects/hooks/useProjects';
@@ -13,44 +13,99 @@ export function ProfilePage() {
   const { user } = useAuth();
   const userId = user?.uid;
   const { projects } = useProjectsQuery();
+  const projectIds = useMemo(
+    () => (projects ?? []).map((project) => project.id).filter(Boolean),
+    [projects]
+  );
   const subscribeToUserActivities = useCallback(
     (cb: (data: Activity[]) => void, onError?: (error: Error) => void) => {
-      if (!userId)
+      if (!userId || !projectIds.length)
         return () => {
           /* noop */
         };
-      return subscribeUserActivities(userId, cb, onError);
+
+      const activitiesByProject = new Map<string, Activity[]>();
+      const emit = () => {
+        cb(
+          Array.from(activitiesByProject.values())
+            .flat()
+            .filter((activity) => activity.userId === userId)
+            .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+        );
+      };
+
+      const unsubscribes = projectIds.map((projectId) =>
+        subscribeProjectActivities(
+          projectId,
+          120,
+          (activities) => {
+            activitiesByProject.set(projectId, activities);
+            emit();
+          },
+          onError
+        )
+      );
+
+      return () => {
+        unsubscribes.forEach((unsubscribe) => unsubscribe());
+      };
     },
-    [userId]
+    [projectIds, userId]
   );
   const subscribeToTasks = useCallback(
-    (cb: (data: Task[]) => void, onError?: (error: Error) => void) =>
-      subscribeAllTasksCollectionGroup(cb, onError),
-    []
+    (cb: (data: Task[]) => void, onError?: (error: Error) => void) => {
+      if (!projectIds.length) {
+        cb([]);
+        return () => {
+          /* noop */
+        };
+      }
+
+      const tasksByProject = new Map<string, Task[]>();
+      const emit = () => {
+        cb(
+          Array.from(tasksByProject.values())
+            .flat()
+            .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
+        );
+      };
+
+      const unsubscribes = projectIds.map((projectId) =>
+        subscribeTasks(
+          projectId,
+          (tasks) => {
+            tasksByProject.set(projectId, tasks);
+            emit();
+          },
+          onError
+        )
+      );
+
+      return () => {
+        unsubscribes.forEach((unsubscribe) => unsubscribe());
+      };
+    },
+    [projectIds]
   );
 
   const { data: activities } = useFirestoreSubscription<Activity>(
-    queryKeys.activities.user(userId),
+    queryKeys.activities.user(userId, projectIds),
     subscribeToUserActivities,
     { enabled: Boolean(userId) }
   );
   const { data: allTasks } = useFirestoreSubscription<Task>(
-    queryKeys.tasks.profile(userId),
+    queryKeys.tasks.profile(userId, projectIds),
     subscribeToTasks,
     { enabled: Boolean(userId) }
   );
 
-  const projectIds = useMemo(
-    () =>
-      new Set((projects ?? []).map((project) => project.id).filter(Boolean)),
-    [projects]
-  );
+  const projectIdSet = useMemo(() => new Set(projectIds), [projectIds]);
   const tasks = useMemo(
     () =>
       (allTasks ?? []).filter(
-        (task) => task.projectRef != null && projectIds.has(task.projectRef)
+        (task) => task.projectRef != null && projectIdSet.has(task.projectRef)
       ),
-    [allTasks, projectIds]
+    [allTasks, projectIdSet]
   );
 
   const totalServed = tasks.filter((task) => task.status === 'serve').length;

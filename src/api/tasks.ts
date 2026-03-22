@@ -1,7 +1,6 @@
 import {
   addDoc,
   collection,
-  collectionGroup,
   deleteDoc,
   doc,
   getDoc,
@@ -11,7 +10,6 @@ import {
   runTransaction,
   serverTimestamp,
   updateDoc,
-  where,
 } from 'firebase/firestore';
 import { createCurrentUserActivity } from '@/api/activities';
 import { taskConverter } from '@/libs/firestore-converters';
@@ -56,34 +54,6 @@ export function subscribeTask(
   return onSnapshot(
     ref,
     (snap) => callback(snap.exists() ? snap.data() : null),
-    (err) => onError?.(err)
-  );
-}
-
-export function subscribeTasksCollectionGroup(
-  statuses: string[],
-  callback: (tasks: Task[]) => void,
-  onError?: (error: Error) => void
-): () => void {
-  const q = query(
-    collectionGroup(db, 'tasks').withConverter(taskConverter),
-    where('status', 'in', statuses)
-  );
-  return onSnapshot(
-    q,
-    (snap) => callback(snap.docs.map((d) => d.data())),
-    (err) => onError?.(err)
-  );
-}
-
-export function subscribeAllTasksCollectionGroup(
-  callback: (tasks: Task[]) => void,
-  onError?: (error: Error) => void
-): () => void {
-  const q = query(collectionGroup(db, 'tasks').withConverter(taskConverter));
-  return onSnapshot(
-    q,
-    (snap) => callback(snap.docs.map((d) => d.data())),
     (err) => onError?.(err)
   );
 }

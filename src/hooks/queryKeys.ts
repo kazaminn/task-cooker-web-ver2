@@ -9,8 +9,8 @@ export const queryKeys = {
     all: ['tasks'] as const,
     list: (projectId: string | undefined) =>
       [...queryKeys.tasks.all, projectId] as const,
-    profile: (userId: string | undefined) =>
-      [...queryKeys.tasks.all, 'profile', userId] as const,
+    profile: (userId: string | undefined, projectIds: string[] = []) =>
+      [...queryKeys.tasks.all, 'profile', userId, ...projectIds] as const,
     detail: (projectId: string | undefined, taskId: string | undefined) =>
       [...queryKeys.tasks.all, 'detail', projectId, taskId] as const,
     dashboard: (projectIds: string[] = []) =>
@@ -31,8 +31,8 @@ export const queryKeys = {
     all: ['activities'] as const,
     dashboard: (projectIds: string[] = []) =>
       [...queryKeys.activities.all, 'dashboard', ...projectIds] as const,
-    user: (userId: string | undefined) =>
-      [...queryKeys.activities.all, 'user', userId] as const,
+    user: (userId: string | undefined, projectIds: string[] = []) =>
+      [...queryKeys.activities.all, 'user', userId, ...projectIds] as const,
     project: (projectId: string | undefined, limitCount: number) =>
       [...queryKeys.activities.all, 'project', projectId, limitCount] as const,
   },

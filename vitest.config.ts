@@ -9,7 +9,11 @@ export default mergeConfig(
       environment: 'jsdom',
       setupFiles: ['./vitest.setup.ts'],
       include: ['**/*.test.ts', '**/*.test.tsx'],
-      exclude: ['**/node_modules/**', '**/*.emulator.test.ts'],
+      exclude: [
+        '**/node_modules/**',
+        '**/*.emulator.test.ts',
+        '**/firestore.rules.test.ts',
+      ],
     },
   })
 );
