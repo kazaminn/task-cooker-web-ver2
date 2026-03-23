@@ -1,7 +1,7 @@
 # Phase 5A: 出荷阻害の解消
 
 開始: 2026-03-22
-status: cook
+status: serve
 
 ## order (未着手)
 
@@ -9,11 +9,11 @@ status: cook
 
 ## prep (仕込み中)
 
-- [ ] a11y監査 (#37, 人間, 並行作業)
+（なし）
 
 ## cook (調理中)
 
-- [ ] service層の薄い仕込み — PR#48 レビュー待ち (#47, Code)
+（なし）
 
 ## serve (提供済み)
 
@@ -24,6 +24,8 @@ status: cook
 - [x] Codexによるレビュー: Phase 5A→5Bの順序妥当性確認
 - [x] CLAUDE.md 更新（CLAUDE_DRAFT.md → 本体反映）(Code + 管理人)
 - [x] .claude/commands/ 整備 — /chat, /do コマンド作成 (Code)
+- [x] service層の薄い仕込み — PR#48 マージ済み (#47, Code)
+- [x] a11y監査 (#37, 人間, 並行作業 → 5B以降で継続)
 
 ## 次フェーズ (5B) への申し送り
 
