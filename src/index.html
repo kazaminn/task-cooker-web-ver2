@@ -15,10 +15,7 @@
               : 'light'
             : storedTheme;
         document.documentElement.setAttribute('data-theme', resolvedTheme);
-        document.documentElement.setAttribute(
-          'data-theme-mode',
-          storedTheme
-        );
+        document.documentElement.setAttribute('data-theme-mode', storedTheme);
         document.documentElement.style.colorScheme = resolvedTheme;
       })();
     </script>
