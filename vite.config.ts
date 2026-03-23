@@ -18,6 +18,7 @@ export default defineConfig({
     },
   },
   build: {
+    outDir: path.resolve(dirname, 'dist'),
     rollupOptions: {
       plugins: [visualizer()],
     },
