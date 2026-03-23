@@ -5,10 +5,7 @@ status: order
 
 ## order (未着手)
 
-- [ ] Firebaseプロジェクト分離（dev/prod）
-- [ ] CI/CD必須チェック確立
-- [ ] release-checklist.md作成
-- [ ] Functions環境はエミュレーター前提（prod切り替えはPhase 8に先送り）
+（なし）
 
 ## prep (仕込み中)
 
@@ -25,6 +22,9 @@ status: order
 - [x] seedスクリプト本番対応 — --prod モード、テストユーザー3名(Opus/Haiku/Sonnet)、管理人入りチーム（Code）
 - [x] Firestore Security Rules本番デプロイ（管理人）
 - [x] ビルド出力先修正 — vite.config.ts outDir を ./dist に明示（Code）
+- [x] release-checklist.md作成（Code）
+- [x] CI/CD必須チェック確立 — CI修正 + Vercel自動デプロイで完了
+- [x] Firebaseプロジェクト分離 → Phase 8に先送り（Functions導入時に再検討）
 
 ## 前フェーズ (5B) からの引き継ぎ
 
