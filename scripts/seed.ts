@@ -72,6 +72,7 @@ if (mode === 'emulator') {
 
 const auth = getAuth();
 const db = getFirestore();
+db.settings({ ignoreUndefinedProperties: true });
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -213,8 +214,10 @@ function buildUsers(): {
   if (mode === 'prod') {
     const owner: User = {
       id: PROD_OWNER_UID,
-      displayName: '管理人',
-      email: '',
+      displayName: 'かざみん',
+      email: 'suzuking3@gmail.com',
+      photoURL:
+        'https://lh3.googleusercontent.com/ogw/AF2bZyhx7RDhBTEDeod5KGAZANyE5s3X1JD6-scSFYqf-1R0T6E=s64-c-mo',
       preferences: { theme: 'system', fontSize: 'medium', highContrast: false },
       createdAt: new Date(),
       updatedAt: new Date(),
