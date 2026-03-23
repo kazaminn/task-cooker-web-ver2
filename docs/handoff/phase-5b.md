@@ -5,10 +5,7 @@ status: cook
 
 ## order (未着手)
 
-- [ ] P0テスト: api/projects.ts — CRUD + subscribe
-- [ ] P0テスト: KanbanBoard — DnD でのステータス遷移
-- [ ] P0テスト: CreateTaskDialog — バリデーション、送信、リセット/close、エラー表示
-- [ ] カバレッジ計測環境整備 (`vitest --coverage` の設定追加)
+（なし）
 
 ## prep (仕込み中)
 
@@ -24,6 +21,10 @@ status: cook
 - [x] バンドルサイズ計測 — rollup-plugin-visualizer 導入済み (管理人)
 - [x] TaskListView ビルドエラー修正 — filter(Boolean) の型ガード追加 (Code)
 - [x] GitHub Issues連携用フィールド追加 — Task.githubIssueNumber/githubRepo, Project.githubRepo (Code, #50)
+- [x] P0テスト: api/projects.ts — CRUD + subscribe (Code)
+- [x] P0テスト: KanbanBoard — moveTasks純粋関数 + コンポーネントDnDフロー (Code)
+- [x] P0テスト: CreateTaskDialog — バリデーション、送信、エラー表示、close (Code)
+- [x] カバレッジ計測環境整備 — vitest --coverage + 傾斜つきthresholds設定 (Code)
 
 ## 前フェーズ (5A) からの引き継ぎ
 
