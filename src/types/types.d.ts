@@ -40,6 +40,7 @@ export interface Project {
   status: ProjectStatus;
   ownerId: string;
   memberIds: string[];
+  githubRepo?: string; // Linked GitHub repository "owner/repo" (reference only)
   createdAt: Date;
   updatedAt: Date;
 }
@@ -60,6 +61,8 @@ export interface Task {
   dueDate?: Date;
   linkedTaskIds: string[]; // Firestore doc IDs of linked tasks
   position: number; // Order index for sorting
+  githubIssueNumber?: number; // GitHub Issue number (reference only, written by sync skill)
+  githubRepo?: string; // "owner/repo" format (reference only, written by sync skill)
   createdAt: Date;
   updatedAt: Date;
 }

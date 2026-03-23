@@ -26,6 +26,7 @@ export const projectConverter: FirestoreDataConverter<Project> = {
       status: data.status ?? 'planning',
       ownerId: data.ownerId,
       memberIds: data.memberIds ?? [],
+      githubRepo: data.githubRepo ?? undefined,
       createdAt: toDate(data.createdAt),
       updatedAt: toDate(data.updatedAt),
     };
@@ -52,6 +53,8 @@ export const taskConverter: FirestoreDataConverter<Task> = {
       dueDate: data.dueDate ? toDate(data.dueDate) : undefined,
       linkedTaskIds: data.linkedTaskIds ?? [],
       position: data.position ?? 0,
+      githubIssueNumber: data.githubIssueNumber ?? undefined,
+      githubRepo: data.githubRepo ?? undefined,
       createdAt: toDate(data.createdAt),
       updatedAt: toDate(data.updatedAt),
     };
