@@ -37,3 +37,5 @@ firebase-data
 .claude/**/nanj-brainstorm
 
 stats.html
+**/serviceAccountKey.json
+VERCEL_SETUP.md

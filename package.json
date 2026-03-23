@@ -31,7 +31,8 @@
     "build-storybook": "storybook build",
     "chromatic": "chromatic",
     "emulators": "firebase emulators:start --import=./firebase-data --export-on-exit",
-    "seed": "cross-env FIRESTORE_EMULATOR_HOST=localhost:8080 AUTH_EMULATOR_HOST=localhost:9099 tsx scripts/seed.ts"
+    "seed": "cross-env FIRESTORE_EMULATOR_HOST=localhost:8080 AUTH_EMULATOR_HOST=localhost:9099 tsx scripts/seed.ts",
+    "seed:prod": "tsx scripts/seed.ts --prod"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.1.0",

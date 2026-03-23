@@ -1,0 +1,7 @@
+{
+  "buildCommand": "pnpm build",
+  "outputDirectory": "dist",
+  "framework": "vite",
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- src/ public/ index.html vite.config.ts tsconfig*.json package.json pnpm-lock.yaml",
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}
