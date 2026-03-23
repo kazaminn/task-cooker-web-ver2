@@ -214,6 +214,25 @@ describe('CreateTaskDialog', () => {
     expect(screen.getByLabelText('優先順位')).toBeInTheDocument();
   });
 
+  it('does not call create when title is empty (validation)', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <CreateTaskDialog
+        isOpen={true}
+        onClose={vi.fn()}
+        projectId="p-1"
+        teamId="t-1"
+      />
+    );
+
+    // タイトル未入力のまま送信
+    await user.click(screen.getByRole('button', { name: '作成' }));
+
+    // create が呼ばれないことを検証
+    expect(mocks.create).not.toHaveBeenCalled();
+  });
+
   it('submits valid form and calls onClose + onCreated', async () => {
     const user = userEvent.setup();
     const onClose = vi.fn();
@@ -245,6 +264,36 @@ describe('CreateTaskDialog', () => {
     await waitFor(() => {
       expect(onClose).toHaveBeenCalled();
       expect(onCreated).toHaveBeenCalledWith('task-new');
+    });
+  });
+
+  it('resets form fields after successful submission', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <CreateTaskDialog
+        isOpen={true}
+        onClose={vi.fn()}
+        projectId="p-1"
+        teamId="t-1"
+      />
+    );
+
+    const titleInput = screen.getByLabelText('タイトル (必須)');
+    const descInput = screen.getByLabelText('説明');
+
+    await user.type(titleInput, 'New Task');
+    await user.type(descInput, 'Some description');
+    await user.click(screen.getByRole('button', { name: '作成' }));
+
+    await waitFor(() => {
+      expect(mocks.create).toHaveBeenCalled();
+    });
+
+    // フォームがリセットされている（デフォルト値に戻る）
+    await waitFor(() => {
+      expect(titleInput).toHaveValue('');
+      expect(descInput).toHaveValue('');
     });
   });
 

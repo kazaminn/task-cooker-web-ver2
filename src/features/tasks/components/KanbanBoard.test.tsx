@@ -1,8 +1,7 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Task, TaskStatus } from '@/types/types';
-import { moveTasks } from './KanbanBoard';
 
 const mocks = vi.hoisted(() => ({
   update: vi.fn(),
@@ -67,106 +66,6 @@ function makeTask(overrides: Partial<Task> & { id: string }): Task {
   };
 }
 
-describe('moveTasks (pure function)', () => {
-  const tasks: Task[] = [
-    makeTask({ id: 't-1', title: 'A', status: 'order', position: 1000 }),
-    makeTask({ id: 't-2', title: 'B', status: 'order', position: 2000 }),
-    makeTask({ id: 't-3', title: 'C', status: 'prep', position: 1000 }),
-  ];
-
-  it('moves a task to a new status column', () => {
-    const result = moveTasks({
-      tasks,
-      taskIds: ['t-1'],
-      targetStatus: 'prep',
-      targetKey: null,
-    });
-
-    const moved = result.nextTasks.find((t) => t.id === 't-1');
-    expect(moved?.status).toBe('prep');
-    expect(result.changedTaskIds).toContain('t-1');
-  });
-
-  it('inserts before a target key', () => {
-    const result = moveTasks({
-      tasks,
-      taskIds: ['t-1'],
-      targetStatus: 'prep',
-      targetKey: 't-3',
-      dropPosition: 'before',
-    });
-
-    const prepTasks = result.nextTasks.filter((t) => t.status === 'prep');
-    expect(prepTasks[0]?.id).toBe('t-1');
-    expect(prepTasks[1]?.id).toBe('t-3');
-  });
-
-  it('inserts after a target key', () => {
-    const result = moveTasks({
-      tasks,
-      taskIds: ['t-1'],
-      targetStatus: 'prep',
-      targetKey: 't-3',
-      dropPosition: 'after',
-    });
-
-    const prepTasks = result.nextTasks.filter((t) => t.status === 'prep');
-    expect(prepTasks[0]?.id).toBe('t-3');
-    expect(prepTasks[1]?.id).toBe('t-1');
-  });
-
-  it('appends to end when targetKey is null', () => {
-    const result = moveTasks({
-      tasks,
-      taskIds: ['t-1'],
-      targetStatus: 'prep',
-      targetKey: null,
-    });
-
-    const prepTasks = result.nextTasks.filter((t) => t.status === 'prep');
-    expect(prepTasks[prepTasks.length - 1]?.id).toBe('t-1');
-  });
-
-  it('recalculates positions as (index + 1) * 1000', () => {
-    const result = moveTasks({
-      tasks,
-      taskIds: ['t-1'],
-      targetStatus: 'prep',
-      targetKey: 't-3',
-      dropPosition: 'before',
-    });
-
-    const prepTasks = result.nextTasks.filter((t) => t.status === 'prep');
-    expect(prepTasks[0]?.position).toBe(1000);
-    expect(prepTasks[1]?.position).toBe(2000);
-  });
-
-  it('returns only changed task IDs', () => {
-    const result = moveTasks({
-      tasks,
-      taskIds: ['t-2'],
-      targetStatus: 'order',
-      targetKey: 't-1',
-      dropPosition: 'before',
-    });
-
-    expect(result.changedTaskIds).toContain('t-1');
-    expect(result.changedTaskIds).toContain('t-2');
-    expect(result.changedTaskIds).not.toContain('t-3');
-  });
-
-  it('returns empty changedTaskIds when task IDs do not exist', () => {
-    const result = moveTasks({
-      tasks,
-      taskIds: ['nonexistent'],
-      targetStatus: 'cook',
-      targetKey: null,
-    });
-
-    expect(result.changedTaskIds).toEqual([]);
-  });
-});
-
 const { KanbanBoard } = await import('./KanbanBoard');
 
 describe('KanbanBoard component', () => {
@@ -185,11 +84,8 @@ describe('KanbanBoard component', () => {
     expect(screen.getByTestId('column-serve')).toBeInTheDocument();
   });
 
-  it('calls update for each changed task on rootDrop', async () => {
-    const tasks = [
-      makeTask({ id: 'task-1', status: 'order', position: 1000 }),
-      makeTask({ id: 'task-2', status: 'prep', position: 1000 }),
-    ];
+  it('moves task to target column on rootDrop', async () => {
+    const tasks = [makeTask({ id: 'task-1', status: 'order', position: 1000 })];
 
     render(<KanbanBoard tasks={tasks} projectId="project-1" teamId="team-1" />);
 
@@ -201,9 +97,44 @@ describe('KanbanBoard component', () => {
         position: expect.any(Number),
       });
     });
+
+    // task-1 が prep に移動し order から消えている
+    const prepColumn = screen.getByTestId('column-prep');
+    expect(within(prepColumn).getByTestId('task-task-1')).toBeInTheDocument();
+    expect(
+      within(screen.getByTestId('column-order')).queryByTestId('task-task-1')
+    ).not.toBeInTheDocument();
   });
 
-  it('rolls back on update failure', async () => {
+  it('updates all changed tasks including sibling position recalc', async () => {
+    // insert-prep は onInsert(['task-1'], 'task-2', 'before')
+    // task-1 を task-2 の前に挿入 → 両方の position が再計算される
+    const tasks = [
+      makeTask({ id: 'task-1', status: 'order', position: 1000 }),
+      makeTask({ id: 'task-2', status: 'prep', position: 1000 }),
+    ];
+
+    render(<KanbanBoard tasks={tasks} projectId="project-1" teamId="team-1" />);
+
+    screen.getByTestId('insert-prep').click();
+
+    await waitFor(() => {
+      // task-1: order→prep, position→1000
+      expect(mocks.update).toHaveBeenCalledWith('task-1', {
+        status: 'prep',
+        position: 1000,
+      });
+      // task-2: prep のまま, position 1000→2000（後ろにずれる）
+      expect(mocks.update).toHaveBeenCalledWith('task-2', {
+        status: 'prep',
+        position: 2000,
+      });
+    });
+
+    expect(mocks.update).toHaveBeenCalledTimes(2);
+  });
+
+  it('rolls back tasks to original columns on update failure', async () => {
     mocks.update.mockRejectedValue(new Error('network error'));
 
     const tasks = [makeTask({ id: 'task-1', status: 'order', position: 1000 })];
@@ -213,6 +144,12 @@ describe('KanbanBoard component', () => {
 
     render(<KanbanBoard tasks={tasks} projectId="project-1" teamId="team-1" />);
 
+    // task-1 は最初 order にいる
+    expect(
+      within(screen.getByTestId('column-order')).getByTestId('task-task-1')
+    ).toBeInTheDocument();
+
+    // prep に rootDrop → 楽観更新 → 失敗 → rollback
     screen.getByTestId('rootdrop-prep').click();
 
     await waitFor(() => {
@@ -222,8 +159,29 @@ describe('KanbanBoard component', () => {
       );
     });
 
-    expect(screen.getByTestId('task-task-1')).toBeInTheDocument();
+    // rollback 後: task-1 は order に戻り、prep にはいない
+    expect(
+      within(screen.getByTestId('column-order')).getByTestId('task-task-1')
+    ).toBeInTheDocument();
+    expect(
+      within(screen.getByTestId('column-prep')).queryByTestId('task-task-1')
+    ).not.toBeInTheDocument();
 
     consoleSpy.mockRestore();
+  });
+
+  it('does not call update when drop causes no changes', async () => {
+    // task-1 は既に order にいて、order に rootDrop する → 変化なし
+    const tasks = [makeTask({ id: 'task-1', status: 'order', position: 1000 })];
+
+    render(<KanbanBoard tasks={tasks} projectId="project-1" teamId="team-1" />);
+
+    screen.getByTestId('rootdrop-order').click();
+
+    // 少し待って update が呼ばれていないことを確認
+    await new Promise((r) => {
+      setTimeout(r, 50);
+    });
+    expect(mocks.update).not.toHaveBeenCalled();
   });
 });

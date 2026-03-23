@@ -23,8 +23,7 @@ function sortTasks(tasks: Task[]) {
   return [...tasks].sort((a, b) => a.position - b.position);
 }
 
-/** @internal Exported for testing */
-export function moveTasks({
+function moveTasks({
   tasks,
   taskIds,
   targetStatus,
