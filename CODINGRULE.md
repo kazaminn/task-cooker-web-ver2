@@ -56,6 +56,8 @@ All code must be formatted with Prettier before commit. Run `pnpm format` or rel
 
 - **Readability**: Break long lists of Tailwind classes into multiple lines to prevent horizontal scrolling.
 
+- **No inline styles**: Do not use the `style` prop for decoration. Use `@theme`-registered design tokens via Tailwind utility classes instead. The only exception is decorative pseudo-element patterns accompanied by `aria-hidden="true"`.
+
 ## 7. Accessibility
 
 All components must be accessible by default.

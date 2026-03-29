@@ -1,6 +1,6 @@
 # Page Anatomy
 
-last-updated: 2026-03-21
+last-updated: 2026-03-29
 
 全ページのアナトミー定義。世界観・メタファーは `user-journey.md` に準拠。
 
@@ -17,6 +17,7 @@ last-updated: 2026-03-21
     <GlobalNav>                          // Center
       <NavLink to="/home">Dashboard</NavLink>
       <NavLink to="/projects">Projects</NavLink>
+      <NavLink to="/notes">Notes</NavLink>
     </GlobalNav>
     <UserMenu>                           // Right
       <UserAvatar />
@@ -282,12 +283,14 @@ last-updated: 2026-03-21
   <ProjectTabs>                            // react-aria TabList
     <Tab to=".">Overview</Tab>             // index route = overview 直表示
     <Tab to="tasks">Tasks</Tab>
+    <Tab to="notes">Notes</Tab>
     <Tab to="settings">Settings</Tab>
   </ProjectTabs>
   <Outlet />                               // サブルートの中身
     // index:    → ProjectOverviewPage
     // tasks:    → ProjectTasksPage
     // tasks/:id → TaskDetailPage
+    // notes:    → ProjectNotesPage
     // settings: → ProjectSettingsPage
 </ProjectLayout>
 ```
@@ -317,8 +320,11 @@ last-updated: 2026-03-21
 
 ```
 <ProjectOverviewPage>
-  <ProjectStatusBadge status="cooking" />  // 営業中 等
-  <h1>{projectName}</h1>
+  <ProjectHeader>
+    <ProjectStatusBadge status="cooking" />  // 営業中 等
+    <h1>{project.name}</h1>
+    <p>{project.shortDescription}</p>        // 新規（input で入力。1行）
+  </ProjectHeader>
 
   <ProgressSection>
     <ProgressMeter value={doneRatio} />    // 12/15 tasks  80%
@@ -335,6 +341,11 @@ last-updated: 2026-03-21
     onEdit={updateOverview}                // インライン編集
   />
 
+  <ProjectReadme                           // 新規（textarea。将来 Markdown エディタ）
+    value={project.readme}
+    onSave={updateReadme}
+  />
+
   <RecentActivity                          // プロジェクト内の直近5件
     activities={projectActivities}
   />
@@ -343,16 +354,19 @@ last-updated: 2026-03-21
 
 #### データ要件
 
-| データ               | Firestore クエリ                                                 | リアルタイム     |
-| -------------------- | ---------------------------------------------------------------- | ---------------- |
-| プロジェクト詳細     | `projects/{projectId}`                                           | Yes (onSnapshot) |
-| タスク一覧（集計用） | `projects/{projectId}/tasks`                                     | Yes (onSnapshot) |
-| アクティビティ       | `projects/{projectId}/activities` orderBy createdAt desc limit 5 | Yes (onSnapshot) |
+| データ               | Firestore クエリ                                                 | リアルタイム                       |
+| -------------------- | ---------------------------------------------------------------- | ---------------------------------- |
+| プロジェクト詳細     | `projects/{projectId}`                                           | Yes (onSnapshot)                   |
+| タスク一覧（集計用） | `projects/{projectId}/tasks`                                     | Yes (onSnapshot)                   |
+| アクティビティ       | `projects/{projectId}/activities` orderBy createdAt desc limit 5 | Yes (onSnapshot)                   |
+| project.readme       | `projects/{projectId}` 内のフィールド                            | Yes (既存の onSnapshot で取得済み) |
 
 #### ユーザーアクション
 
 - ステータスバッジ → ステータス変更ドロップダウン
+- shortDescription テキスト → インライン編集
 - overview テキスト → インライン編集
+- readme テキスト → インライン編集（将来 Markdown エディタ）
 
 #### レスポンシブ
 
@@ -495,9 +509,17 @@ last-updated: 2026-03-21
     />
   </TaskMetadata>
 
-  <TaskDescription                         // 本文（プレーンテキスト）
+  <TaskDescription                         // 変更: input → textarea
+    as="textarea"                          // react-aria TextArea
+    rows={6}
     value={task.description}
     onSave={updateDescription}
+  />
+
+  <LinkedNote                              // 新規: linkedNoteId がある場合に表示
+    noteId={task.linkedNoteId}
+    onNavigate={() => navigate(`/notes/${task.linkedNoteId}`)}
+    onUnlink={unlinkNote}
   />
 
   <CommentThread>                          // コメント一覧
@@ -513,8 +535,10 @@ last-updated: 2026-03-21
       body="useShallowを使うと..."
       createdAt="3/19 11:00"
     />
-    <CommentInput                          // コメント投稿フォーム
-      onSubmit={addComment}
+    <CommentInput                          // 変更: input → textarea
+      as="textarea"
+      rows={3}
+      onSubmit={addComment}                // Ctrl+Enter or ボタンで送信
     />
   </CommentThread>
 </TaskDetailPage>
@@ -527,6 +551,7 @@ last-updated: 2026-03-21
 | タスク詳細                   | `projects/{projectId}/tasks/{taskId}`                            | Yes (onSnapshot) |
 | コメント                     | `projects/{projectId}/tasks/{taskId}/comments` orderBy createdAt | Yes (onSnapshot) |
 | チームメンバー（assignee用） | `teams/{teamId}` の memberIds                                    | No               |
+| リンク先 Note                | `notes/{linkedNoteId}`                                           | No (1回読み)     |
 
 #### ユーザーアクション
 
@@ -730,6 +755,96 @@ last-updated: 2026-03-21
 
 ---
 
+### Note List Page
+
+| 項目          | 内容                                    |
+| ------------- | --------------------------------------- |
+| パス          | `/notes`                                |
+| 説明          | 帳簿棚。全ノートの一覧                  |
+| Journey Phase | Phase 5+                                |
+| ファイル      | `features/notes/pages/NoteListPage.tsx` |
+
+#### コンポーネントツリー（v1: 空ページ）
+
+```
+<NoteListPage>
+  <h1>ノート一覧</h1>
+  <EmptyState message={getCopy('emptyNotes')} />
+</NoteListPage>
+```
+
+> **v1 スコープ**: 空ページ + 空状態メッセージのみ。CRUD は v2。
+
+#### データ要件
+
+| データ   | Firestore クエリ                                        | リアルタイム |
+| -------- | ------------------------------------------------------- | ------------ |
+| 全ノート | `notes` where ownerId == userId, orderBy updatedAt desc | Yes          |
+
+---
+
+### Note Detail Page
+
+| 項目          | 内容                                      |
+| ------------- | ----------------------------------------- |
+| パス          | `/notes/:noteId`                          |
+| 説明          | 帳簿の中身。ノートの閲覧・編集            |
+| Journey Phase | Phase 5+                                  |
+| ファイル      | `features/notes/pages/NoteDetailPage.tsx` |
+
+#### コンポーネントツリー（v1: 空ページ）
+
+```
+<NoteDetailPage>
+  <h1>ノート詳細</h1>
+  <p>noteId: {params.noteId}</p>
+</NoteDetailPage>
+```
+
+> **v1 スコープ**: ルーティング確認用の空ページのみ。Markdown エディタ・タグ管理・相互参照は v2。
+
+#### データ要件（v2 で実装）
+
+| データ         | Firestore クエリ               | リアルタイム     |
+| -------------- | ------------------------------ | ---------------- |
+| ノート詳細     | `notes/{noteId}`               | Yes (onSnapshot) |
+| リンク先タスク | linkedTaskIds から各タスク取得 | No (1回読み)     |
+
+---
+
+### Project Notes Page
+
+| 項目          | 内容                                                   |
+| ------------- | ------------------------------------------------------ |
+| パス          | `/projects/:projectId/notes`                           |
+| 説明          | プロジェクトに紐づくノートの一覧（タグベースフィルタ） |
+| Journey Phase | Phase 5+                                               |
+| ファイル      | `features/projects/pages/ProjectNotesPage.tsx`         |
+
+#### コンポーネントツリー（v1: 空ページ）
+
+```
+<ProjectNotesPage>
+  <h1>{project.name} のノート</h1>
+  <EmptyState message={getCopy('emptyNotes')} />
+</ProjectNotesPage>
+```
+
+> **v1 スコープ**: 空ページのみ。タグフィルタ表示は v2。
+
+#### データ要件（v2 で実装）
+
+| データ             | Firestore クエリ                              | リアルタイム |
+| ------------------ | --------------------------------------------- | ------------ |
+| プロジェクトのタグ | `projects/{projectId}` の tag フィールド      | Yes          |
+| タグ一致ノート     | `notes` where tags array-contains project.tag | Yes          |
+
+#### ユーザーアクション（v2）
+
+- ノートカードクリック → `/notes/:noteId` に遷移
+
+---
+
 ### App Settings Page
 
 | 項目          | 内容                                          |
@@ -746,9 +861,9 @@ last-updated: 2026-03-21
   <h1>設定</h1>
 
   <SettingsSection title="テーマ">
-    <ThemeToggle>                           // Light / Dark 切替
-      <ToggleButton>☀ Light</ToggleButton>
-      <ToggleButton>☾ Dark</ToggleButton>
+    <ThemeToggle>                           // 2テーマ切替
+      <ToggleButton>Light</ToggleButton>
+      <ToggleButton>Tavern Dark</ToggleButton>
     </ThemeToggle>
   </SettingsSection>
 
@@ -799,5 +914,8 @@ last-updated: 2026-03-21
 | Project Settings | `/projects/:id/settings`      | projects/{id}                          | Yes          |
 | Team List        | `/teams`                      | teams                                  | Yes          |
 | Team Members     | `/teams/:id/members`          | teams/{id}                             | Yes          |
+| Note List        | `/notes`                      | notes where ownerId == userId          | Yes          |
+| Note Detail      | `/notes/:noteId`              | notes/{noteId}                         | Yes          |
+| Project Notes    | `/projects/:id/notes`         | notes where tags contains project.tag  | Yes          |
 | Profile          | `/profile`                    | user, activities(集計)                 | 部分的       |
 | App Settings     | `/settings`                   | localStorage                           | No           |

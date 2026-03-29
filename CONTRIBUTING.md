@@ -12,6 +12,8 @@
 
 本リポジトリは commitlint を利用します。コミットメッセージは以下形式に従ってください。
 
+- 正確な定義は、commitlint 設定を先に確認する（`./commitlint.config.js`）
+
 `<emoji> <type>(<scope>): <subject>`
 
 許可される `type` (emoji):
