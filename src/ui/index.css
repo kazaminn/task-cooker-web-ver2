@@ -264,15 +264,7 @@
   --background-color-scrollbar-thumb: #4d4a46;
   --background-color-scrollbar-track: #171513;
 
-  --color-status-order: #cbd5e1;
-  --color-status-prep: #fef08a;
-  --color-status-cook: #f97316;
-  --color-status-serve: #fbbf24;
-
-  --color-status-order-text: #0d0d0e;
-  --color-status-prep-text: #0d0d0e;
-  --color-status-cook-text: #ffffff;
-  --color-status-serve-text: #0d0d0e;
+  /* Status colors are theme-invariant — inherited from @theme */
 
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);

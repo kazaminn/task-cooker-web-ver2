@@ -190,7 +190,7 @@ export type ProjectTab = 'overview' | 'tasks' | 'mixes' | 'settings';
 export interface UIStateData {
   isSidebarCollapsed: boolean;
   isUserMenuOpen: boolean;
-  theme: 'light' | 'dark' | 'system';
+  theme: 'tavern-light' | 'tavern-dark';
   toasts: Toast[];
   activeModal: ModalType;
   activeDrawer: DrawerType;

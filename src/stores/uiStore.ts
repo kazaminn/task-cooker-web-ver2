@@ -48,8 +48,8 @@ function getInitialTheme(): Theme {
 
 function getInitialReducedMotion(): boolean {
   if (typeof window === 'undefined') return false;
-  const storedValue = localStorage.getItem('reducedMotion');
-  if (storedValue != null) {
+  const storedValue = localStorage.getItem('reducedMotion') ?? undefined;
+  if (storedValue !== undefined) {
     return storedValue === 'true';
   }
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -114,7 +114,7 @@ if (typeof window !== 'undefined') {
   window
     .matchMedia('(prefers-reduced-motion: reduce)')
     .addEventListener('change', (event) => {
-      if (localStorage.getItem('reducedMotion') == null) {
+      if ((localStorage.getItem('reducedMotion') ?? undefined) === undefined) {
         applyReducedMotion(event.matches);
         useUIStore.setState({ reducedMotion: event.matches });
       }
