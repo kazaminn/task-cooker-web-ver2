@@ -142,13 +142,15 @@ export function AppSettingsPage() {
           selectionMode="single"
           selectedKeys={new Set([theme])}
           onSelectionChange={(keys) => {
-            const key = [...keys][0] as 'light' | 'dark' | 'system';
+            const key = [...keys][0] as
+              | 'tavern-light'
+              | 'tavern-dark'
+              | undefined;
             if (key) setTheme(key);
           }}
         >
-          <ToggleButton id="light">Light</ToggleButton>
-          <ToggleButton id="dark">Dark</ToggleButton>
-          <ToggleButton id="system">System</ToggleButton>
+          <ToggleButton id="tavern-light">Light</ToggleButton>
+          <ToggleButton id="tavern-dark">Dark</ToggleButton>
         </ToggleButtonGroup>
       </section>
 

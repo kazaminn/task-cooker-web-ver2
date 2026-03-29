@@ -1,5 +1,5 @@
 export interface UserPreferences {
-  theme: 'light' | 'dark' | 'system';
+  theme: 'tavern-light' | 'tavern-dark';
   fontSize: 'small' | 'medium' | 'large';
   highContrast: boolean;
 }

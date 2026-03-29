@@ -93,6 +93,7 @@ describe('KanbanBoard component', () => {
     await waitFor(() => {
       expect(mocks.update).toHaveBeenCalledWith('task-1', {
         status: 'prep',
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         position: expect.any(Number),
       });
     });

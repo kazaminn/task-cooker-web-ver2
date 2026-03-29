@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import {
   faBars,
-  faDesktop,
   faGear,
   faMoon,
   faXmark,
@@ -90,34 +89,26 @@ export function TopNav() {
               selectedKeys={new Set([theme])}
               onSelectionChange={(keys) => {
                 const key = [...keys][0] as
-                  | 'light'
-                  | 'dark'
-                  | 'system'
+                  | 'tavern-light'
+                  | 'tavern-dark'
                   | undefined;
                 if (key) setTheme(key);
               }}
               className="hidden sm:flex"
             >
               <ToggleButton
-                id="light"
+                id="tavern-light"
                 aria-label="ライトモード"
                 className="h-8 w-8 rounded-full"
               >
                 <FontAwesomeIcon icon={faSun} />
               </ToggleButton>
               <ToggleButton
-                id="dark"
+                id="tavern-dark"
                 aria-label="ダークモード"
                 className="h-8 w-8 rounded-full"
               >
                 <FontAwesomeIcon icon={faMoon} />
-              </ToggleButton>
-              <ToggleButton
-                id="system"
-                aria-label="システム設定に合わせる"
-                className="h-8 w-8 rounded-full"
-              >
-                <FontAwesomeIcon icon={faDesktop} />
               </ToggleButton>
             </ToggleButtonGroup>
             {user && (

@@ -1,7 +1,7 @@
 @import 'tailwindcss';
 @plugin 'tailwindcss-react-aria-components';
 
-@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+@custom-variant dark (&:where([data-theme=tavern-dark], [data-theme=tavern-dark] *));
 
 @theme {
   /* Typography */
@@ -12,14 +12,14 @@
   --font-mono: SFMono-Regular, Menlo, Monaco, Consolas, Meiryo, monospace;
 
   /* Surfaces */
-  --background-color-base: theme(colors.white);
-  --background-color-surface: theme(colors.slate.50);
+  --background-color-base: var(--surface-bg);
+  --background-color-surface: var(--surface-board);
   --background-color-hover: theme(colors.slate.100);
   --border-color-main: theme(colors.slate.300);
 
   /* Text */
-  --text-color-body: theme(colors.slate.900);
-  --text-color-muted: theme(colors.slate.500);
+  --text-color-body: var(--text-primary);
+  --text-color-muted: var(--text-muted);
 
   /* Link */
   --text-color-link: theme(colors.orange.600);
@@ -104,6 +104,7 @@
 
   /* ============================================
      Status colors (cooking metaphor)
+     Theme-invariant: same values in both themes
      ============================================ */
   --color-status-order: theme(colors.slate.300);
   --color-status-prep: theme(colors.yellow.200);
@@ -114,93 +115,417 @@
   --color-status-prep-text: theme(colors.yellow.900);
   --color-status-cook-text: theme(colors.white);
   --color-status-serve-text: theme(colors.amber.900);
+
+  /* ============================================
+     Tavern theme variables (registered for Tailwind)
+     ============================================ */
+  --color-surface-bg: var(--surface-bg);
+  --color-surface-board: var(--surface-board);
+  --color-surface-card: var(--surface-card);
+  --color-surface-card-light: var(--surface-card-light);
+  --color-surface-card-edge: var(--surface-card-edge);
+  --color-surface-header: var(--surface-header);
+  --color-surface-header-dark: var(--surface-header-dark);
+  --color-surface-header-light: var(--surface-header-light);
+  --color-surface-sidebar: var(--surface-sidebar);
+  --color-surface-iron: var(--surface-iron);
+  --color-surface-iron-dark: var(--surface-iron-dark);
+  --color-surface-ledger: var(--surface-ledger);
+  --color-surface-ledger-line: var(--surface-ledger-line);
+  --color-surface-code-bg: var(--surface-code-bg);
+  --color-surface-code-border: var(--surface-code-border);
+  --color-text-primary: var(--text-primary);
+  --color-text-on-card: var(--text-on-card);
+  --color-text-sub: var(--text-sub);
+  --color-text-muted: var(--text-muted);
+  --color-brass: var(--tavern-brass);
+  --color-brass-dark: var(--tavern-brass-dark);
+  --color-ember: var(--tavern-ember);
 }
 
 /* ============================================
-   Dark theme
+   Tavern Light theme (daytime cafe)
    ============================================ */
-[data-theme='dark'] {
-  --background-color-base: theme(colors.slate.950);
-  --background-color-surface: theme(colors.slate.900);
-  --background-color-hover: theme(colors.slate.800);
-  --border-color-main: theme(colors.slate.600);
-
-  --text-color-body: theme(colors.slate.100);
-  --text-color-muted: theme(colors.slate.400);
-
-  --text-color-link: theme(colors.orange.400);
-  --text-color-link-hover: theme(colors.orange.300);
-  --text-color-link-active: theme(colors.orange.200);
-
-  --background-color-primary: theme(colors.orange.500);
-  --background-color-primary-hover: theme(colors.orange.400);
-  --text-color-primary-foreground: theme(colors.white);
-  --border-color-primary: theme(colors.orange.500);
-
-  --background-color-secondary: theme(colors.blue.500);
-  --background-color-secondary-hover: theme(colors.blue.400);
-  --text-color-secondary-foreground: theme(colors.white);
-  --border-color-secondary: theme(colors.blue.500);
-
-  --color-focus-ring: theme(colors.orange.500);
-
-  --background-color-success: theme(colors.emerald.400);
-  --background-color-success-hover: theme(colors.emerald.300);
-  --text-color-success-foreground: theme(colors.emerald.950);
-  --text-color-success: theme(colors.emerald.400);
-  --background-color-success-subtle: theme(colors.emerald.950);
-  --border-color-success: theme(colors.emerald.800);
-
-  --background-color-warning: theme(colors.amber.400);
-  --background-color-warning-hover: theme(colors.amber.300);
-  --text-color-warning-foreground: theme(colors.amber.950);
-  --text-color-warning: theme(colors.amber.400);
-  --background-color-warning-subtle: theme(colors.amber.950);
-  --border-color-warning: theme(colors.amber.800);
-
-  --background-color-danger: theme(colors.rose.400);
-  --background-color-danger-hover: theme(colors.rose.300);
-  --text-color-danger-foreground: theme(colors.rose.950);
-  --text-color-danger: theme(colors.rose.400);
-  --background-color-danger-subtle: theme(colors.rose.950);
-  --border-color-danger: theme(colors.rose.800);
-
-  --background-color-info: theme(colors.sky.400);
-  --background-color-info-hover: theme(colors.sky.300);
-  --text-color-info-foreground: theme(colors.sky.950);
-  --text-color-info: theme(colors.sky.400);
-  --background-color-info-subtle: theme(colors.sky.950);
-  --border-color-info: theme(colors.sky.800);
-
-  --background-color-disabled: theme(colors.slate.800);
-  --text-color-disabled: theme(colors.slate.600);
-  --border-color-disabled: theme(colors.slate.700);
-
-  --background-color-input: theme(colors.slate.900);
-  --border-color-input: theme(colors.slate.700);
-  --border-color-input-focus: theme(colors.orange.500);
-  --text-color-input-placeholder: theme(colors.slate.600);
-
-  --background-color-backdrop: theme(colors.black / 60%);
-
-  --background-color-scrollbar-thumb: theme(colors.slate.700);
-  --background-color-scrollbar-track: theme(colors.slate.900);
-
-  --color-status-order: theme(colors.slate.600);
-  --color-status-prep: theme(colors.yellow.700);
-  --color-status-cook: theme(colors.orange.600);
-  --color-status-serve: theme(colors.amber.700);
-
-  --color-status-order-text: theme(colors.slate.200);
-  --color-status-prep-text: theme(colors.yellow.100);
-  --color-status-cook-text: theme(colors.white);
-  --color-status-serve-text: theme(colors.amber.100);
-
-  --shadow-sm: 0 1px 3px theme(colors.black / 30%);
-  --shadow-md: 0 4px 12px theme(colors.black / 40%);
-  --shadow-lg: 0 8px 24px theme(colors.black / 50%);
+[data-theme='tavern-light'] {
+  --surface-bg: #ffffff;
+  --surface-board: #ffffff;
+  --surface-card: #ffffff;
+  --surface-card-light: #f8fafc;
+  --surface-card-edge: #e2e8f0;
+  --surface-header: #ffffff;
+  --surface-header-dark: #f1f5f9;
+  --surface-header-light: #ffffff;
+  --surface-sidebar: #f8fafc;
+  --surface-iron: #cbd5e1;
+  --surface-iron-dark: #94a3b8;
+  --surface-ledger: #ffffff;
+  --surface-ledger-line: #e2e8f0;
+  --surface-code-bg: #f1f5f9;
+  --surface-code-border: #e2e8f0;
+  --text-primary: #0f172a;
+  --text-on-card: #0f172a;
+  --text-sub: #475569;
+  --text-muted: #94a3b8;
+  --tavern-brass: #f97316;
+  --tavern-brass-dark: #c2410c;
+  --tavern-ember: #ea580c;
 }
 
+/* ============================================
+   Tavern Dark theme (nighttime beer bar)
+   ============================================ */
+[data-theme='tavern-dark'] {
+  --surface-bg: #0d0d0e;
+  --surface-board: #221d19;
+  --surface-card: #2e2419;
+  --surface-card-light: #3c3024;
+  --surface-card-edge: #6c5138;
+  --surface-header: #5d3920;
+  --surface-header-dark: #382113;
+  --surface-header-light: #7b5231;
+  --surface-sidebar: #171513;
+  --surface-iron: #4d4a46;
+  --surface-iron-dark: #2d2a27;
+  --surface-ledger: #241c17;
+  --surface-ledger-line: #5b4736;
+  --surface-code-bg: #16171a;
+  --surface-code-border: #3e3429;
+  --text-primary: #f1e5cf;
+  --text-on-card: #f1e5cf;
+  --text-sub: #d5c09d;
+  --text-muted: #b19a7c;
+  --tavern-brass: #b89557;
+  --tavern-brass-dark: #7f643b;
+  --tavern-ember: #d49a55;
+
+  --background-color-base: #0d0d0e;
+  --background-color-surface: #221d19;
+  --background-color-hover: #3c3024;
+  --border-color-main: #6c5138;
+
+  --text-color-body: #f1e5cf;
+  --text-color-muted: #b19a7c;
+
+  --text-color-link: #b89557;
+  --text-color-link-hover: #d49a55;
+  --text-color-link-active: #f1e5cf;
+
+  --background-color-primary: #f97316;
+  --background-color-primary-hover: #ea580c;
+  --text-color-primary-foreground: #ffffff;
+  --border-color-primary: #f97316;
+
+  --background-color-secondary: #64748b;
+  --background-color-secondary-hover: #475569;
+  --text-color-secondary-foreground: #ffffff;
+  --border-color-secondary: #64748b;
+
+  --color-focus-ring: #b89557;
+
+  --background-color-success: #829e73;
+  --background-color-success-hover: #6b8a5e;
+  --text-color-success-foreground: #0d0d0e;
+  --text-color-success: #829e73;
+  --background-color-success-subtle: #1a2316;
+  --border-color-success: #3d5230;
+
+  --background-color-warning: #d49a55;
+  --background-color-warning-hover: #b89557;
+  --text-color-warning-foreground: #0d0d0e;
+  --text-color-warning: #d49a55;
+  --background-color-warning-subtle: #2e2419;
+  --border-color-warning: #6c5138;
+
+  --background-color-danger: #e57373;
+  --background-color-danger-hover: #d32f2f;
+  --text-color-danger-foreground: #0d0d0e;
+  --text-color-danger: #e57373;
+  --background-color-danger-subtle: #2a1515;
+  --border-color-danger: #5c2626;
+
+  --background-color-info: #8ea6c0;
+  --background-color-info-hover: #6b8db0;
+  --text-color-info-foreground: #0d0d0e;
+  --text-color-info: #8ea6c0;
+  --background-color-info-subtle: #141a22;
+  --border-color-info: #3a4f65;
+
+  --background-color-disabled: #2d2a27;
+  --text-color-disabled: #6c5138;
+  --border-color-disabled: #4d4a46;
+
+  --background-color-input: #2e2419;
+  --border-color-input: #6c5138;
+  --border-color-input-focus: #b89557;
+  --text-color-input-placeholder: #6c5138;
+
+  --background-color-backdrop: rgba(0, 0, 0, 0.6);
+
+  --background-color-scrollbar-thumb: #4d4a46;
+  --background-color-scrollbar-track: #171513;
+
+  --color-status-order: #cbd5e1;
+  --color-status-prep: #fef08a;
+  --color-status-cook: #f97316;
+  --color-status-serve: #fbbf24;
+
+  --color-status-order-text: #0d0d0e;
+  --color-status-prep-text: #0d0d0e;
+  --color-status-cook-text: #ffffff;
+  --color-status-serve-text: #0d0d0e;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* ============================================
+   prefers-color-scheme fallback
+   Only applies when data-theme is not set
+   (first visit, JS disabled)
+   ============================================ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --surface-bg: #0d0d0e;
+    --surface-board: #221d19;
+    --surface-card: #2e2419;
+    --surface-card-light: #3c3024;
+    --surface-card-edge: #6c5138;
+    --surface-header: #5d3920;
+    --surface-header-dark: #382113;
+    --surface-header-light: #7b5231;
+    --surface-sidebar: #171513;
+    --surface-iron: #4d4a46;
+    --surface-iron-dark: #2d2a27;
+    --surface-ledger: #241c17;
+    --surface-ledger-line: #5b4736;
+    --surface-code-bg: #16171a;
+    --surface-code-border: #3e3429;
+    --text-primary: #f1e5cf;
+    --text-on-card: #f1e5cf;
+    --text-sub: #d5c09d;
+    --text-muted: #b19a7c;
+    --tavern-brass: #b89557;
+    --tavern-brass-dark: #7f643b;
+    --tavern-ember: #d49a55;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    --surface-bg: #ffffff;
+    --surface-board: #ffffff;
+    --surface-card: #ffffff;
+    --surface-card-light: #f8fafc;
+    --surface-card-edge: #e2e8f0;
+    --surface-header: #ffffff;
+    --surface-header-dark: #f1f5f9;
+    --surface-header-light: #ffffff;
+    --surface-sidebar: #f8fafc;
+    --surface-iron: #cbd5e1;
+    --surface-iron-dark: #94a3b8;
+    --surface-ledger: #ffffff;
+    --surface-ledger-line: #e2e8f0;
+    --surface-code-bg: #f1f5f9;
+    --surface-code-border: #e2e8f0;
+    --text-primary: #0f172a;
+    --text-on-card: #0f172a;
+    --text-sub: #475569;
+    --text-muted: #94a3b8;
+    --tavern-brass: #f97316;
+    --tavern-brass-dark: #c2410c;
+    --tavern-ember: #ea580c;
+  }
+}
+
+/* ============================================
+   Tavern decorative patterns
+   All decorative elements must use aria-hidden="true"
+   ============================================ */
+
+/* Wood grain overlay (tavern-dark only) */
+.tavern-wood-grain {
+  position: relative;
+}
+.tavern-wood-grain::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0.22;
+  background-image:
+    repeating-linear-gradient(
+      7deg,
+      rgba(255, 255, 255, 0.045) 0px,
+      rgba(255, 255, 255, 0.045) 1px,
+      transparent 2px,
+      transparent 12px
+    ),
+    repeating-linear-gradient(
+      171deg,
+      rgba(0, 0, 0, 0.11) 0px,
+      rgba(0, 0, 0, 0.11) 2px,
+      transparent 3px,
+      transparent 18px
+    );
+}
+[data-theme='tavern-light'] .tavern-wood-grain::after {
+  display: none;
+}
+
+/* Parchment card */
+.tavern-parchment {
+  position: relative;
+  background: linear-gradient(
+    180deg,
+    var(--surface-card-light) 0%,
+    var(--surface-card) 100%
+  );
+  border: 1px solid var(--surface-card-edge);
+  border-radius: 2px;
+  box-shadow:
+    0 8px 16px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+.tavern-parchment::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.2;
+  background-image:
+    radial-gradient(
+      circle at 18% 24%,
+      rgba(255, 255, 255, 0.1) 0 1px,
+      transparent 2px
+    ),
+    radial-gradient(
+      circle at 70% 36%,
+      rgba(0, 0, 0, 0.1) 0 1px,
+      transparent 2px
+    ),
+    radial-gradient(
+      circle at 42% 70%,
+      rgba(255, 255, 255, 0.08) 0 1px,
+      transparent 2px
+    ),
+    radial-gradient(
+      circle at 82% 82%,
+      rgba(0, 0, 0, 0.1) 0 1px,
+      transparent 2px
+    );
+  background-size:
+    120px 120px,
+    140px 140px,
+    110px 110px,
+    130px 130px;
+}
+[data-theme='tavern-light'] .tavern-parchment {
+  background: var(--surface-card);
+  border-color: var(--surface-card-edge);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+[data-theme='tavern-light'] .tavern-parchment::before {
+  display: none;
+}
+
+/* Ledger (note detail) */
+.tavern-ledger {
+  background-color: var(--surface-card);
+  background-image:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, transparent 100%),
+    repeating-linear-gradient(
+      180deg,
+      transparent 0px,
+      transparent 29px,
+      var(--surface-ledger-line) 30px
+    );
+}
+[data-theme='tavern-light'] .tavern-ledger {
+  background-color: var(--surface-bg);
+  background-image: repeating-linear-gradient(
+    180deg,
+    transparent 0px,
+    transparent 29px,
+    var(--surface-ledger-line) 30px
+  );
+}
+
+/* Rivet decoration */
+.tavern-rivet {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--surface-iron-dark);
+  box-shadow:
+    0 0 0 1px var(--surface-iron),
+    inset 0 1px 1px rgba(255, 255, 255, 0.08);
+}
+[data-theme='tavern-light'] .tavern-rivet {
+  background-color: var(--surface-iron);
+  box-shadow: 0 0 0 1px var(--surface-card-edge);
+}
+
+/* Iron frame (kanban board) */
+.tavern-iron-frame {
+  border: 1px solid var(--tavern-brass-dark);
+  border-radius: 6px;
+  padding: 3px;
+  background: linear-gradient(
+    180deg,
+    var(--surface-header) 0%,
+    var(--surface-header-dark) 100%
+  );
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.26),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+.tavern-iron-frame > .tavern-iron-frame-inner {
+  border: 1px solid var(--surface-iron-dark);
+  border-radius: 3px;
+  background: linear-gradient(
+    180deg,
+    var(--surface-board) 0%,
+    var(--surface-sidebar) 100%
+  );
+}
+[data-theme='tavern-light'] .tavern-iron-frame {
+  border-color: var(--surface-card-edge);
+  background: var(--surface-bg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+[data-theme='tavern-light'] .tavern-iron-frame > .tavern-iron-frame-inner {
+  border-color: var(--surface-card-edge);
+  background: var(--surface-bg);
+}
+
+/* ============================================
+   Temperature expression (cook status pulse)
+   ============================================ */
+@keyframes tavern-ember-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+[data-theme='tavern-dark'] .status-cook {
+  animation: tavern-ember-pulse 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme='tavern-dark'] .status-cook {
+    animation: none;
+  }
+}
+
+/* ============================================
+   Base styles
+   ============================================ */
 @layer base {
   html {
     width: 100%;
