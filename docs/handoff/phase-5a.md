@@ -22,7 +22,7 @@ status: serve
 - [x] 引き継ぎファイル運用ルール策定
 - [x] PR#46 マージ + rebase解決
 - [x] Codexによるレビュー: Phase 5A→5Bの順序妥当性確認
-- [x] CLAUDE.md 更新（CLAUDE_DRAFT.md → 本体反映）(Code + 管理人)
+- [x] CLAUDE.md 更新（CLAUDE_DRAFT.md → 本体反映）(Code + ユーザー)
 - [x] .claude/commands/ 整備 — /chat, /do コマンド作成 (Code)
 - [x] service層の薄い仕込み — PR#48 マージ済み (#47, Code)
 - [x] a11y監査 (#37, 人間, 並行作業 → 5B以降で継続)

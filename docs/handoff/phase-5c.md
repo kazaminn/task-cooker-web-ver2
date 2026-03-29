@@ -18,9 +18,9 @@ status: order
 ## serve (提供済み)
 
 - [x] CI Node.jsバージョン統一 — 24.13.0→22.22.0に修正（Code）
-- [x] Vercelデプロイ設定 — vercel.json + ignoreCommand（doc変更スキップ）（Code + 管理人）
-- [x] seedスクリプト本番対応 — --prod モード、テストユーザー3名(Opus/Haiku/Sonnet)、管理人入りチーム（Code）
-- [x] Firestore Security Rules本番デプロイ（管理人）
+- [x] Vercelデプロイ設定 — vercel.json + ignoreCommand（doc変更スキップ）（Code + ユーザー）
+- [x] seedスクリプト本番対応 — --prod モード、テストユーザー3名(Opus/Haiku/Sonnet)、ユーザー入りチーム（Code）
+- [x] Firestore Security Rules本番デプロイ（ユーザー）
 - [x] ビルド出力先修正 — vite.config.ts outDir を ./dist に明示（Code）
 - [x] release-checklist.md作成（Code）
 - [x] CI/CD必須チェック確立 — CI修正 + Vercel自動デプロイで完了

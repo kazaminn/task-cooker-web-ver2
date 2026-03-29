@@ -22,7 +22,7 @@ coverage
 *.njsproj
 *.sln
 *.sw?
-
+*:Zone.Identifier
 
 .env
 .env.*
@@ -30,6 +30,7 @@ coverage
 storybook-static
 
 firebase-data
+firebase-export-**
 
 .localFiles
 
@@ -38,4 +39,3 @@ firebase-data
 
 stats.html
 **/serviceAccountKey.json
-VERCEL_SETUP.md

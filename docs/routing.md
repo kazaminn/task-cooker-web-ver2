@@ -1,92 +1,67 @@
-## routing
+# Routing
 
-last-updated: 2026-03-21
+last-updated: 2026-03-29
 
-Use the `ProtectedRoute` component to determine the user's logged-in status, and branch the route depending on the status.
+---
 
-This prevents users who are not logged in from accessing protected pages.
+## ルート構成
 
-```typescript
-import { createBrowserRouter } from 'react-router';
+### パブリック
 
-export const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <LandingPage />,
-  },
-  {
-    path: '/login',
-    element: <LoginPage />,
-  },
-  {
-    path: '/signup',
-    element: <SignupPage />,
-  },
-  {
-    element: <ProtectedRoute />,
-    children: [
-      {
-        path: 'home',
-        element: <DashboardPage />,
-      },
-      {
-        path: 'projects',
-        element: <ProjectListPage />,
-      },
-      {
-        path: 'projects/:projectId',
-        element: <ProjectLayout />,
-        children: [
-          { index: true, element: <ProjectOverviewPage /> },
-          { path: 'tasks', element: <ProjectTasksPage /> },
-          { path: 'tasks/:taskId', element: <TaskDetailPage /> },
-          { path: 'settings', element: <ProjectSettingsPage /> },
-        ],
-      },
-      {
-        path: 'teams',
-        element: <TeamListPage />,
-      },
-      {
-        path: 'teams/:teamId/members',
-        element: <TeamMembersPage />,
-      },
-      {
-        path: 'profile',
-        element: <ProfilePage />,
-      },
-      {
-        path: 'settings',
-        element: <AppSettingsPage />,
-      },
-    ],
-  },
-  {
-    path: '*',
-    element: <NotFoundPage />,
-  },
-]);
+| パス      | ページ       | レイアウト    | ファイル                                 |
+| --------- | ------------ | ------------- | ---------------------------------------- |
+| `/`       | LandingPage  | LandingLayout | `features/landing/pages/LandingPage.tsx` |
+| `/login`  | LoginPage    | LandingLayout | `features/auth/pages/LoginPage.tsx`      |
+| `/signup` | SignupPage   | LandingLayout | `features/auth/pages/SignupPage.tsx`     |
+| `*`       | NotFoundPage | —             | `ui/pages/NotFoundPage.tsx`              |
+
+### Protected（認証必須）
+
+| パス                                 | ページ              | レイアウト    | ファイル                                          |
+| ------------------------------------ | ------------------- | ------------- | ------------------------------------------------- |
+| `/home`                              | DashboardPage       | AppLayout     | `features/dashboard/pages/DashboardPage.tsx`      |
+| `/projects`                          | ProjectListPage     | AppLayout     | `features/projects/pages/ProjectListPage.tsx`     |
+| `/projects/:projectId`               | ProjectLayout       | AppLayout     | `features/projects/pages/ProjectLayout.tsx`       |
+| `/projects/:projectId` (index)       | ProjectOverviewPage | ProjectLayout | `features/projects/pages/ProjectOverviewPage.tsx` |
+| `/projects/:projectId/tasks`         | ProjectTasksPage    | ProjectLayout | `features/projects/pages/ProjectTasksPage.tsx`    |
+| `/projects/:projectId/notes`         | ProjectNotesPage    | ProjectLayout | `features/projects/pages/ProjectNotesPage.tsx`    |
+| `/projects/:projectId/settings`      | ProjectSettingsPage | ProjectLayout | `features/projects/pages/ProjectSettingsPage.tsx` |
+| `/projects/:projectId/tasks/:taskId` | TaskDetailPage      | ProjectLayout | `features/tasks/pages/TaskDetailPage.tsx`         |
+| `/notes`                             | NoteListPage        | AppLayout     | `features/notes/pages/NoteListPage.tsx`           |
+| `/notes/:noteId`                     | NoteDetailPage      | AppLayout     | `features/notes/pages/NoteDetailPage.tsx`         |
+| `/teams`                             | TeamListPage        | AppLayout     | `features/teams/pages/TeamListPage.tsx`           |
+| `/teams/:teamId/members`             | TeamMembersPage     | AppLayout     | `features/teams/pages/TeamMembersPage.tsx`        |
+| `/profile`                           | ProfilePage         | AppLayout     | `features/profile/pages/ProfilePage.tsx`          |
+| `/settings`                          | AppSettingsPage     | AppLayout     | `features/settings/pages/AppSettingsPage.tsx`     |
+
+---
+
+## グローバルナビゲーション（TopNav）
+
+```
+Dashboard | Projects | Notes
 ```
 
-### プランとの差分メモ
+## ProjectLayout タブ
 
-- `/projects/:projectId` の index で overview を直接表示（`/overview` サブルートなし）
-- タスク詳細は全画面遷移（`/projects/:id/tasks/:taskId`）、Right Drawer ではない
-- Mix ルートは MVP 外（削除済み）
-- `react-router-dom` → `react-router`（React Router v7）
-
-## file locations
-
-```text
-src/
-├── features/
-│   ├── auth/pages/          LoginPage, SignupPage
-│   ├── dashboard/pages/     DashboardPage
-│   ├── projects/pages/      ProjectListPage, ProjectLayout, ProjectOverviewPage, ProjectTasksPage, ProjectSettingsPage
-│   ├── tasks/pages/         TaskDetailPage
-│   ├── teams/pages/         TeamListPage, TeamMembersPage
-│   ├── profile/pages/       ProfilePage
-│   ├── settings/pages/      AppSettingsPage
-│   └── landing/pages/       LandingPage
-└── ui/pages/                NotFoundPage
 ```
+Overview | Tasks | Notes | Settings
+```
+
+ProjectLayout は入れ子レイアウト。`/projects/:projectId` にアクセスすると Overview にリダイレクト。
+
+---
+
+## Note のルーティング方針
+
+- Note はトップレベルルート（`/notes/:noteId`）
+- Project 内の Notes タブ（`/projects/:pjId/notes`）は Project.tag でフィルタした一覧を表示
+- Notes タブ内でノートをクリック → `/notes/:noteId` に遷移（Project 文脈を離れる）
+- 1つの Note が複数 Project に属せるため、URL に projectId を含めない
+
+---
+
+## 変更履歴
+
+- 2026-03-29: `/notes`, `/notes/:noteId` 追加。`/projects/:pjId/mixes` → `/projects/:pjId/notes` に変更。TopNav に Notes 追加。ProjectTabs の Mixes → Notes 変更
+- 2026-03-21: 初版

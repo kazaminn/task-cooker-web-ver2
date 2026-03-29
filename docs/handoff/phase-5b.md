@@ -18,7 +18,7 @@ status: cook
 ## serve (提供済み)
 
 - [x] テスト戦略ドキュメント v2 作成 (Code + Codex レビュー, #49)
-- [x] バンドルサイズ計測 — rollup-plugin-visualizer 導入済み (管理人)
+- [x] バンドルサイズ計測 — rollup-plugin-visualizer 導入済み (ユーザー)
 - [x] TaskListView ビルドエラー修正 — filter(Boolean) の型ガード追加 (Code)
 - [x] GitHub Issues連携用フィールド追加 — Task.githubIssueNumber/githubRepo, Project.githubRepo (Code, #50)
 - [x] P0テスト: api/projects.ts — CRUD + subscribe (Code)
