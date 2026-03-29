@@ -2,7 +2,8 @@
 
 last-updated: 2026-03-29
 
-全ページのアナトミー定義。世界観・メタファーは `user-journey.md` に準拠。
+全ページのアナトミー定義。世界観・メタファーは `user-journey.md` を参照する。
+`user-journey.md` は世界観資料であり、実装仕様の正本ではない。
 
 ---
 
@@ -51,7 +52,7 @@ last-updated: 2026-03-29
 | ------------- | ---------------------------------------- |
 | パス          | `/`                                      |
 | 説明          | 酒場の入口。初めての来店者を迎える       |
-| Journey Phase | Phase 1: 初来店                          |
+| Journey Stage | Journey Stage 1: 初来店                  |
 | ファイル      | `features/landing/pages/LandingPage.tsx` |
 
 #### コンポーネントツリー
@@ -94,7 +95,7 @@ last-updated: 2026-03-29
 | ------------- | ----------------------------------- |
 | パス          | `/login`                            |
 | 説明          | 酒場に入る。常連の帰還              |
-| Journey Phase | Phase 1: 初来店                     |
+| Journey Stage | Journey Stage 1: 初来店             |
 | ファイル      | `features/auth/pages/LoginPage.tsx` |
 
 #### コンポーネントツリー
@@ -122,7 +123,7 @@ last-updated: 2026-03-29
 | ------------- | ------------------------------------ |
 | パス          | `/signup`                            |
 | 説明          | 酒場への初入店。新規登録             |
-| Journey Phase | Phase 1: 初来店                      |
+| Journey Stage | Journey Stage 1: 初来店              |
 | ファイル      | `features/auth/pages/SignupPage.tsx` |
 
 #### コンポーネントツリー
@@ -153,7 +154,7 @@ last-updated: 2026-03-29
 | ------------- | -------------------------------------------- |
 | パス          | `/home`                                      |
 | 説明          | 厨房のカウンターから店内を見渡す。メインハブ |
-| Journey Phase | Phase 2-5                                    |
+| Journey Stage | Journey Stage 2-5                            |
 | ファイル      | `features/dashboard/pages/DashboardPage.tsx` |
 
 #### コンポーネントツリー
@@ -221,7 +222,7 @@ last-updated: 2026-03-29
 | ------------- | --------------------------------------------- |
 | パス          | `/projects`                                   |
 | 説明          | メニュー帳。全プロジェクトの一覧              |
-| Journey Phase | Phase 3-5                                     |
+| Journey Stage | Journey Stage 3-5                             |
 | ファイル      | `features/projects/pages/ProjectListPage.tsx` |
 
 #### コンポーネントツリー
@@ -270,7 +271,7 @@ last-updated: 2026-03-29
 | ------------- | --------------------------------------------------------------- |
 | パス          | `/projects/:projectId`                                          |
 | 説明          | プロジェクトの厨房。タブで内容切替                              |
-| Journey Phase | Phase 3-5                                                       |
+| Journey Stage | Journey Stage 3-5                                               |
 | ファイル      | `features/projects/pages/ProjectLayout.tsx`（入れ子レイアウト） |
 
 #### コンポーネントツリー
@@ -313,7 +314,7 @@ last-updated: 2026-03-29
 | ------------- | ------------------------------------------------- |
 | パス          | `/projects/:projectId`（index route）             |
 | 説明          | メニューの紹介ページ。プロジェクトの概要と進捗    |
-| Journey Phase | Phase 3-5                                         |
+| Journey Stage | Journey Stage 3-5                                 |
 | ファイル      | `features/projects/pages/ProjectOverviewPage.tsx` |
 
 #### コンポーネントツリー
@@ -380,7 +381,7 @@ last-updated: 2026-03-29
 | ------------- | ---------------------------------------------- |
 | パス          | `/projects/:projectId/tasks`                   |
 | 説明          | オーダーボード。タスクの一覧表示と管理         |
-| Journey Phase | Phase 3-5                                      |
+| Journey Stage | Journey Stage 3-5                              |
 | ファイル      | `features/projects/pages/ProjectTasksPage.tsx` |
 
 #### コンポーネントツリー — リストビュー
@@ -485,7 +486,7 @@ last-updated: 2026-03-29
 | ------------- | ----------------------------------------- |
 | パス          | `/projects/:projectId/tasks/:taskId`      |
 | 説明          | 注文の詳細。タスクの全情報と編集          |
-| Journey Phase | Phase 3-5                                 |
+| Journey Stage | Journey Stage 3-5                         |
 | ファイル      | `features/tasks/pages/TaskDetailPage.tsx` |
 
 #### コンポーネントツリー
@@ -572,7 +573,7 @@ last-updated: 2026-03-29
 | ------------- | ------------------------------------------------- |
 | パス          | `/projects/:projectId/settings`                   |
 | 説明          | メニューの設定。プロジェクトの編集・削除          |
-| Journey Phase | Phase 3-5                                         |
+| Journey Stage | Journey Stage 3-5                                 |
 | ファイル      | `features/projects/pages/ProjectSettingsPage.tsx` |
 
 #### コンポーネントツリー
@@ -617,7 +618,7 @@ last-updated: 2026-03-29
 | ------------- | --------------------------------------- |
 | パス          | `/teams`                                |
 | 説明          | 酒場の経営体制。チーム一覧              |
-| Journey Phase | Phase 5                                 |
+| Journey Stage | Journey Stage 5                         |
 | ファイル      | `features/teams/pages/TeamListPage.tsx` |
 
 #### コンポーネントツリー
@@ -660,7 +661,7 @@ last-updated: 2026-03-29
 | ------------- | ------------------------------------------ |
 | パス          | `/teams/:teamId/members`                   |
 | 説明          | 厨房スタッフの管理。メンバー一覧と招待     |
-| Journey Phase | Phase 5                                    |
+| Journey Stage | Journey Stage 5                            |
 | ファイル      | `features/teams/pages/TeamMembersPage.tsx` |
 
 #### コンポーネントツリー
@@ -710,7 +711,7 @@ last-updated: 2026-03-29
 | ------------- | ---------------------------------------- |
 | パス          | `/profile`                               |
 | 説明          | 料理人の経歴。プロフィールと貢献グラフ   |
-| Journey Phase | Phase 6                                  |
+| Journey Stage | Journey Stage 6                          |
 | ファイル      | `features/profile/pages/ProfilePage.tsx` |
 
 #### コンポーネントツリー
@@ -761,7 +762,7 @@ last-updated: 2026-03-29
 | ------------- | --------------------------------------- |
 | パス          | `/notes`                                |
 | 説明          | 帳簿棚。全ノートの一覧                  |
-| Journey Phase | Phase 5+                                |
+| Journey Stage | Journey Stage 5+                        |
 | ファイル      | `features/notes/pages/NoteListPage.tsx` |
 
 #### コンポーネントツリー（v1: 空ページ）
@@ -789,7 +790,7 @@ last-updated: 2026-03-29
 | ------------- | ----------------------------------------- |
 | パス          | `/notes/:noteId`                          |
 | 説明          | 帳簿の中身。ノートの閲覧・編集            |
-| Journey Phase | Phase 5+                                  |
+| Journey Stage | Journey Stage 5+                          |
 | ファイル      | `features/notes/pages/NoteDetailPage.tsx` |
 
 #### コンポーネントツリー（v1: 空ページ）
@@ -818,7 +819,7 @@ last-updated: 2026-03-29
 | ------------- | ------------------------------------------------------ |
 | パス          | `/projects/:projectId/notes`                           |
 | 説明          | プロジェクトに紐づくノートの一覧（タグベースフィルタ） |
-| Journey Phase | Phase 5+                                               |
+| Journey Stage | Journey Stage 5+                                       |
 | ファイル      | `features/projects/pages/ProjectNotesPage.tsx`         |
 
 #### コンポーネントツリー（v1: 空ページ）
@@ -851,7 +852,7 @@ last-updated: 2026-03-29
 | ------------- | --------------------------------------------- |
 | パス          | `/settings`                                   |
 | 説明          | 酒場の設定。テーマ・アクセシビリティ          |
-| Journey Phase | Phase 4-5                                     |
+| Journey Stage | Journey Stage 4-5                             |
 | ファイル      | `features/settings/pages/AppSettingsPage.tsx` |
 
 #### コンポーネントツリー

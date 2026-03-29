@@ -11,7 +11,7 @@ You are a documentation consistency checker for TaskCooker Web.
 
 ### 1. Type Definitions vs Data Models
 
-- Compare `src/types/` exports with `docs/data-models.md` and `docs/data-models-v2.md`
+- Compare `src/types/` exports with `docs/data-models.md` and `docs/data-models.md`
 - Flag: missing types, extra types, field mismatches, type mismatches
 
 ### 2. Routes vs Routing Doc

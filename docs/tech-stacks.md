@@ -1,6 +1,6 @@
 # Technology Stacks
 
-last-updated: 2026-03-21
+last-updated: 2026-03-29
 
 ---
 
@@ -33,15 +33,15 @@ last-updated: 2026-03-21
 
 - **react-aria-components** — アクセシブルな unstyled コンポーネント基盤
 - **FontAwesome** — アイコン
-- **@uiw/react-md-editor** — Markdown エディタ（MVP ではプレーンテキスト、将来用に残す）
+- **@uiw/react-md-editor** — Markdown エディタ
 
 ## Development & Testing
 
-- **Vitest** — ユニット/統合テスト ✅ MVP
-- **React Testing Library** — コンポーネントテスト ✅ MVP
-- **Storybook** — コンポーネントカタログ（MVP 後）
-- **Chromatic** — ビジュアルリグレッション（MVP 後）
-- **Playwright** — E2E テスト（MVP 後）
+- **Vitest** — ユニット/統合テスト
+- **React Testing Library** — コンポーネントテスト
+- **Storybook** — コンポーネントカタログ
+- **Chromatic** — ビジュアルリグレッション
+- **Playwright** — E2E テスト
 
 ## Code Quality
 
@@ -53,5 +53,5 @@ last-updated: 2026-03-21
 
 - **Firebase Auth** — Google OAuth 認証
 - **Cloud Firestore** — データベース（リアルタイム onSnapshot）
-- [Future] Firebase Storage — ファイル添付
+- [Future] ファイル添付 AWS等検討 or app連携
 - [Future] Algolia — 全文検索

@@ -18,7 +18,7 @@ globs:
 - Every `Promise` chain must have `.catch()` or be wrapped in try/catch
 - Swallowing errors silently is forbidden — it causes cascade crashes
 
-## StorageService (Phase 5+7)
+## StorageService (Phase 6)
 
 - Define types and interfaces only — do not write implementation
-- See @docs/data-models-v2.md for StorageService interface spec
+- See @docs/data-models.md for StorageService interface spec

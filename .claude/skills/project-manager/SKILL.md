@@ -51,4 +51,4 @@ Produce a Markdown story map:
 
 - Read `docs/handoff/` for current phase status
 - Read `docs/page-anatomy.md` for existing page structure
-- Current phase: Phase 5+7 (quality hardening + tavern theme)
+- Current phase: Phase 6 (quality hardening + tavern theme)

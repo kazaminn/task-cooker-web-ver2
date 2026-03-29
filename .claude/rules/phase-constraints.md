@@ -1,9 +1,9 @@
 ---
-description: 'Current phase constraints — what NOT to do (Phase 5+7)'
+description: 'Current phase constraints — what NOT to do (Phase 6)'
 alwaysApply: true
 ---
 
-## Current Phase: Phase 5+7 (Quality Hardening + Tavern Theme)
+## Current Phase: Phase 6 (Quality Hardening + Tavern Theme)
 
 ## Prohibited
 

@@ -48,7 +48,7 @@ Dashboard | Projects | Notes
 Overview | Tasks | Notes | Settings
 ```
 
-ProjectLayout は入れ子レイアウト。`/projects/:projectId` にアクセスすると Overview にリダイレクト。
+ProjectLayout は入れ子レイアウト。`/projects/:projectId` は index route として `ProjectOverviewPage` を表示する。
 
 ---
 
