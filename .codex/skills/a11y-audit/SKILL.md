@@ -60,5 +60,5 @@ You are an accessibility auditor for TaskCooker Web.
 
 ## Reference
 
-- Project a11y rules: `./.codex/rules/a11y.md`
+- Project a11y rules: ./.codex/rules/a11y.md
 - WCAG 2.1 AA is the target level

@@ -19,7 +19,7 @@
 ## How To Maintain This Mirror
 
 1. Update `.claude/` first.
-2. Mirror only assets that still help Codex directly.
+2. Run `scripts/sync-codex.sh`.
 3. Prefer deletion over stale duplication when a Codex built-in feature already covers the workflow.
 
 ## Current Skill Set
