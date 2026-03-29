@@ -21,7 +21,7 @@ export function AppSettingsPage() {
   const reducedMotion = useUIStore((s) => s.reducedMotion);
   const setReducedMotion = useUIStore((s) => s.setReducedMotion);
   const [isSavingProfile, setIsSavingProfile] = useState(false);
-  const [profileError, setProfileError] = useState<string | null>(null);
+  const [profileError, setProfileError] = useState<string>();
   const { control, handleSubmit, reset } = useForm<ProfileFormInput>({
     defaultValues: {
       displayName: user?.displayName ?? '',
@@ -65,7 +65,7 @@ export function AppSettingsPage() {
     if (!user?.uid) return;
 
     setIsSavingProfile(true);
-    setProfileError(null);
+    setProfileError(undefined);
 
     try {
       const displayName = values.displayName.trim();
@@ -139,16 +139,19 @@ export function AppSettingsPage() {
       <section className="space-y-3">
         <h2 className="text-sm font-semibold text-body">テーマ</h2>
         <ToggleButtonGroup
+          aria-label="テーマ切り替え"
           selectionMode="single"
           selectedKeys={new Set([theme])}
           onSelectionChange={(keys) => {
-            const key = [...keys][0] as 'light' | 'dark' | 'system';
+            const key = [...keys][0] as
+              | 'tavern-light'
+              | 'tavern-dark'
+              | undefined;
             if (key) setTheme(key);
           }}
         >
-          <ToggleButton id="light">Light</ToggleButton>
-          <ToggleButton id="dark">Dark</ToggleButton>
-          <ToggleButton id="system">System</ToggleButton>
+          <ToggleButton id="tavern-light">Light</ToggleButton>
+          <ToggleButton id="tavern-dark">Dark</ToggleButton>
         </ToggleButtonGroup>
       </section>
 

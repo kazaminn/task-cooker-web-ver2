@@ -21,7 +21,7 @@ describe('uiStore', () => {
   beforeEach(() => {
     const { setState } = useUIStore;
     setState({
-      theme: 'system',
+      theme: 'tavern-light',
       selectedView: 'list',
       filters: {},
       searchQuery: '',
@@ -32,11 +32,12 @@ describe('uiStore', () => {
       toasts: [],
       reducedMotion: false,
     });
+    localStorage.clear();
   });
 
   it('sets theme', () => {
-    useUIStore.getState().setTheme('dark');
-    expect(useUIStore.getState().theme).toBe('dark');
+    useUIStore.getState().setTheme('tavern-dark');
+    expect(useUIStore.getState().theme).toBe('tavern-dark');
   });
 
   it('sets selected view', () => {
@@ -93,5 +94,36 @@ describe('uiStore', () => {
   it('sets active project tab', () => {
     useUIStore.getState().setActiveProjectTab('tasks');
     expect(useUIStore.getState().activeProjectTab).toBe('tasks');
+  });
+
+  describe('tavern theme', () => {
+    it('restores theme from localStorage tck-theme', () => {
+      localStorage.setItem('tck-theme', 'tavern-dark');
+      useUIStore.getState().setTheme('tavern-dark');
+      expect(localStorage.getItem('tck-theme')).toBe('tavern-dark');
+      expect(useUIStore.getState().theme).toBe('tavern-dark');
+    });
+
+    it('toggles between tavern-light and tavern-dark', () => {
+      expect(useUIStore.getState().theme).toBe('tavern-light');
+
+      useUIStore.getState().setTheme('tavern-dark');
+      expect(useUIStore.getState().theme).toBe('tavern-dark');
+
+      useUIStore.getState().setTheme('tavern-light');
+      expect(useUIStore.getState().theme).toBe('tavern-light');
+    });
+
+    it('applies data-theme attribute to document element', () => {
+      useUIStore.getState().setTheme('tavern-dark');
+      expect(document.documentElement.getAttribute('data-theme')).toBe(
+        'tavern-dark'
+      );
+
+      useUIStore.getState().setTheme('tavern-light');
+      expect(document.documentElement.getAttribute('data-theme')).toBe(
+        'tavern-light'
+      );
+    });
   });
 });

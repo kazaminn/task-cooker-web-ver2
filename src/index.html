@@ -7,16 +7,16 @@
     <title>TaskCooker</title>
     <script>
       (() => {
-        const storedTheme = localStorage.getItem('theme') ?? 'system';
-        const resolvedTheme =
-          storedTheme === 'system'
-            ? window.matchMedia('(prefers-color-scheme: dark)').matches
-              ? 'dark'
-              : 'light'
-            : storedTheme;
-        document.documentElement.setAttribute('data-theme', resolvedTheme);
-        document.documentElement.setAttribute('data-theme-mode', storedTheme);
-        document.documentElement.style.colorScheme = resolvedTheme;
+        const stored = localStorage.getItem('tck-theme');
+        const theme =
+          stored === 'tavern-light' || stored === 'tavern-dark'
+            ? stored
+            : window.matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'tavern-dark'
+              : 'tavern-light';
+        document.documentElement.setAttribute('data-theme', theme);
+        document.documentElement.style.colorScheme =
+          theme === 'tavern-dark' ? 'dark' : 'light';
       })();
     </script>
   </head>

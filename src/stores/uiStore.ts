@@ -8,7 +8,7 @@ import type {
 } from '@/types/types';
 
 type ViewMode = 'list' | 'kanban';
-type Theme = 'light' | 'dark' | 'system';
+type Theme = 'tavern-light' | 'tavern-dark';
 
 interface UIState {
   theme: Theme;
@@ -38,24 +38,21 @@ interface UIState {
 }
 
 function getInitialTheme(): Theme {
-  if (typeof window === 'undefined') return 'system';
-  return (localStorage.getItem('theme') as Theme) ?? 'system';
+  if (typeof window === 'undefined') return 'tavern-light';
+  const stored = localStorage.getItem('tck-theme');
+  if (stored === 'tavern-light' || stored === 'tavern-dark') return stored;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches
+    ? 'tavern-dark'
+    : 'tavern-light';
 }
 
 function getInitialReducedMotion(): boolean {
   if (typeof window === 'undefined') return false;
-  const storedValue = localStorage.getItem('reducedMotion');
-  if (storedValue != null) {
+  const storedValue = localStorage.getItem('reducedMotion') ?? undefined;
+  if (storedValue !== undefined) {
     return storedValue === 'true';
   }
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-}
-
-function resolveTheme(theme: Theme): Exclude<Theme, 'system'> {
-  if (theme !== 'system') return theme;
-  return window.matchMedia('(prefers-color-scheme: dark)').matches
-    ? 'dark'
-    : 'light';
 }
 
 export const useUIStore = create<UIState>((set) => ({
@@ -71,7 +68,7 @@ export const useUIStore = create<UIState>((set) => ({
   reducedMotion: getInitialReducedMotion(),
 
   setTheme: (theme) => {
-    localStorage.setItem('theme', theme);
+    localStorage.setItem('tck-theme', theme);
     applyTheme(theme);
     set({ theme });
   },
@@ -100,10 +97,8 @@ export const useUIStore = create<UIState>((set) => ({
 
 function applyTheme(theme: Theme) {
   const root = document.documentElement;
-  const resolvedTheme = resolveTheme(theme);
-  root.setAttribute('data-theme', resolvedTheme);
-  root.setAttribute('data-theme-mode', theme);
-  root.style.colorScheme = resolvedTheme;
+  root.setAttribute('data-theme', theme);
+  root.style.colorScheme = theme === 'tavern-dark' ? 'dark' : 'light';
 }
 
 function applyReducedMotion(reducedMotion: boolean) {
@@ -117,18 +112,9 @@ if (typeof window !== 'undefined') {
   applyReducedMotion(getInitialReducedMotion());
 
   window
-    .matchMedia('(prefers-color-scheme: dark)')
-    .addEventListener('change', () => {
-      const currentTheme = useUIStore.getState().theme;
-      if (currentTheme === 'system') {
-        applyTheme('system');
-      }
-    });
-
-  window
     .matchMedia('(prefers-reduced-motion: reduce)')
     .addEventListener('change', (event) => {
-      if (localStorage.getItem('reducedMotion') == null) {
+      if ((localStorage.getItem('reducedMotion') ?? undefined) === undefined) {
         applyReducedMotion(event.matches);
         useUIStore.setState({ reducedMotion: event.matches });
       }
