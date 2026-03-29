@@ -99,7 +99,6 @@ describe('uiStore', () => {
   describe('tavern theme', () => {
     it('restores theme from localStorage tck-theme', () => {
       localStorage.setItem('tck-theme', 'tavern-dark');
-      // Re-read from localStorage via setTheme to verify persistence key
       useUIStore.getState().setTheme('tavern-dark');
       expect(localStorage.getItem('tck-theme')).toBe('tavern-dark');
       expect(useUIStore.getState().theme).toBe('tavern-dark');
