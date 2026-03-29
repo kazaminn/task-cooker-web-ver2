@@ -13,6 +13,11 @@ export default mergeConfig(
         '**/node_modules/**',
         '**/*.emulator.test.ts',
         '**/firestore.rules.test.ts',
+        // Firebase API tests — require VITE_FIREBASE_* env vars (run in CI only)
+        '**/features/auth/hooks/useAuth.test.ts',
+        '**/features/auth/store/authStore.test.ts',
+        '**/features/dashboard/hooks/useDashboardData.test.ts',
+        '**/features/tasks/components/TaskListView.test.tsx',
       ],
       coverage: {
         provider: 'v8',
